@@ -5,12 +5,10 @@
       "maxDuration": 30
     }
   },
-
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/api"
     }
-  ],
-  "outputDirectory": "api"
+  ]
 }
