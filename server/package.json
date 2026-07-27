@@ -5,9 +5,10 @@
   "author": "Nahid Hasan Rayan",
   "license": "UNLICENSED",
   "private": true,
+
   "scripts": {
     "build": "npx nest build",
-    "vercel-build": "prisma generate && npm run build && mkdir -p api && cp -r dist/* api/ && ls -la dist/ && ls -la api/",
+    "vercel-build": "prisma generate && rm -rf dist && npm run build && mkdir -p api && cp -r dist/* api/ && ls -la dist/ && ls -la api/",
     "start": "node dist/main",
     "start:dev": "npx nest start --watch",
     "start:prod": "node dist/main",
@@ -18,6 +19,7 @@
     "prisma:seed": "prisma db seed",
     "test": "jest"
   },
+  
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
