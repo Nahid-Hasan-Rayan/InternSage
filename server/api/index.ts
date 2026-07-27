@@ -1,6 +1,6 @@
 /**
  * InternSage — Vercel serverless entrypoint
- * Uses require to avoid TypeScript static import resolution error.
+ * Loads compiled NestJS from ./dist/main (copied during build)
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -8,8 +8,8 @@ let cachedHandler: ((req: VercelRequest, res: VercelResponse) => void) | null = 
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!cachedHandler) {
-    // require bypasses TypeScript compile-time checking – dist/main will exist at runtime
-    const { createApp } = require('../dist/main');
+    // Now requires from ./dist/main (relative to api/ folder)
+    const { createApp } = require('./dist/main');
     const app = await createApp();
     await app.init();
     cachedHandler = app.getHttpAdapter().getInstance();

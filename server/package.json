@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "npx nest build",
-    "vercel-build": "prisma generate && npm run build",
+    "vercel-build": "prisma generate && npm run build && cp -r dist api/dist",
     "start": "node dist/main",
     "start:dev": "npx nest start --watch",
     "start:prod": "node dist/main",
