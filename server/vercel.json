@@ -11,5 +11,5 @@
       "dest": "/api"
     }
   ],
-  "outputDirectory": "."
+  "outputDirectory": "api"
 }
