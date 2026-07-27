@@ -1,6 +1,5 @@
 /**
  * InternSage — Vercel serverless entrypoint with error logging
- * v2
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 

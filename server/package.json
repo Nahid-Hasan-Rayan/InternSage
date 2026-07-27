@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "npx nest build",
-    "vercel-build": "prisma generate && npm run build && cp -r dist/. api/ && ls -la api/",
+    "vercel-build": "prisma generate && npm run build && cp -r dist/. api/ && ls -la api/ && ls -la dist/",
     "start": "node dist/main",
     "start:dev": "npx nest start --watch",
     "start:prod": "node dist/main",
@@ -67,14 +67,11 @@
       "json",
       "ts"
     ],
-
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-
-    
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
