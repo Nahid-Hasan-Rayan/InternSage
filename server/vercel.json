@@ -1,30 +1,20 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "functions": {
-    "api/index.ts": {
-      "maxDuration": 30,
-      "includeFiles": "dist/**"
-    }
-  },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/api"
+      "src": "api/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "dist/**"
+        ]
+      }
     }
   ],
-  "crons": [
+  "routes": [
     {
-      "path": "/api/internal/jobs/aggregate",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/internal/matching/recompute",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/verification/internal/decay",
-      "schedule": "0 4 * * *"
+      "src": "/(.*)",
+      "dest": "/api"
     }
   ]
 }
