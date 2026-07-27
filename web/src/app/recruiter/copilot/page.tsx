@@ -1,0 +1,88 @@
+/**
+ * InternSage — Sage Copilot page
+ *
+ * Author : Nahid Hasan Rayan
+ * Marker : NHR-FE-COPILOT-001
+ * File   : src/app/recruiter/copilot/page.tsx
+ */
+
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { AppShell } from "@/components/app/app-shell";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { getSession, type SessionUser } from "@/lib/api";
+import { queryCopilot, type CopilotResult } from "@/lib/internsage-api";
+
+export default function CopilotPage() {
+  const router = useRouter();
+  const [user, setUser] = React.useState<SessionUser | null>(null);
+  const [question, setQuestion] = React.useState("");
+  const [result, setResult] = React.useState<CopilotResult | null>(null);
+  const [busy, setBusy] = React.useState(false);
+
+  React.useEffect(() => {
+    getSession().then((session) => {
+      if (!session) return router.push("/login");
+      setUser(session);
+    });
+  }, [router]);
+
+  async function handleAsk(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      setResult(await queryCopilot(question));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+
+  return (
+    <AppShell user={user}>
+      <h1 className="mb-2 font-display text-xl text-parchment">Sage Copilot</h1>
+      <p className="mb-6 text-sm text-parchment-dim">
+        Ask a question about your applicant pool — e.g. "who knows React and is verified".
+      </p>
+
+      <form onSubmit={handleAsk} className="mb-6 flex gap-2">
+        <Input
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask Sage Copilot…"
+          className="flex-1"
+        />
+        <Button type="submit" disabled={busy}>
+          {busy ? "Thinking…" : "Ask"}
+        </Button>
+      </form>
+
+      {result?.blocked && (
+        <Card className="mb-4 border-oxide-500 p-4 text-sm text-oxide-500">
+          This question touches a protected characteristic and can&apos;t be run.
+        </Card>
+      )}
+
+      {result && !result.blocked && (
+        <div className="grid gap-3">
+          {result.results.map((r) => (
+            <Card key={r.userId} className="flex justify-between p-4 text-sm">
+              <span className="text-parchment">
+                {r.major ?? "Unknown major"} · Year {r.year ?? "?"}
+              </span>
+              <span className="text-parchment-dim">{r.universityName}</span>
+            </Card>
+          ))}
+          {result.results.length === 0 && (
+            <p className="text-sm text-parchment-dim">No matching candidates in your applicant pool.</p>
+          )}
+        </div>
+      )}
+    </AppShell>
+  );
+}

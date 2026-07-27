@@ -1,0 +1,55 @@
+# ============================================================
+#  InternSage — local development infrastructure
+# ------------------------------------------------------------
+#  Author : Nahid Hasan Rayan
+#  Marker : NHR-INFRA-COMPOSE-001
+#
+#  Notes:
+#   - Uses the pgvector/pgvector image, not plain postgres, so the
+#     extension is available for the Matching Engine (Phase 2)
+#     without a separate install step.
+#   - Ports are bound to localhost only implicitly via Docker's
+#     default bridge — do not change to "0.0.0.0:5432:5432" style
+#     bindings without understanding you'd be exposing the database
+#     port beyond your own machine.
+#   - Credentials here are for LOCAL DEVELOPMENT ONLY. Real
+#     environments must supply their own via secrets management,
+#     never committed to a compose file.
+# ============================================================
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: internsage-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: internsage
+      POSTGRES_PASSWORD: internsage
+      POSTGRES_DB: internsage
+    ports:
+      - "5432:5432"
+    volumes:
+      - internsage_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U internsage"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: internsage-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - internsage_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  internsage_pg_data:
+  internsage_redis_data:

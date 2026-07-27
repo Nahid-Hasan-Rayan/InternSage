@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --ink-950: #0a0e17;
+  --ink-850: #121a2a;
+  --ink-800: #182236;
+  --ink-700: #2a3654;
+  --hairline: #33405e;
+  --parchment: #ede7d9;
+  --parchment-dim: #9aa3bd;
+  --brass: #c79a4e;
+  --brass-dim: #8a6c34;
+  --verdigris: #3fa57a;
+  --oxide: #b9503f;
+
+  --background: var(--ink-950);
+  --foreground: var(--parchment);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink-950: var(--ink-950);
+  --color-ink-850: var(--ink-850);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-hairline: var(--hairline);
+  --color-parchment: var(--parchment);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-brass: var(--brass);
+  --color-brass-dim: var(--brass-dim);
+  --color-verdigris: var(--verdigris);
+  --color-oxide: var(--oxide);
+  --font-display: var(--font-sora);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-plex-sans), sans-serif;
+}
+
+/* instrument-panel calibration ticks, used behind the auth card */
+.calibration-ring {
+  background-image: repeating-conic-gradient(
+    var(--hairline) 0deg 1deg,
+    transparent 1deg 15deg
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 55%, black 56%, black 60%, transparent 61%);
+  mask-image: radial-gradient(circle, transparent 55%, black 56%, black 60%, transparent 61%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

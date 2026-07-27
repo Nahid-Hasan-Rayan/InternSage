@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm install",
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ],
+  "crons": [
+    { "path": "/api/internal/jobs/aggregate", "schedule": "0 2 * * *" },
+    { "path": "/api/internal/matching/recompute", "schedule": "0 3 * * *" },
+    { "path": "/api/verification/internal/decay", "schedule": "0 4 * * *" }
+  ]
+}
