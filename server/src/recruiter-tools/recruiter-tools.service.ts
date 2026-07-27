@@ -2,7 +2,7 @@
  * InternSage — RecruiterToolsService
  *
  * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-SVC-001
+ * Marker : NHR-BE-RECTOOLS-SVC-002
  * File   : src/recruiter-tools/recruiter-tools.service.ts
  *
  * Two Blueprint features live here because they share the same
@@ -21,7 +21,7 @@
 
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { UpdateRecruiterWeightsDto, CreateInterviewKitDto, SubmitScorecardDto } from './dto/recruiter-tools.dto';
+import { CreateInterviewKitDto, SubmitScorecardDto, UpdateRecruiterWeightsDto } from './dto/recruiter-tools.dto';
 
 const DEFAULT_WEIGHTS = {
   skillsWeight: 0.4,
@@ -32,7 +32,7 @@ const DEFAULT_WEIGHTS = {
 
 @Injectable()
 export class RecruiterToolsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   private async resolveCompanyId(userId: string): Promise<string> {
     const recruiterProfile = await this.prisma.recruiterProfile.findUnique({ where: { userId } });
@@ -65,8 +65,9 @@ export class RecruiterToolsService {
     if (existing) {
       throw new ConflictException('An interview kit for this role already exists for your company.');
     }
+    // Cast criteria to any to satisfy Prisma's JSON type
     return this.prisma.interviewKit.create({
-      data: { companyId, roleTitle: dto.roleTitle, criteria: dto.criteria },
+      data: { companyId, roleTitle: dto.roleTitle, criteria: dto.criteria as any },
     });
   }
 
