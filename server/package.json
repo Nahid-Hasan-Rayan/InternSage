@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "npx nest build",
+    "build": "npx nest build && mkdir -p public",
     "vercel-build": "prisma generate",
     "start": "node dist/main",
     "start:dev": "npx nest start --watch",
