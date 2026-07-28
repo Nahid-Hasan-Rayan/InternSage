@@ -2,58 +2,92 @@
 --  InternSage — Full database schema for Supabase
 -- ------------------------------------------------------------
 --  Author : Nahid Hasan Rayan
---  Marker : NHR-DB-SUPABASE-SQL-002
+--  Marker : NHR-DB-SUPABASE-SQL-003
 --  File   : server/supabase/schema.sql
 --
---  Regenerated to match prisma/schema.prisma through Phase 2/3
---  (Jobs, JobAggregator, Matching, Verification, Applications).
---  Byte-for-byte match: every table/column/enum/index/FK here
---  corresponds directly to a model in that file. Use this if you'd
---  rather paste SQL into Supabase's SQL Editor than run
---  `npx prisma migrate deploy` from your own machine.
+--  Regenerated to match the CURRENT prisma/schema.prisma — 25
+--  tables, 8 enums, through Phase 3 (Jobs, Matching, Verification,
+--  Applications, Recruiter Tools/Scorecards, Messaging, Audit Log).
+--  Also adds Company.trustScore, which the previous version of this
+--  file predates.
 --
---  IMPORTANT — if you use this file:
---  After running it, tell Prisma the migration already happened
---  so it doesn't try to re-apply it later:
+--  FULLY IDEMPOTENT — this is the important change from the last
+--  version. Every statement here is safe to run again, any number
+--  of times, against a database already in ANY partial state
+--  (including a fresh one). This is what "ERROR: 42710: type "Role"
+--  already exists" means: Postgres enum types have no native
+--  `CREATE TYPE IF NOT EXISTS`, so re-running the old file failed
+--  the moment it hit anything already created. Every enum here is
+--  now wrapped in a DO block that catches exactly that error and
+--  moves on; every table/index uses IF NOT EXISTS; every foreign
+--  key is wrapped the same way enums are (ALTER TABLE ADD
+--  CONSTRAINT has the same "no IF NOT EXISTS" limitation).
 --
+--  Run this whole file in Supabase Dashboard → SQL Editor → New
+--  query → paste → Run. Safe against your existing (partially
+--  migrated) database — it will only create what's actually
+--  missing.
+--
+--  If you're using Prisma Migrate going forward instead of hand-run
+--  SQL, tell Prisma this state is already applied:
 --    mkdir -p prisma/migrations/0_init
 --    cp supabase/schema.sql prisma/migrations/0_init/migration.sql
 --    npx prisma migrate resolve --applied 0_init
---
---  Run this whole file in one go: Supabase Dashboard → SQL Editor
---  → New query → paste → Run. Meant for a FRESH Supabase project —
---  don't run it against one that already has these tables.
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS vector;   -- Phase 2 target architecture (see MatchingService's header comment)
-CREATE EXTENSION IF NOT EXISTS pgcrypto; -- gen_random_uuid() for the seed inserts below
+CREATE EXTENSION IF NOT EXISTS pgcrypto; -- gen_random_uuid() for the seed/guest inserts below
 
 -- ------------------------------------------------------------
--- Enums
+-- Enums (idempotent — Postgres has no CREATE TYPE IF NOT EXISTS)
 -- ------------------------------------------------------------
 
-CREATE TYPE "Role" AS ENUM ('STUDENT', 'RECRUITER', 'ADMIN');
-CREATE TYPE "ProfileVisibility" AS ENUM ('ALL_VERIFIED_RECRUITERS', 'APPLIED_ONLY', 'DRAFT');
-CREATE TYPE "SkillCategory" AS ENUM (
-  'SOFTWARE', 'MECHANICAL', 'ELECTRICAL', 'CHEMICAL',
-  'BUSINESS', 'ACCOUNTING', 'ECONOMICS', 'OTHER'
-);
-CREATE TYPE "AnalyticsEventType" AS ENUM (
-  'REQUEST', 'AUTH_REGISTER', 'AUTH_LOGIN', 'AUTH_LOGIN_FAILED',
-  'PROFILE_UPDATED', 'CV_UPDATED', 'JOB_POSTING_CREATED',
-  'MATCHES_RECOMPUTED', 'VERIFICATION_COMPLETED', 'APPLICATION_STATUS_CHANGED'
-);
-CREATE TYPE "JobSource" AS ENUM ('MANUAL', 'API', 'RSS', 'SCRAPED');
-CREATE TYPE "VerificationStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'EXPIRED');
-CREATE TYPE "ApplicationStatus" AS ENUM (
-  'APPLIED', 'UNDER_REVIEW', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'
-);
+DO $$ BEGIN
+  CREATE TYPE "Role" AS ENUM ('STUDENT', 'RECRUITER', 'ADMIN');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "ProfileVisibility" AS ENUM ('ALL_VERIFIED_RECRUITERS', 'APPLIED_ONLY', 'DRAFT');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "SkillCategory" AS ENUM (
+    'SOFTWARE', 'MECHANICAL', 'ELECTRICAL', 'CHEMICAL',
+    'BUSINESS', 'ACCOUNTING', 'ECONOMICS', 'OTHER'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "AnalyticsEventType" AS ENUM (
+    'REQUEST', 'AUTH_REGISTER', 'AUTH_LOGIN', 'AUTH_LOGIN_FAILED',
+    'PROFILE_UPDATED', 'CV_UPDATED', 'JOB_POSTING_CREATED',
+    'MATCHES_RECOMPUTED', 'VERIFICATION_COMPLETED', 'APPLICATION_STATUS_CHANGED'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "JobSource" AS ENUM ('MANUAL', 'API', 'RSS', 'SCRAPED');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "VerificationStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'EXPIRED');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "ApplicationStatus" AS ENUM (
+    'APPLIED', 'UNDER_REVIEW', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "ScorecardRecommendation" AS ENUM ('STRONG_YES', 'YES', 'NEUTRAL', 'NO', 'STRONG_NO');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- ------------------------------------------------------------
 -- Identity
 -- ------------------------------------------------------------
 
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
   "id"           TEXT NOT NULL,
   "email"        TEXT NOT NULL,
   "passwordHash" TEXT NOT NULL,
@@ -61,12 +95,12 @@ CREATE TABLE "users" (
   "role"         "Role" NOT NULL,
   "verified"     BOOLEAN NOT NULL DEFAULT false,
   "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt"    TIMESTAMP(3) NOT NULL,
+  "updatedAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "users_email_key" ON "users"("email");
 
-CREATE TABLE "universities" (
+CREATE TABLE IF NOT EXISTS "universities" (
   "id"          TEXT NOT NULL,
   "name"        TEXT NOT NULL,
   "emailDomain" TEXT NOT NULL,
@@ -74,23 +108,26 @@ CREATE TABLE "universities" (
   "createdAt"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "universities_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "universities_emailDomain_key" ON "universities"("emailDomain");
+CREATE UNIQUE INDEX IF NOT EXISTS "universities_emailDomain_key" ON "universities"("emailDomain");
 
-CREATE TABLE "companies" (
+CREATE TABLE IF NOT EXISTS "companies" (
   "id"          TEXT NOT NULL,
   "name"        TEXT NOT NULL,
   "emailDomain" TEXT NOT NULL,
   "verified"    BOOLEAN NOT NULL DEFAULT true,
+  "trustScore"  INTEGER NOT NULL DEFAULT 100,
   "createdAt"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "companies_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "companies_emailDomain_key" ON "companies"("emailDomain");
+CREATE UNIQUE INDEX IF NOT EXISTS "companies_emailDomain_key" ON "companies"("emailDomain");
+-- In case this table already existed from before trustScore existed:
+ALTER TABLE "companies" ADD COLUMN IF NOT EXISTS "trustScore" INTEGER NOT NULL DEFAULT 100;
 
 -- ------------------------------------------------------------
 -- Profiles
 -- ------------------------------------------------------------
 
-CREATE TABLE "student_profiles" (
+CREATE TABLE IF NOT EXISTS "student_profiles" (
   "id"           TEXT NOT NULL,
   "userId"       TEXT NOT NULL,
   "universityId" TEXT,
@@ -98,38 +135,38 @@ CREATE TABLE "student_profiles" (
   "year"         INTEGER,
   "bio"          TEXT,
   "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt"    TIMESTAMP(3) NOT NULL,
+  "updatedAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "student_profiles_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "student_profiles_userId_key" ON "student_profiles"("userId");
-CREATE INDEX "student_profiles_universityId_idx" ON "student_profiles"("universityId");
+CREATE UNIQUE INDEX IF NOT EXISTS "student_profiles_userId_key" ON "student_profiles"("userId");
+CREATE INDEX IF NOT EXISTS "student_profiles_universityId_idx" ON "student_profiles"("universityId");
 
-CREATE TABLE "professional_profiles" (
+CREATE TABLE IF NOT EXISTS "professional_profiles" (
   "id"         TEXT NOT NULL,
   "userId"     TEXT NOT NULL,
   "headline"   TEXT,
   "visibility" "ProfileVisibility" NOT NULL DEFAULT 'ALL_VERIFIED_RECRUITERS',
   "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt"  TIMESTAMP(3) NOT NULL,
+  "updatedAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "professional_profiles_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "professional_profiles_userId_key" ON "professional_profiles"("userId");
+CREATE UNIQUE INDEX IF NOT EXISTS "professional_profiles_userId_key" ON "professional_profiles"("userId");
 
-CREATE TABLE "recruiter_profiles" (
+CREATE TABLE IF NOT EXISTS "recruiter_profiles" (
   "id"        TEXT NOT NULL,
   "userId"    TEXT NOT NULL,
   "companyId" TEXT NOT NULL,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "recruiter_profiles_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "recruiter_profiles_userId_key" ON "recruiter_profiles"("userId");
-CREATE INDEX "recruiter_profiles_companyId_idx" ON "recruiter_profiles"("companyId");
+CREATE UNIQUE INDEX IF NOT EXISTS "recruiter_profiles_userId_key" ON "recruiter_profiles"("userId");
+CREATE INDEX IF NOT EXISTS "recruiter_profiles_companyId_idx" ON "recruiter_profiles"("companyId");
 
 -- ------------------------------------------------------------
 -- Observability
 -- ------------------------------------------------------------
 
-CREATE TABLE "analytics_events" (
+CREATE TABLE IF NOT EXISTS "analytics_events" (
   "id"         TEXT NOT NULL,
   "type"       "AnalyticsEventType" NOT NULL,
   "userId"     TEXT,
@@ -142,10 +179,10 @@ CREATE TABLE "analytics_events" (
   "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "analytics_events_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "analytics_events_type_createdAt_idx" ON "analytics_events"("type", "createdAt");
-CREATE INDEX "analytics_events_userId_idx" ON "analytics_events"("userId");
+CREATE INDEX IF NOT EXISTS "analytics_events_type_createdAt_idx" ON "analytics_events"("type", "createdAt");
+CREATE INDEX IF NOT EXISTS "analytics_events_userId_idx" ON "analytics_events"("userId");
 
-CREATE TABLE "error_logs" (
+CREATE TABLE IF NOT EXISTS "error_logs" (
   "id"         TEXT NOT NULL,
   "message"    TEXT NOT NULL,
   "stack"      TEXT,
@@ -157,14 +194,14 @@ CREATE TABLE "error_logs" (
   "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "error_logs_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "error_logs_createdAt_idx" ON "error_logs"("createdAt");
-CREATE INDEX "error_logs_path_idx" ON "error_logs"("path");
+CREATE INDEX IF NOT EXISTS "error_logs_createdAt_idx" ON "error_logs"("createdAt");
+CREATE INDEX IF NOT EXISTS "error_logs_path_idx" ON "error_logs"("path");
 
 -- ------------------------------------------------------------
--- Jobs, matching, applications, trust & verification
+-- Jobs, matching, applications
 -- ------------------------------------------------------------
 
-CREATE TABLE "job_postings" (
+CREATE TABLE IF NOT EXISTS "job_postings" (
   "id"               TEXT NOT NULL,
   "companyId"        TEXT NOT NULL,
   "title"            TEXT NOT NULL,
@@ -180,31 +217,31 @@ CREATE TABLE "job_postings" (
   "createdAt"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "job_postings_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "job_postings_dedupHash_key" ON "job_postings"("dedupHash");
-CREATE INDEX "job_postings_companyId_idx" ON "job_postings"("companyId");
+CREATE UNIQUE INDEX IF NOT EXISTS "job_postings_dedupHash_key" ON "job_postings"("dedupHash");
+CREATE INDEX IF NOT EXISTS "job_postings_companyId_idx" ON "job_postings"("companyId");
 
-CREATE TABLE "job_required_skills" (
+CREATE TABLE IF NOT EXISTS "job_required_skills" (
   "id"           TEXT NOT NULL,
   "jobPostingId" TEXT NOT NULL,
   "skillId"      TEXT NOT NULL,
   CONSTRAINT "job_required_skills_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "job_required_skills_jobPostingId_skillId_key" ON "job_required_skills"("jobPostingId", "skillId");
+CREATE UNIQUE INDEX IF NOT EXISTS "job_required_skills_jobPostingId_skillId_key" ON "job_required_skills"("jobPostingId", "skillId");
 
-CREATE TABLE "applications" (
+CREATE TABLE IF NOT EXISTS "applications" (
   "id"           TEXT NOT NULL,
   "userId"       TEXT NOT NULL,
   "jobPostingId" TEXT NOT NULL,
   "status"       "ApplicationStatus" NOT NULL DEFAULT 'APPLIED',
   "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt"    TIMESTAMP(3) NOT NULL,
+  "updatedAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "applications_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "applications_userId_jobPostingId_key" ON "applications"("userId", "jobPostingId");
-CREATE INDEX "applications_userId_idx" ON "applications"("userId");
-CREATE INDEX "applications_jobPostingId_idx" ON "applications"("jobPostingId");
+CREATE UNIQUE INDEX IF NOT EXISTS "applications_userId_jobPostingId_key" ON "applications"("userId", "jobPostingId");
+CREATE INDEX IF NOT EXISTS "applications_userId_idx" ON "applications"("userId");
+CREATE INDEX IF NOT EXISTS "applications_jobPostingId_idx" ON "applications"("jobPostingId");
 
-CREATE TABLE "recruiter_weights" (
+CREATE TABLE IF NOT EXISTS "recruiter_weights" (
   "id"                 TEXT NOT NULL,
   "companyId"          TEXT NOT NULL,
   "skillsWeight"       DOUBLE PRECISION NOT NULL DEFAULT 0.4,
@@ -213,9 +250,9 @@ CREATE TABLE "recruiter_weights" (
   "softSkillsWeight"   DOUBLE PRECISION NOT NULL DEFAULT 0.1,
   CONSTRAINT "recruiter_weights_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "recruiter_weights_companyId_key" ON "recruiter_weights"("companyId");
+CREATE UNIQUE INDEX IF NOT EXISTS "recruiter_weights_companyId_key" ON "recruiter_weights"("companyId");
 
-CREATE TABLE "match_scores" (
+CREATE TABLE IF NOT EXISTS "match_scores" (
   "id"               TEXT NOT NULL,
   "studentProfileId" TEXT NOT NULL,
   "jobPostingId"     TEXT NOT NULL,
@@ -225,10 +262,14 @@ CREATE TABLE "match_scores" (
   "computedAt"       TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "match_scores_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "match_scores_studentProfileId_jobPostingId_key" ON "match_scores"("studentProfileId", "jobPostingId");
-CREATE INDEX "match_scores_studentProfileId_idx" ON "match_scores"("studentProfileId");
+CREATE UNIQUE INDEX IF NOT EXISTS "match_scores_studentProfileId_jobPostingId_key" ON "match_scores"("studentProfileId", "jobPostingId");
+CREATE INDEX IF NOT EXISTS "match_scores_studentProfileId_idx" ON "match_scores"("studentProfileId");
 
-CREATE TABLE "verification_questions" (
+-- ------------------------------------------------------------
+-- Trust & verification
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "verification_questions" (
   "id"           TEXT NOT NULL,
   "skillId"      TEXT NOT NULL,
   "prompt"       TEXT NOT NULL,
@@ -236,9 +277,9 @@ CREATE TABLE "verification_questions" (
   "correctIndex" INTEGER NOT NULL,
   CONSTRAINT "verification_questions_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "verification_questions_skillId_idx" ON "verification_questions"("skillId");
+CREATE INDEX IF NOT EXISTS "verification_questions_skillId_idx" ON "verification_questions"("skillId");
 
-CREATE TABLE "verification_sessions" (
+CREATE TABLE IF NOT EXISTS "verification_sessions" (
   "id"          TEXT NOT NULL,
   "userSkillId" TEXT NOT NULL,
   "questionIds" TEXT[] NOT NULL,
@@ -250,21 +291,48 @@ CREATE TABLE "verification_sessions" (
   "completedAt" TIMESTAMP(3),
   CONSTRAINT "verification_sessions_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "verification_sessions_userSkillId_idx" ON "verification_sessions"("userSkillId");
+CREATE INDEX IF NOT EXISTS "verification_sessions_userSkillId_idx" ON "verification_sessions"("userSkillId");
+
+-- ------------------------------------------------------------
+-- Recruiter tooling: interview kits & scorecards
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "interview_kits" (
+  "id"        TEXT NOT NULL,
+  "companyId" TEXT NOT NULL,
+  "roleTitle" TEXT NOT NULL,
+  "criteria"  JSONB NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "interview_kits_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "interview_kits_companyId_roleTitle_key" ON "interview_kits"("companyId", "roleTitle");
+
+CREATE TABLE IF NOT EXISTS "scorecards" (
+  "id"             TEXT NOT NULL,
+  "applicationId"  TEXT NOT NULL,
+  "interviewKitId" TEXT NOT NULL,
+  "submittedById"  TEXT NOT NULL,
+  "ratings"        JSONB NOT NULL,
+  "notes"          TEXT,
+  "recommendation" "ScorecardRecommendation" NOT NULL,
+  "createdAt"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "scorecards_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "scorecards_applicationId_idx" ON "scorecards"("applicationId");
 
 -- ------------------------------------------------------------
 -- CV building blocks
 -- ------------------------------------------------------------
 
-CREATE TABLE "skills" (
+CREATE TABLE IF NOT EXISTS "skills" (
   "id"       TEXT NOT NULL,
   "name"     TEXT NOT NULL,
   "category" "SkillCategory" NOT NULL DEFAULT 'OTHER',
   CONSTRAINT "skills_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "skills_name_key" ON "skills"("name");
+CREATE UNIQUE INDEX IF NOT EXISTS "skills_name_key" ON "skills"("name");
 
-CREATE TABLE "user_skills" (
+CREATE TABLE IF NOT EXISTS "user_skills" (
   "id"                    TEXT NOT NULL,
   "professionalProfileId" TEXT NOT NULL,
   "skillId"               TEXT NOT NULL,
@@ -274,9 +342,9 @@ CREATE TABLE "user_skills" (
   "createdAt"             TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "user_skills_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "user_skills_professionalProfileId_skillId_key" ON "user_skills"("professionalProfileId", "skillId");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_skills_professionalProfileId_skillId_key" ON "user_skills"("professionalProfileId", "skillId");
 
-CREATE TABLE "experiences" (
+CREATE TABLE IF NOT EXISTS "experiences" (
   "id"                    TEXT NOT NULL,
   "professionalProfileId" TEXT NOT NULL,
   "title"                 TEXT NOT NULL,
@@ -286,9 +354,9 @@ CREATE TABLE "experiences" (
   "description"           TEXT,
   CONSTRAINT "experiences_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "experiences_professionalProfileId_idx" ON "experiences"("professionalProfileId");
+CREATE INDEX IF NOT EXISTS "experiences_professionalProfileId_idx" ON "experiences"("professionalProfileId");
 
-CREATE TABLE "educations" (
+CREATE TABLE IF NOT EXISTS "educations" (
   "id"                    TEXT NOT NULL,
   "professionalProfileId" TEXT NOT NULL,
   "institution"           TEXT NOT NULL,
@@ -298,9 +366,9 @@ CREATE TABLE "educations" (
   "verified"              BOOLEAN NOT NULL DEFAULT false,
   CONSTRAINT "educations_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "educations_professionalProfileId_idx" ON "educations"("professionalProfileId");
+CREATE INDEX IF NOT EXISTS "educations_professionalProfileId_idx" ON "educations"("professionalProfileId");
 
-CREATE TABLE "projects" (
+CREATE TABLE IF NOT EXISTS "projects" (
   "id"                    TEXT NOT NULL,
   "professionalProfileId" TEXT NOT NULL,
   "title"                 TEXT NOT NULL,
@@ -308,66 +376,280 @@ CREATE TABLE "projects" (
   "portfolioUrl"          TEXT,
   CONSTRAINT "projects_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "projects_professionalProfileId_idx" ON "projects"("professionalProfileId");
+CREATE INDEX IF NOT EXISTS "projects_professionalProfileId_idx" ON "projects"("professionalProfileId");
 
 -- ------------------------------------------------------------
--- Foreign keys (added last, after every table exists)
+-- Messaging (REST + polling — see schema.prisma's header comment
+-- on why this isn't Socket.io on a serverless host)
 -- ------------------------------------------------------------
 
-ALTER TABLE "student_profiles" ADD CONSTRAINT "student_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "student_profiles" ADD CONSTRAINT "student_profiles_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "universities"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-ALTER TABLE "professional_profiles" ADD CONSTRAINT "professional_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "recruiter_profiles" ADD CONSTRAINT "recruiter_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "recruiter_profiles" ADD CONSTRAINT "recruiter_profiles_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+CREATE TABLE IF NOT EXISTS "conversations" (
+  "id"            TEXT NOT NULL,
+  "applicationId" TEXT NOT NULL,
+  "createdAt"     TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "conversations_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "conversations_applicationId_key" ON "conversations"("applicationId");
 
-ALTER TABLE "job_postings" ADD CONSTRAINT "job_postings_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "job_required_skills" ADD CONSTRAINT "job_required_skills_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "job_required_skills" ADD CONSTRAINT "job_required_skills_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "applications" ADD CONSTRAINT "applications_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "match_scores" ADD CONSTRAINT "match_scores_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "verification_questions" ADD CONSTRAINT "verification_questions_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "verification_sessions" ADD CONSTRAINT "verification_sessions_userSkillId_fkey" FOREIGN KEY ("userSkillId") REFERENCES "user_skills"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "user_skills" ADD CONSTRAINT "user_skills_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "user_skills" ADD CONSTRAINT "user_skills_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE "experiences" ADD CONSTRAINT "experiences_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "educations" ADD CONSTRAINT "educations_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "projects" ADD CONSTRAINT "projects_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- NOTE: analytics_events.userId, error_logs.userId, and
--- applications.userId have NO foreign key to users on purpose —
--- matches schema.prisma exactly (Application has no `user` relation
--- field, only a raw userId column) so historical records are never
--- blocked by or cascaded from a user deletion.
+CREATE TABLE IF NOT EXISTS "messages" (
+  "id"             TEXT NOT NULL,
+  "conversationId" TEXT NOT NULL,
+  "senderUserId"   TEXT NOT NULL,
+  "body"           TEXT NOT NULL,
+  "createdAt"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "messages_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "messages_conversationId_createdAt_idx" ON "messages"("conversationId", "createdAt");
 
 -- ------------------------------------------------------------
+-- Audit log (Sage Copilot queries + any explainability-critical action)
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "audit_logs" (
+  "id"         TEXT NOT NULL,
+  "actorId"    TEXT NOT NULL,
+  "action"     TEXT NOT NULL,
+  "targetType" TEXT NOT NULL,
+  "targetId"   TEXT,
+  "metadata"   JSONB,
+  "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "audit_logs_action_createdAt_idx" ON "audit_logs"("action", "createdAt");
+CREATE INDEX IF NOT EXISTS "audit_logs_actorId_idx" ON "audit_logs"("actorId");
+
+-- ------------------------------------------------------------
+-- Foreign keys — idempotent (ALTER TABLE ADD CONSTRAINT has no
+-- native IF NOT EXISTS, so each is wrapped the same way enums are)
+-- ------------------------------------------------------------
+
+DO $$ BEGIN
+  ALTER TABLE "student_profiles" ADD CONSTRAINT "student_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "student_profiles" ADD CONSTRAINT "student_profiles_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "universities"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "professional_profiles" ADD CONSTRAINT "professional_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "recruiter_profiles" ADD CONSTRAINT "recruiter_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "recruiter_profiles" ADD CONSTRAINT "recruiter_profiles_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "job_postings" ADD CONSTRAINT "job_postings_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "job_required_skills" ADD CONSTRAINT "job_required_skills_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "job_required_skills" ADD CONSTRAINT "job_required_skills_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "applications" ADD CONSTRAINT "applications_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "match_scores" ADD CONSTRAINT "match_scores_jobPostingId_fkey" FOREIGN KEY ("jobPostingId") REFERENCES "job_postings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "verification_questions" ADD CONSTRAINT "verification_questions_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "verification_sessions" ADD CONSTRAINT "verification_sessions_userSkillId_fkey" FOREIGN KEY ("userSkillId") REFERENCES "user_skills"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "interview_kits" ADD CONSTRAINT "interview_kits_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "scorecards" ADD CONSTRAINT "scorecards_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "applications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "scorecards" ADD CONSTRAINT "scorecards_interviewKitId_fkey" FOREIGN KEY ("interviewKitId") REFERENCES "interview_kits"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "user_skills" ADD CONSTRAINT "user_skills_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "user_skills" ADD CONSTRAINT "user_skills_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "experiences" ADD CONSTRAINT "experiences_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "educations" ADD CONSTRAINT "educations_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "projects" ADD CONSTRAINT "projects_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "conversations" ADD CONSTRAINT "conversations_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "applications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "messages" ADD CONSTRAINT "messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "conversations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- NOTE: analytics_events.userId, error_logs.userId, applications.userId,
+-- scorecards.submittedById, messages.senderUserId, and audit_logs.actorId
+-- all have NO foreign key to users — matches schema.prisma exactly.
+-- Historical/audit records must never be blocked by, or cascade from,
+-- a user deletion.
+
+-- ============================================================
 -- Seed data (mirrors server/prisma/seed.ts)
--- ------------------------------------------------------------
+-- ============================================================
 
 INSERT INTO "universities" ("id", "name", "emailDomain", "verified", "createdAt")
 VALUES (gen_random_uuid()::text, 'Universiti Teknologi Malaysia', 'graduate.utm.my', true, CURRENT_TIMESTAMP)
 ON CONFLICT ("emailDomain") DO NOTHING;
 
-INSERT INTO "companies" ("id", "name", "emailDomain", "verified", "createdAt")
-VALUES (gen_random_uuid()::text, 'Padu Analytics', 'paduanalytics.com', true, CURRENT_TIMESTAMP)
+INSERT INTO "companies" ("id", "name", "emailDomain", "verified", "trustScore", "createdAt")
+VALUES (gen_random_uuid()::text, 'Padu Analytics', 'paduanalytics.com', true, 100, CURRENT_TIMESTAMP)
 ON CONFLICT ("emailDomain") DO NOTHING;
 
 INSERT INTO "skills" ("id", "name", "category")
 VALUES (gen_random_uuid()::text, 'JavaScript', 'SOFTWARE')
 ON CONFLICT ("name") DO NOTHING;
 
--- Note: RecruiterWeights and VerificationQuestion seed rows depend
--- on ids generated above (companyId/skillId), which this static SQL
--- file can't reference across statements the way seed.ts's
--- upsert-by-name logic can. Run `npx prisma db seed` after this file
--- for those two — or copy the ids from the Table Editor and insert
--- them by hand if you're avoiding the Prisma CLI entirely.
+-- ============================================================
+-- Guest exploration accounts
+-- ------------------------------------------------------------
+--  A HONEST NOTE FIRST: you asked for guest/student, guest/
+--  recruiter, AND guest/university. The Role enum only has
+--  STUDENT, RECRUITER, ADMIN — there is no University/career-center
+--  role anywhere in this codebase (that's Phase 6 in the Master
+--  Blueprint, never built). Rather than fake a University persona
+--  that doesn't actually have real permissions or a real portal
+--  behind it, this gives you a GUEST ADMIN account instead — the
+--  closest real equivalent ("sees platform-wide analytics, not
+--  scoped to one company or one student"), landing on
+--  /admin/analytics rather than a University dashboard that
+--  doesn't exist. Building a real University role/portal is a
+--  separate, larger piece of work — say the word if you want that
+--  next.
+--
+--  Passwords (change or remove these before this ever has real
+--  users — see the closing note):
+--    guest.student@internsage.demo   / GuestStudent123
+--    guest.recruiter@internsage.demo / GuestRecruiter123
+--    guest.admin@internsage.demo     / GuestAdmin123
+--
+--  Hashes below are real bcrypt (12 salt rounds, matching
+--  AuthService's BCRYPT_SALT_ROUNDS) — generated and verified
+--  against bcrypt.compare before being put in this file, not
+--  placeholder text.
+-- ============================================================
+
+DO $$
+DECLARE
+  guest_student_id   TEXT;
+  guest_recruiter_id TEXT;
+  guest_admin_id      TEXT;
+  guest_company_id    TEXT;
+  guest_prof_id       TEXT;
+  js_skill_id         TEXT;
+BEGIN
+  -- ---- Guest student ----------------------------------------
+  SELECT id INTO guest_student_id FROM "users" WHERE email = 'guest.student@internsage.demo';
+  IF guest_student_id IS NULL THEN
+    guest_student_id := gen_random_uuid()::text;
+    INSERT INTO "users" ("id", "email", "passwordHash", "fullName", "role", "verified", "createdAt", "updatedAt")
+    VALUES (
+      guest_student_id, 'guest.student@internsage.demo',
+      '$2b$12$jOswE2Yr6nw0cAFFWC6HZeyfr8r5BsrpGFUYtvVJrZdOFyaQNA9wS',
+      'Guest Student', 'STUDENT', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    );
+
+    INSERT INTO "student_profiles" ("id", "userId", "universityId", "major", "year", "bio", "createdAt", "updatedAt")
+    SELECT gen_random_uuid()::text, guest_student_id, u.id, 'Software Engineering', 3,
+           'Exploring InternSage as a guest — this is a demo account.',
+           CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    FROM "universities" u WHERE u."emailDomain" = 'graduate.utm.my';
+
+    INSERT INTO "professional_profiles" ("id", "userId", "headline", "visibility", "createdAt", "updatedAt")
+    VALUES (gen_random_uuid()::text, guest_student_id, 'Guest — exploring InternSage', 'ALL_VERIFIED_RECRUITERS',
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING id INTO guest_prof_id;
+
+    SELECT id INTO js_skill_id FROM "skills" WHERE name = 'JavaScript';
+    IF js_skill_id IS NOT NULL AND guest_prof_id IS NOT NULL THEN
+      INSERT INTO "user_skills" ("id", "professionalProfileId", "skillId", "verified", "createdAt")
+      VALUES (gen_random_uuid()::text, guest_prof_id, js_skill_id, false, CURRENT_TIMESTAMP)
+      ON CONFLICT DO NOTHING;
+    END IF;
+  END IF;
+
+  -- ---- Guest recruiter (own unverified demo company) ---------
+  SELECT id INTO guest_company_id FROM "companies" WHERE "emailDomain" = 'internsage-guest-demo.com';
+  IF guest_company_id IS NULL THEN
+    guest_company_id := gen_random_uuid()::text;
+    INSERT INTO "companies" ("id", "name", "emailDomain", "verified", "trustScore", "createdAt")
+    VALUES (guest_company_id, 'InternSage Demo Co', 'internsage-guest-demo.com', true, 100, CURRENT_TIMESTAMP);
+  END IF;
+
+  SELECT id INTO guest_recruiter_id FROM "users" WHERE email = 'guest.recruiter@internsage.demo';
+  IF guest_recruiter_id IS NULL THEN
+    guest_recruiter_id := gen_random_uuid()::text;
+    INSERT INTO "users" ("id", "email", "passwordHash", "fullName", "role", "verified", "createdAt", "updatedAt")
+    VALUES (
+      guest_recruiter_id, 'guest.recruiter@internsage.demo',
+      '$2b$12$TlyePnP.wa/iHVtzBnVAJuPy3iqfZsiZCOc4XECrV7D6i4329hrZW',
+      'Guest Recruiter', 'RECRUITER', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    );
+
+    INSERT INTO "recruiter_profiles" ("id", "userId", "companyId", "createdAt")
+    VALUES (gen_random_uuid()::text, guest_recruiter_id, guest_company_id, CURRENT_TIMESTAMP);
+  END IF;
+
+  -- ---- Guest admin (closest real equivalent to "guest/university" —
+  -- see the note above) ----------------------------------------
+  SELECT id INTO guest_admin_id FROM "users" WHERE email = 'guest.admin@internsage.demo';
+  IF guest_admin_id IS NULL THEN
+    guest_admin_id := gen_random_uuid()::text;
+    INSERT INTO "users" ("id", "email", "passwordHash", "fullName", "role", "verified", "createdAt", "updatedAt")
+    VALUES (
+      guest_admin_id, 'guest.admin@internsage.demo',
+      '$2b$12$5N8LEQpRAeDKQzy4msd8Seb1Ona1HHEWOs4ZOmA3BY15Em6bjd4gW',
+      'Guest Admin', 'ADMIN', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    );
+  END IF;
+END $$;
 
 -- ============================================================
--- After running this file:
---   mkdir -p prisma/migrations/0_init
---   cp supabase/schema.sql prisma/migrations/0_init/migration.sql
---   npx prisma migrate resolve --applied 0_init
--- From then on, schema changes go through the normal
--- `npx prisma migrate dev --name <change>` flow.
+-- ⚠ BEFORE THIS EVER HAS REAL USERS: these three accounts share
+-- publicly-documented passwords (they're printed in this file and
+-- in the assistant's chat response). That's fine for a private demo
+-- you control, but NOT fine on a production deployment strangers can
+-- reach — anyone who reads this file can log in as your guest admin.
+-- Either delete these three rows before going live for real, or
+-- change their passwords to something not written down anywhere:
+--
+--   DELETE FROM "users" WHERE email IN (
+--     'guest.student@internsage.demo',
+--     'guest.recruiter@internsage.demo',
+--     'guest.admin@internsage.demo'
+--   );
+-- (Cascades cleanly to their profile rows via ON DELETE CASCADE.)
 -- ============================================================

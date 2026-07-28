@@ -31,10 +31,23 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   private setSessionCookie(res: Response, accessToken: string): void {
+    // Netlify (frontend) and Vercel (backend) are different
+    // registrable domains — this is a genuinely cross-site setup,
+    // not same-site-different-port like local dev. SameSite=Lax
+    // blocks cookies on cross-site fetch()/XHR entirely (it only
+    // allows top-level navigation), which is exactly why login／
+    // register could return 200/201 while every subsequent
+    // credentialed request still came back 401 — the cookie was
+    // being set, then silently refused on the way back out.
+    // SameSite=None is what cross-site fetch() actually requires,
+    // and browsers mandate Secure=true whenever SameSite=None is
+    // used — hardcoding secure:true here would break local dev over
+    // plain http://localhost, so both are tied to NODE_ENV instead.
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie(COOKIE_NAME, accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: COOKIE_MAX_AGE_MS,
       path: '/',
     });
@@ -62,7 +75,17 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie(COOKIE_NAME, { path: '/' });
+    // Must match setSessionCookie's attributes exactly — a
+    // clearCookie call with a different sameSite/secure combination
+    // than the cookie was originally set with can silently fail to
+    // delete it in some browsers.
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.clearCookie(COOKIE_NAME, {
+      path: '/',
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+    });
     return { loggedOut: true };
   }
 
