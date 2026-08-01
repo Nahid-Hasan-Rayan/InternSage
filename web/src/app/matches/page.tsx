@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { MatchGauge } from "@/components/ui/match-gauge";
 import { getSession, type SessionUser } from "@/lib/api";
 import { getMyMatches, recomputeMyMatches, type MatchScoreItem } from "@/lib/internsage-api";
 
@@ -39,12 +40,12 @@ export default function MatchesPage() {
     }
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-xl text-parchment">Your matches</h1>
+        <h1 className="font-display text-xl text-ink-900">Your matches</h1>
         <Button onClick={handleRecompute} disabled={busy} size="sm">
           {busy ? "Recomputing…" : "Recompute"}
         </Button>
@@ -53,29 +54,27 @@ export default function MatchesPage() {
       <div className="grid gap-4">
         {matches.map((m) => (
           <Card key={m.id} className="p-5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="font-display text-sm font-semibold text-parchment">{m.jobPosting.title}</h3>
-                <p className="text-xs text-parchment-dim">{m.jobPosting.company.name}</p>
+                <h3 className="font-display text-sm font-semibold text-ink-900">{m.jobPosting.title}</h3>
+                <p className="text-xs text-slate-500">{m.jobPosting.company.name}</p>
               </div>
-              <div className="rounded-full border border-brass px-3 py-1 font-mono text-sm text-brass">
-                {m.score}%
-              </div>
+              <MatchGauge value={m.score} size={64} warnBelow={50} />
             </div>
             <div className="mt-3 flex gap-6 text-xs">
               <div>
-                <span className="text-verdigris">Matched: </span>
-                <span className="text-parchment-dim">{m.matchedSkills.join(", ") || "—"}</span>
+                <span className="text-signal-700">Matched: </span>
+                <span className="text-slate-500">{m.matchedSkills.join(", ") || "—"}</span>
               </div>
               <div>
-                <span className="text-oxide-500">Missing: </span>
-                <span className="text-parchment-dim">{m.missingSkills.join(", ") || "—"}</span>
+                <span className="text-alert-600">Missing: </span>
+                <span className="text-slate-500">{m.missingSkills.join(", ") || "—"}</span>
               </div>
             </div>
           </Card>
         ))}
         {matches.length === 0 && (
-          <p className="text-sm text-parchment-dim">No matches yet — hit Recompute to generate some.</p>
+          <p className="text-sm text-slate-500">No matches yet — hit Recompute to generate some.</p>
         )}
       </div>
     </AppShell>

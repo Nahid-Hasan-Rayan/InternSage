@@ -5,18 +5,19 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[4px] text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 active:scale-[0.97]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-btn)] text-[0.9375rem] font-semibold transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-signal-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-0 active:scale-[0.97]",
   {
     variants: {
       variant: {
-        default: "bg-brass text-ink-950 hover:bg-[#d6ac5c] font-semibold",
-        ghost: "border border-hairline text-parchment hover:bg-ink-800",
-        link: "text-brass underline-offset-4 hover:underline",
+        default: "bg-signal-700 text-white hover:bg-signal-600",
+        ghost: "border border-hairline text-ink-900 bg-paper-0 hover:bg-paper-100",
+        link: "text-signal-700 underline-offset-4 hover:underline",
+        destructive: "bg-alert-600 text-white hover:bg-[#9a3529]",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-8 px-3 text-xs",
-        lg: "h-12 px-6 text-base",
+        default: "h-11 px-6 text-[0.9375rem]",
+        sm: "h-9 px-4 text-sm",
+        lg: "h-12 px-7 text-base",
       },
     },
     defaultVariants: {

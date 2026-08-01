@@ -40,10 +40,10 @@ export function AuthShell({
         <motion.div variants={fadeRise}>
           <Card className="p-8">
             <div className="mb-6 text-center">
-              <h1 className="font-display text-2xl font-semibold text-parchment">
+              <h1 className="font-display text-2xl font-semibold text-ink-900">
                 {title}
               </h1>
-              <p className="mt-1.5 text-sm text-parchment-dim">{subtitle}</p>
+              <p className="mt-1.5 text-sm text-slate-500">{subtitle}</p>
             </div>
             {children}
           </Card>
@@ -51,7 +51,7 @@ export function AuthShell({
 
         <motion.div
           variants={fadeRise}
-          className="mt-6 text-center text-sm text-parchment-dim"
+          className="mt-6 text-center text-sm text-slate-500"
         >
           {footer}
         </motion.div>

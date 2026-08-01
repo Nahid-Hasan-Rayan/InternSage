@@ -91,19 +91,19 @@ export default function JobsPage() {
     }
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-6 font-display text-xl text-parchment">
+      <h1 className="mb-6 font-display text-xl text-ink-900">
         {user.role === "STUDENT" ? "Browse internships" : "Your postings"}
       </h1>
 
-      {message && <p className="mb-4 text-xs text-brass">{message}</p>}
+      {message && <p className="mb-4 text-xs text-signal-700">{message}</p>}
 
       {user.role === "RECRUITER" && (
         <Card className="mb-6 p-5">
-          <h2 className="mb-3 font-display text-sm font-semibold text-parchment">Post a new role</h2>
+          <h2 className="mb-3 font-display text-sm font-semibold text-ink-900">Post a new role</h2>
           <form onSubmit={handleCreate} className="grid gap-3 sm:grid-cols-2">
             <FormField
               id="title"
@@ -122,7 +122,7 @@ export default function JobsPage() {
               <Label htmlFor="description">Description</Label>
               <textarea
                 id="description"
-                className="mt-1 h-24 w-full rounded-[4px] border border-hairline bg-ink-800 p-2 text-sm text-parchment outline-none"
+                className="mt-1 h-24 w-full rounded-[4px] border border-hairline bg-paper-100 p-2 text-sm text-ink-900 outline-none"
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 required
@@ -132,7 +132,7 @@ export default function JobsPage() {
               <Label htmlFor="requirementsText">Requirements</Label>
               <textarea
                 id="requirementsText"
-                className="mt-1 h-16 w-full rounded-[4px] border border-hairline bg-ink-800 p-2 text-sm text-parchment outline-none"
+                className="mt-1 h-16 w-full rounded-[4px] border border-hairline bg-paper-100 p-2 text-sm text-ink-900 outline-none"
                 value={form.requirementsText}
                 onChange={(e) => setForm({ ...form, requirementsText: e.target.value })}
                 required
@@ -155,7 +155,7 @@ export default function JobsPage() {
                             : [...f.requiredSkillIds, skill.id],
                         }))
                       }
-                      className={`rounded-full border px-3 py-1 text-xs ${active ? "border-brass bg-brass/20 text-brass" : "border-hairline text-parchment-dim"}`}
+                      className={`rounded-full border px-3 py-1 text-xs ${active ? "border-signal-600 bg-signal-700/20 text-signal-700" : "border-hairline text-slate-500"}`}
                     >
                       {skill.name}
                     </button>
@@ -175,8 +175,8 @@ export default function JobsPage() {
           <Card key={job.id} className="p-5">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-display text-sm font-semibold text-parchment">{job.title}</h3>
-                <p className="text-xs text-parchment-dim">{job.company.name} · {job.location ?? "Remote/Unspecified"}</p>
+                <h3 className="font-display text-sm font-semibold text-ink-900">{job.title}</h3>
+                <p className="text-xs text-slate-500">{job.company.name} · {job.location ?? "Remote/Unspecified"}</p>
               </div>
               {user.role === "STUDENT" ? (
                 <Button size="sm" onClick={() => handleApply(job.id)}>
@@ -188,17 +188,17 @@ export default function JobsPage() {
                 </Button>
               )}
             </div>
-            <p className="mt-2 text-xs text-parchment-dim">{job.description}</p>
+            <p className="mt-2 text-xs text-slate-500">{job.description}</p>
             <div className="mt-2 flex flex-wrap gap-1">
               {job.requiredSkills.map((rs) => (
-                <span key={rs.skill.id} className="rounded-full bg-ink-700 px-2 py-0.5 text-[10px] text-parchment-dim">
+                <span key={rs.skill.id} className="rounded-full bg-paper-100 px-2 py-0.5 text-[10px] text-slate-500">
                   {rs.skill.name}
                 </span>
               ))}
             </div>
           </Card>
         ))}
-        {jobs.length === 0 && <p className="text-sm text-parchment-dim">No active postings yet.</p>}
+        {jobs.length === 0 && <p className="text-sm text-slate-500">No active postings yet.</p>}
       </div>
     </AppShell>
   );

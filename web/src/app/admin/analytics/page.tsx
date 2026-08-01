@@ -96,7 +96,7 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   if (loading) {
-    return <main className="p-8 text-parchment-dim text-sm">Loading analytics…</main>;
+    return <main className="p-8 text-slate-500 text-sm">Loading analytics…</main>;
   }
 
   if (error) {
@@ -110,10 +110,10 @@ export default function AdminAnalyticsPage() {
   }
 
   return (
-    <main className="flex flex-col gap-8 p-8 text-parchment">
+    <main className="flex flex-col gap-8 p-8 text-ink-900">
       <div>
         <h1 className="text-xl font-semibold">Platform analytics</h1>
-        <p className="text-sm text-parchment-dim">Last {WINDOW_DAYS} days</p>
+        <p className="text-sm text-slate-500">Last {WINDOW_DAYS} days</p>
       </div>
 
       {summary && (
@@ -129,16 +129,16 @@ export default function AdminAnalyticsPage() {
       )}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
           Daily traffic
         </h2>
         <Card className="p-4">
           {traffic.length === 0 ? (
-            <p className="text-sm text-parchment-dim">No traffic recorded yet.</p>
+            <p className="text-sm text-slate-500">No traffic recorded yet.</p>
           ) : (
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-parchment-dim">
+                <tr className="text-slate-500">
                   <th className="pb-2">Day</th>
                   <th className="pb-2">Requests</th>
                   <th className="pb-2">Errors</th>
@@ -159,16 +159,16 @@ export default function AdminAnalyticsPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
           Top routes
         </h2>
         <Card className="p-4">
           {routes.length === 0 ? (
-            <p className="text-sm text-parchment-dim">No request data yet.</p>
+            <p className="text-sm text-slate-500">No request data yet.</p>
           ) : (
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-parchment-dim">
+                <tr className="text-slate-500">
                   <th className="pb-2">Route</th>
                   <th className="pb-2">Requests</th>
                   <th className="pb-2">Avg response</th>
@@ -191,16 +191,16 @@ export default function AdminAnalyticsPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
           Top errors (5xx)
         </h2>
         <Card className="p-4">
           {topErrors.length === 0 ? (
-            <p className="text-sm text-parchment-dim">No server errors in this window — good sign.</p>
+            <p className="text-sm text-slate-500">No server errors in this window — good sign.</p>
           ) : (
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-parchment-dim">
+                <tr className="text-slate-500">
                   <th className="pb-2">Message</th>
                   <th className="pb-2">Route</th>
                   <th className="pb-2">Status</th>
@@ -223,24 +223,24 @@ export default function AdminAnalyticsPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
           Recent errors
         </h2>
         <Card className="p-4">
           {recentErrors.length === 0 ? (
-            <p className="text-sm text-parchment-dim">Nothing recent — good sign.</p>
+            <p className="text-sm text-slate-500">Nothing recent — good sign.</p>
           ) : (
             <ul className="flex flex-col gap-2 text-sm">
               {recentErrors.map((row) => (
                 <li key={row.id} className="border-t border-hairline/40 pt-2">
-                  <div className="flex justify-between text-parchment-dim">
+                  <div className="flex justify-between text-slate-500">
                     <span>{new Date(row.createdAt).toLocaleString()}</span>
                     <span>req: {row.requestId.slice(0, 8)}</span>
                   </div>
                   <div>
                     {row.method} {row.path} → {row.statusCode}
                   </div>
-                  <div className="text-parchment-dim">{row.message}</div>
+                  <div className="text-slate-500">{row.message}</div>
                 </li>
               ))}
             </ul>
@@ -254,9 +254,9 @@ export default function AdminAnalyticsPage() {
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
     <Card className="p-4">
-      <p className="text-xs uppercase tracking-wide text-parchment-dim">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
       <p className="text-2xl font-semibold">{value}</p>
-      {sub && <p className="text-xs text-parchment-dim">{sub}</p>}
+      {sub && <p className="text-xs text-slate-500">{sub}</p>}
     </Card>
   );
 }

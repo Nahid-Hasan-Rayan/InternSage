@@ -89,7 +89,7 @@ interface FullCv {
 }
 
 const textareaClass =
-  "flex w-full rounded-[4px] border border-hairline bg-ink-800 px-3 py-2 text-sm text-parchment placeholder:text-parchment-dim outline-none transition-colors focus-visible:border-brass focus-visible:ring-2 focus-visible:ring-brass/30 disabled:cursor-not-allowed disabled:opacity-50";
+  "flex w-full rounded-[4px] border border-hairline bg-paper-100 px-3 py-2 text-sm text-ink-900 placeholder:text-slate-500 outline-none transition-colors focus-visible:border-signal-600 focus-visible:ring-2 focus-visible:ring-signal-600/30 disabled:cursor-not-allowed disabled:opacity-50";
 
 const selectClass = textareaClass + " h-10";
 
@@ -124,23 +124,23 @@ export default function ProfilePage() {
   }, [loadAll]);
 
   if (loading) {
-    return <main className="p-8 text-sm text-parchment-dim">Loading your profile…</main>;
+    return <main className="p-8 text-sm text-slate-500">Loading your profile…</main>;
   }
 
   if (loadError || !academic || !cv) {
     return (
-      <main className="flex flex-col items-start gap-3 p-8 text-parchment">
-        <p className="text-sm text-oxide">{loadError ?? "Something went wrong."}</p>
+      <main className="flex flex-col items-start gap-3 p-8 text-ink-900">
+        <p className="text-sm text-alert-600">{loadError ?? "Something went wrong."}</p>
         <Button onClick={() => router.push("/login")}>Log in</Button>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-8 p-8 text-parchment">
+    <main className="mx-auto flex max-w-3xl flex-col gap-8 p-8 text-ink-900">
       <div>
         <h1 className="text-xl font-semibold">Your profile</h1>
-        <p className="text-sm text-parchment-dim">
+        <p className="text-sm text-slate-500">
           This is what recruiters see, depending on your visibility setting below.
         </p>
       </div>
@@ -197,12 +197,12 @@ function AcademicSection({
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
           Academic
         </h2>
         {academic.university && (
           <span
-            className={`text-xs ${academic.university.verified ? "text-brass" : "text-parchment-dim"}`}
+            className={`text-xs ${academic.university.verified ? "text-signal-700" : "text-slate-500"}`}
           >
             {academic.university.name}
             {academic.university.verified ? " · verified" : " · not yet a partner"}
@@ -234,7 +234,7 @@ function AcademicSection({
             placeholder="A couple of sentences about what you're looking for."
           />
         </div>
-        {error && <p className="text-xs text-oxide">{error}</p>}
+        {error && <p className="text-xs text-alert-600">{error}</p>}
         <Button type="submit" loading={saving} size="sm" className="self-start">
           Save academic info
         </Button>
@@ -279,7 +279,7 @@ function ProfessionalSection({
 
   return (
     <Card className="p-5">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-parchment-dim">
+      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
         Headline &amp; visibility
       </h2>
       <form onSubmit={save} className="flex flex-col gap-4">
@@ -303,7 +303,7 @@ function ProfessionalSection({
             <option value="DRAFT">Draft — hidden from everyone</option>
           </select>
         </div>
-        {error && <p className="text-xs text-oxide">{error}</p>}
+        {error && <p className="text-xs text-alert-600">{error}</p>}
         <Button type="submit" loading={saving} size="sm" className="self-start">
           Save
         </Button>
@@ -353,20 +353,20 @@ function SkillsSection({ skills, onSaved }: { skills: Skill[]; onSaved: () => Pr
 
   return (
     <Card className="p-5">
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-parchment-dim">Skills</h2>
+      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Skills</h2>
       <div className="mb-4 flex flex-wrap gap-2">
-        {skills.length === 0 && <p className="text-sm text-parchment-dim">No skills added yet.</p>}
+        {skills.length === 0 && <p className="text-sm text-slate-500">No skills added yet.</p>}
         {skills.map((s) => (
           <span
             key={s.skillId}
-            className="flex items-center gap-2 rounded-[4px] border border-hairline bg-ink-800 px-3 py-1 text-sm"
+            className="flex items-center gap-2 rounded-[4px] border border-hairline bg-paper-100 px-3 py-1 text-sm"
           >
             {s.skill.name}
             <button
               type="button"
               onClick={() => remove(s.skillId)}
               disabled={busy}
-              className="text-parchment-dim hover:text-oxide"
+              className="text-slate-500 hover:text-alert-600"
               aria-label={`Remove ${s.skill.name}`}
             >
               ×
@@ -385,7 +385,7 @@ function SkillsSection({ skills, onSaved }: { skills: Skill[]; onSaved: () => Pr
           Add
         </Button>
       </form>
-      {error && <p className="mt-2 text-xs text-oxide">{error}</p>}
+      {error && <p className="mt-2 text-xs text-alert-600">{error}</p>}
     </Card>
   );
 }
@@ -443,7 +443,7 @@ function ExperienceSection({
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-parchment-dim">Experience</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Experience</h2>
         {!showForm && (
           <Button size="sm" variant="ghost" onClick={() => setShowForm(true)}>
             Add
@@ -452,20 +452,20 @@ function ExperienceSection({
       </div>
 
       <ul className="mb-4 flex flex-col gap-3">
-        {experiences.length === 0 && <p className="text-sm text-parchment-dim">Nothing added yet.</p>}
+        {experiences.length === 0 && <p className="text-sm text-slate-500">Nothing added yet.</p>}
         {experiences.map((exp) => (
           <li key={exp.id} className="border-t border-hairline/40 pt-3 text-sm">
             <p className="font-medium">
               {exp.title} · {exp.organization}
             </p>
-            <p className="text-xs text-parchment-dim">
+            <p className="text-xs text-slate-500">
               {new Date(exp.startDate).toLocaleDateString(undefined, { year: "numeric", month: "short" })}
               {" – "}
               {exp.endDate
                 ? new Date(exp.endDate).toLocaleDateString(undefined, { year: "numeric", month: "short" })
                 : "Present"}
             </p>
-            {exp.description && <p className="mt-1 text-parchment-dim">{exp.description}</p>}
+            {exp.description && <p className="mt-1 text-slate-500">{exp.description}</p>}
           </li>
         ))}
       </ul>
@@ -510,7 +510,7 @@ function ExperienceSection({
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          {error && <p className="text-xs text-oxide">{error}</p>}
+          {error && <p className="text-xs text-alert-600">{error}</p>}
           <div className="flex gap-2">
             <Button type="submit" size="sm" loading={busy}>
               Save
@@ -575,7 +575,7 @@ function EducationSection({
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-parchment-dim">Education</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Education</h2>
         {!showForm && (
           <Button size="sm" variant="ghost" onClick={() => setShowForm(true)}>
             Add
@@ -584,14 +584,14 @@ function EducationSection({
       </div>
 
       <ul className="mb-4 flex flex-col gap-3">
-        {educations.length === 0 && <p className="text-sm text-parchment-dim">Nothing added yet.</p>}
+        {educations.length === 0 && <p className="text-sm text-slate-500">Nothing added yet.</p>}
         {educations.map((ed) => (
           <li key={ed.id} className="border-t border-hairline/40 pt-3 text-sm">
             <p className="font-medium">
               {ed.degree} · {ed.institution}
-              {ed.verified && <span className="ml-2 text-xs text-brass">verified</span>}
+              {ed.verified && <span className="ml-2 text-xs text-signal-700">verified</span>}
             </p>
-            <p className="text-xs text-parchment-dim">
+            <p className="text-xs text-slate-500">
               {ed.startYear} – {ed.endYear ?? "Present"}
             </p>
           </li>
@@ -631,7 +631,7 @@ function EducationSection({
               onChange={(e) => setEndYear(e.target.value)}
             />
           </div>
-          {error && <p className="text-xs text-oxide">{error}</p>}
+          {error && <p className="text-xs text-alert-600">{error}</p>}
           <div className="flex gap-2">
             <Button type="submit" size="sm" loading={busy}>
               Save
@@ -687,7 +687,7 @@ function ProjectSection({ projects, onSaved }: { projects: Project[]; onSaved: (
   return (
     <Card className="p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-parchment-dim">Projects</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Projects</h2>
         {!showForm && (
           <Button size="sm" variant="ghost" onClick={() => setShowForm(true)}>
             Add
@@ -696,13 +696,13 @@ function ProjectSection({ projects, onSaved }: { projects: Project[]; onSaved: (
       </div>
 
       <ul className="mb-4 flex flex-col gap-3">
-        {projects.length === 0 && <p className="text-sm text-parchment-dim">Nothing added yet.</p>}
+        {projects.length === 0 && <p className="text-sm text-slate-500">Nothing added yet.</p>}
         {projects.map((p) => (
           <li key={p.id} className="border-t border-hairline/40 pt-3 text-sm">
             <p className="font-medium">{p.title}</p>
-            {p.description && <p className="text-parchment-dim">{p.description}</p>}
+            {p.description && <p className="text-slate-500">{p.description}</p>}
             {p.portfolioUrl && (
-              <a href={p.portfolioUrl} target="_blank" rel="noreferrer" className="text-brass hover:underline">
+              <a href={p.portfolioUrl} target="_blank" rel="noreferrer" className="text-signal-700 hover:underline">
                 {p.portfolioUrl}
               </a>
             )}
@@ -732,7 +732,7 @@ function ProjectSection({ projects, onSaved }: { projects: Project[]; onSaved: (
             onChange={(e) => setPortfolioUrl(e.target.value)}
             placeholder="https://"
           />
-          {error && <p className="text-xs text-oxide">{error}</p>}
+          {error && <p className="text-xs text-alert-600">{error}</p>}
           <div className="flex gap-2">
             <Button type="submit" size="sm" loading={busy}>
               Save

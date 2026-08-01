@@ -22,7 +22,7 @@ export function FormField({ label, error, id, ...props }: FormFieldProps) {
             animate={{ opacity: 1, height: "auto", marginTop: 6 }}
             exit={{ opacity: 0, height: 0, marginTop: 0 }}
             transition={{ duration: 0.2, ease: EASE.out }}
-            className="text-xs text-oxide overflow-hidden"
+            className="text-xs text-alert-600 overflow-hidden"
           >
             {error}
           </motion.p>

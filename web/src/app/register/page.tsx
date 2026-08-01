@@ -43,7 +43,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="text-brass hover:underline">
+          <Link href="/login" className="text-signal-700 hover:underline">
             Log in
           </Link>
         </>
@@ -58,8 +58,8 @@ export default function RegisterPage() {
             className={cn(
               "rounded-[4px] border px-3 py-2 text-sm transition-colors",
               role === r
-                ? "border-brass text-brass bg-brass/10"
-                : "border-hairline text-parchment-dim hover:bg-ink-800",
+                ? "border-signal-600 text-signal-700 bg-signal-700/10"
+                : "border-hairline text-slate-500 hover:bg-paper-100",
             )}
           >
             {r === "STUDENT" ? "Student" : "Company / recruiter"}
@@ -95,7 +95,7 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <p className="text-xs text-parchment-dim">
+        <p className="text-xs text-slate-500">
           {role === "STUDENT"
             ? "A recognised university domain verifies your account automatically. Other domains can still register, unverified."
             : "Your company's domain must be on the whitelist to register. Contact us if yours isn't yet."}
@@ -106,7 +106,7 @@ export default function RegisterPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, ease: EASE.out }}
-            className="rounded-[4px] border border-oxide/40 bg-oxide/10 px-3 py-2 text-sm text-oxide"
+            className="rounded-[4px] border border-alert-600/40 bg-alert-600/10 px-3 py-2 text-sm text-alert-600"
           >
             {error}
           </motion.p>

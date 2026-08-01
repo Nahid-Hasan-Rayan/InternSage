@@ -47,12 +47,12 @@ export default function WeightsPage() {
     setMessage("Saved.");
   }
 
-  if (!user || !weights) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user || !weights) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-2 font-display text-xl text-parchment">Scoring rubric</h1>
-      <p className="mb-6 text-sm text-parchment-dim">
+      <h1 className="mb-2 font-display text-xl text-ink-900">Scoring rubric</h1>
+      <p className="mb-6 text-sm text-slate-500">
         These weights don&apos;t need to sum to 1 — they&apos;re multipliers MatchingService applies when scoring
         candidates for your postings.
       </p>
@@ -72,12 +72,12 @@ export default function WeightsPage() {
                 step={0.05}
                 value={weights[f.key]}
                 onChange={(e) => setWeights({ ...weights, [f.key]: Number(e.target.value) })}
-                className="w-full accent-brass"
+                className="w-full accent-signal-700"
               />
             </div>
           ))}
           <Button type="submit">Save rubric</Button>
-          {message && <p className="text-xs text-verdigris">{message}</p>}
+          {message && <p className="text-xs text-signal-700">{message}</p>}
         </form>
       </Card>
     </AppShell>

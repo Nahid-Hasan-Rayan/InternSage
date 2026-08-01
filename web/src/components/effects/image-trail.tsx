@@ -81,10 +81,10 @@ export function ImageTrail({
               <img
                 src={images[p.id % images.length]}
                 alt=""
-                className="h-10 w-10 rounded-[3px] border border-brass/50 object-cover shadow-lg"
+                className="h-10 w-10 rounded-[3px] border border-signal-600/50 object-cover shadow-lg"
               />
             ) : (
-              <span className="block h-2.5 w-2.5 rounded-full border border-brass bg-brass/30" />
+              <span className="block h-2.5 w-2.5 rounded-full border border-signal-600 bg-signal-700/30" />
             )}
           </motion.div>
         ))}

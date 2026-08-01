@@ -38,7 +38,7 @@ export default function LoginPage() {
       footer={
         <>
           No account?{" "}
-          <Link href="/register" className="text-brass hover:underline">
+          <Link href="/register" className="text-signal-700 hover:underline">
             Register
           </Link>
         </>
@@ -70,7 +70,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, ease: EASE.out }}
-            className="rounded-[4px] border border-oxide/40 bg-oxide/10 px-3 py-2 text-sm text-oxide"
+            className="rounded-[4px] border border-alert-600/40 bg-alert-600/10 px-3 py-2 text-sm text-alert-600"
           >
             {error}
           </motion.p>

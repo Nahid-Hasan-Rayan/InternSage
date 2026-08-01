@@ -41,12 +41,12 @@ export default function CopilotPage() {
     }
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-2 font-display text-xl text-parchment">Sage Copilot</h1>
-      <p className="mb-6 text-sm text-parchment-dim">
+      <h1 className="mb-2 font-display text-xl text-ink-900">Sage Copilot</h1>
+      <p className="mb-6 text-sm text-slate-500">
         Ask a question about your applicant pool — e.g. "who knows React and is verified".
       </p>
 
@@ -63,7 +63,7 @@ export default function CopilotPage() {
       </form>
 
       {result?.blocked && (
-        <Card className="mb-4 border-oxide-500 p-4 text-sm text-oxide-500">
+        <Card className="mb-4 border-alert-600 p-4 text-sm text-alert-600">
           This question touches a protected characteristic and can&apos;t be run.
         </Card>
       )}
@@ -72,14 +72,14 @@ export default function CopilotPage() {
         <div className="grid gap-3">
           {result.results.map((r) => (
             <Card key={r.userId} className="flex justify-between p-4 text-sm">
-              <span className="text-parchment">
+              <span className="text-ink-900">
                 {r.major ?? "Unknown major"} · Year {r.year ?? "?"}
               </span>
-              <span className="text-parchment-dim">{r.universityName}</span>
+              <span className="text-slate-500">{r.universityName}</span>
             </Card>
           ))}
           {result.results.length === 0 && (
-            <p className="text-sm text-parchment-dim">No matching candidates in your applicant pool.</p>
+            <p className="text-sm text-slate-500">No matching candidates in your applicant pool.</p>
           )}
         </div>
       )}

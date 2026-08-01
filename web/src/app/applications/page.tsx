@@ -46,11 +46,11 @@ export default function ApplicationsPage() {
     if (user) await load(user.role);
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-6 font-display text-xl text-parchment">
+      <h1 className="mb-6 font-display text-xl text-ink-900">
         {user.role === "STUDENT" ? "Your applications" : "Applicants"}
       </h1>
 
@@ -58,16 +58,16 @@ export default function ApplicationsPage() {
         {applications.map((app) => (
           <Card key={app.id} className="flex items-center justify-between p-5">
             <div>
-              <h3 className="font-display text-sm font-semibold text-parchment">
+              <h3 className="font-display text-sm font-semibold text-ink-900">
                 {app.jobPosting?.title ?? "Job posting"}
               </h3>
-              <p className="text-xs text-parchment-dim">{app.jobPosting?.company.name}</p>
+              <p className="text-xs text-slate-500">{app.jobPosting?.company.name}</p>
               <div className="mt-2 flex gap-3 text-xs">
-                <Link href={`/applications/${app.id}/messages`} className="text-brass hover:underline">
+                <Link href={`/applications/${app.id}/messages`} className="text-signal-700 hover:underline">
                   Messages
                 </Link>
                 {user.role === "RECRUITER" && (
-                  <Link href={`/applications/${app.id}/scorecard`} className="text-brass hover:underline">
+                  <Link href={`/applications/${app.id}/scorecard`} className="text-signal-700 hover:underline">
                     Scorecard
                   </Link>
                 )}
@@ -77,7 +77,7 @@ export default function ApplicationsPage() {
               <select
                 value={app.status}
                 onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                className="rounded-[4px] border border-hairline bg-ink-800 px-2 py-1 text-xs text-parchment"
+                className="rounded-[4px] border border-hairline bg-paper-100 px-2 py-1 text-xs text-ink-900"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -86,13 +86,13 @@ export default function ApplicationsPage() {
                 ))}
               </select>
             ) : (
-              <span className="rounded-full border border-brass px-3 py-1 text-xs text-brass">
+              <span className="rounded-full border border-signal-600 px-3 py-1 text-xs text-signal-700">
                 {app.status.replace("_", " ")}
               </span>
             )}
           </Card>
         ))}
-        {applications.length === 0 && <p className="text-sm text-parchment-dim">Nothing here yet.</p>}
+        {applications.length === 0 && <p className="text-sm text-slate-500">Nothing here yet.</p>}
       </div>
     </AppShell>
   );

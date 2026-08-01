@@ -58,12 +58,12 @@ export default function InterviewKitsPage() {
     }
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-2 font-display text-xl text-parchment">Interview kits</h1>
-      <p className="mb-6 text-sm text-parchment-dim">
+      <h1 className="mb-2 font-display text-xl text-ink-900">Interview kits</h1>
+      <p className="mb-6 text-sm text-slate-500">
         One kit per role, reused for every candidate — this is what makes scorecards comparable.
       </p>
 
@@ -80,7 +80,7 @@ export default function InterviewKitsPage() {
             <Label htmlFor="criteria">Criteria (one per line)</Label>
             <textarea
               id="criteria"
-              className="mt-1 h-24 w-full rounded-[4px] border border-hairline bg-ink-800 p-2 text-sm text-parchment outline-none"
+              className="mt-1 h-24 w-full rounded-[4px] border border-hairline bg-paper-100 p-2 text-sm text-ink-900 outline-none"
               value={criteriaText}
               onChange={(e) => setCriteriaText(e.target.value)}
             />
@@ -88,24 +88,24 @@ export default function InterviewKitsPage() {
           <Button type="submit" className="w-fit">
             Create kit
           </Button>
-          {message && <p className="text-xs text-brass">{message}</p>}
+          {message && <p className="text-xs text-signal-700">{message}</p>}
         </form>
       </Card>
 
       <div className="grid gap-3">
         {kits.map((kit) => (
           <Card key={kit.id} className="p-4">
-            <h3 className="font-display text-sm font-semibold text-parchment">{kit.roleTitle}</h3>
+            <h3 className="font-display text-sm font-semibold text-ink-900">{kit.roleTitle}</h3>
             <div className="mt-1 flex flex-wrap gap-1">
               {kit.criteria.map((c) => (
-                <span key={c.label} className="rounded-full bg-ink-700 px-2 py-0.5 text-[10px] text-parchment-dim">
+                <span key={c.label} className="rounded-full bg-paper-100 px-2 py-0.5 text-[10px] text-slate-500">
                   {c.label}
                 </span>
               ))}
             </div>
           </Card>
         ))}
-        {kits.length === 0 && <p className="text-sm text-parchment-dim">No kits yet.</p>}
+        {kits.length === 0 && <p className="text-sm text-slate-500">No kits yet.</p>}
       </div>
     </AppShell>
   );

@@ -34,7 +34,7 @@ export function LogoMark({ size = 40, showWordmark = true }: LogoMarkProps) {
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--color-brass)"
+          stroke="var(--color-signal-700)"
           strokeWidth={3}
           strokeLinecap="round"
           strokeDasharray={c}
@@ -47,7 +47,7 @@ export function LogoMark({ size = 40, showWordmark = true }: LogoMarkProps) {
           cx={size / 2}
           cy={size / 2}
           r={1.6}
-          fill="var(--color-brass)"
+          fill="var(--color-signal-700)"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.1, duration: DURATION_SPRING }}
@@ -59,7 +59,7 @@ export function LogoMark({ size = 40, showWordmark = true }: LogoMarkProps) {
           initial={{ opacity: 0, x: -6 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: EASE.out, delay: 0.3 }}
-          className="font-display text-[19px] font-bold text-brass tracking-tight"
+          className="font-display text-[19px] font-bold text-signal-700 tracking-tight"
         >
           InternSage
         </motion.span>

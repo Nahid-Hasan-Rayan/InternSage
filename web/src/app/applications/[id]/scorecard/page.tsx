@@ -67,11 +67,11 @@ export default function ScorecardPage() {
     }
   }
 
-  if (!user) return <div className="p-8 text-sm text-parchment-dim">Loading…</div>;
+  if (!user) return <div className="p-8 text-sm text-slate-500">Loading…</div>;
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-6 font-display text-xl text-parchment">Scorecard</h1>
+      <h1 className="mb-6 font-display text-xl text-ink-900">Scorecard</h1>
 
       <Card className="mb-6 max-w-lg p-5">
         <form onSubmit={handleSubmit} className="grid gap-4">
@@ -84,7 +84,7 @@ export default function ScorecardPage() {
                 setSelectedKitId(e.target.value);
                 setRatings({});
               }}
-              className="mt-1 w-full rounded-[4px] border border-hairline bg-ink-800 px-2 py-2 text-sm text-parchment"
+              className="mt-1 w-full rounded-[4px] border border-hairline bg-paper-100 px-2 py-2 text-sm text-ink-900"
               required
             >
               <option value="">Select a kit…</option>
@@ -108,7 +108,7 @@ export default function ScorecardPage() {
                 max={5}
                 value={ratings[c.label] ?? 3}
                 onChange={(e) => setRatings({ ...ratings, [c.label]: Number(e.target.value) })}
-                className="w-full accent-brass"
+                className="w-full accent-signal-700"
               />
             </div>
           ))}
@@ -119,7 +119,7 @@ export default function ScorecardPage() {
               id="recommendation"
               value={recommendation}
               onChange={(e) => setRecommendation(e.target.value)}
-              className="mt-1 w-full rounded-[4px] border border-hairline bg-ink-800 px-2 py-2 text-sm text-parchment"
+              className="mt-1 w-full rounded-[4px] border border-hairline bg-paper-100 px-2 py-2 text-sm text-ink-900"
             >
               {RECOMMENDATIONS.map((r) => (
                 <option key={r} value={r}>
@@ -133,7 +133,7 @@ export default function ScorecardPage() {
             <Label htmlFor="notes">Notes</Label>
             <textarea
               id="notes"
-              className="mt-1 h-20 w-full rounded-[4px] border border-hairline bg-ink-800 p-2 text-sm text-parchment outline-none"
+              className="mt-1 h-20 w-full rounded-[4px] border border-hairline bg-paper-100 p-2 text-sm text-ink-900 outline-none"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -142,22 +142,22 @@ export default function ScorecardPage() {
           <Button type="submit" disabled={!selectedKitId} className="w-fit">
             Submit scorecard
           </Button>
-          {message && <p className="text-xs text-brass">{message}</p>}
+          {message && <p className="text-xs text-signal-700">{message}</p>}
         </form>
       </Card>
 
-      <h2 className="mb-3 font-display text-sm font-semibold text-parchment">Previous scorecards</h2>
+      <h2 className="mb-3 font-display text-sm font-semibold text-ink-900">Previous scorecards</h2>
       <div className="grid gap-3">
         {existing.map((sc) => (
           <Card key={sc.id} className="p-4 text-sm">
             <div className="flex justify-between">
-              <span className="text-parchment">{sc.interviewKit.roleTitle}</span>
-              <span className="text-brass">{sc.recommendation.replace("_", " ")}</span>
+              <span className="text-ink-900">{sc.interviewKit.roleTitle}</span>
+              <span className="text-signal-700">{sc.recommendation.replace("_", " ")}</span>
             </div>
-            {sc.notes && <p className="mt-1 text-xs text-parchment-dim">{sc.notes}</p>}
+            {sc.notes && <p className="mt-1 text-xs text-slate-500">{sc.notes}</p>}
           </Card>
         ))}
-        {existing.length === 0 && <p className="text-sm text-parchment-dim">No scorecards submitted yet.</p>}
+        {existing.length === 0 && <p className="text-sm text-slate-500">No scorecards submitted yet.</p>}
       </div>
     </AppShell>
   );
