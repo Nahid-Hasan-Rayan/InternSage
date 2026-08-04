@@ -16,8 +16,17 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
+import dynamic from "next/dynamic";
 import { LogoMark } from "@/components/effects/logo-mark";
 import { Button } from "@/components/ui/button";
+
+// Lazy-loaded, client-only, and deliberately the ONLY WebGL effect on
+// this page — three simultaneous canvases (the original build had
+// Strands + SideRays + SoftAurora all running at once) is real,
+// avoidable GPU/CPU cost and directly contributed to "the portal
+// feels slow." dynamic(..., { ssr: false }) also keeps its JS out of
+// the initial bundle entirely until this component actually mounts.
+const Strands = dynamic(() => import("@/components/effects/strands"), { ssr: false });
 import { Card } from "@/components/ui/card";
 import { fadeRise, staggerContainer } from "@/lib/motion";
 
@@ -80,12 +89,16 @@ export default function Home() {
         </nav>
       </header>
 
-      <motion.section
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
-        className="mx-auto flex max-w-3xl flex-col items-center px-6 py-20 text-center md:py-28"
-      >
+      <section className="relative w-full overflow-hidden">
+        <div className="pointer-events-none absolute inset-0">
+          <Strands />
+        </div>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-6 py-20 text-center md:py-28"
+        >
         <motion.p variants={fadeRise} className="mono mb-4 text-xs font-medium uppercase tracking-[0.08em] text-signal-600">
           Building Malaysia&rsquo;s talent bridge
         </motion.p>
@@ -109,13 +122,16 @@ export default function Home() {
             <Link href="/register">Get started free →</Link>
           </Button>
           <Button asChild variant="ghost" size="lg">
-            <Link href="#features">See features</Link>
+            <a href="/demo.html" target="_blank" rel="noopener noreferrer">
+              Explore the live demo ↗
+            </a>
           </Button>
         </motion.div>
         <motion.p variants={fadeRise} className="mt-5 text-[13px] text-slate-500">
-          Free for students. University-verified accounts.
+          No account needed to explore. Free for students, university-verified accounts.
         </motion.p>
-      </motion.section>
+        </motion.div>
+      </section>
 
       <section className="border-y border-hairline bg-paper-0">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">

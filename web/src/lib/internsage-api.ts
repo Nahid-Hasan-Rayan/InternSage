@@ -35,6 +35,179 @@ export async function listJobs(params: { keyword?: string; category?: string } =
   return authedFetch<{ items: JobPosting[]; total: number }>(`/jobs${suffix}`);
 }
 
+// ---- CV (shared read, used by profile + verification pages) -------
+
+export interface ClaimedSkill {
+  /** The UserSkill row's own id — what VerificationService.startSession expects, NOT skillId. */
+  id: string;
+  skillId: string;
+  skill: { id: string; name: string; category: string };
+  verified: boolean;
+  authenticityScore: number | null;
+}
+
+export interface FullCv {
+  profile: { id: string; headline: string | null; visibility: string };
+  skills: ClaimedSkill[];
+  experiences: unknown[];
+  educations: unknown[];
+  projects: unknown[];
+}
+
+export async function getCv() {
+  return authedFetch<FullCv>("/cv");
+}
+
+// ============================================================
+// Features below have REAL frontend pages but NO backend yet —
+// the person is building these backends now. Each function below
+// documents the exact endpoint/response shape the frontend expects,
+// so the backend has an unambiguous contract to build against.
+// Every page that calls these degrades gracefully (a clear "not
+// connected yet" message) if the endpoint 404s, rather than
+// crashing — safe to ship before the backend exists.
+// ============================================================
+
+// ---- Industry Pulse ------------------------------------------------
+// Expected: GET /industry-pulse?limit=20
+// Curated headlines from a verified-outlet allowlist (see Master
+// Blueprint's Industry Pulse section) — never AI-generated summaries,
+// syndication snippets only, to avoid both copyright risk and
+// misrepresenting a story.
+
+export interface PulseItem {
+  id: string;
+  headline: string;
+  source: string;
+  publishedAt: string;
+  summary: string;
+  url: string;
+  tags: string[];
+}
+
+export async function getIndustryPulse(limit = 20) {
+  return authedFetch<{ items: PulseItem[] }>(`/industry-pulse?limit=${limit}`);
+}
+
+// ---- AI Tutor --------------------------------------------------------
+// Expected: POST /tutor/messages  body: { persona, message }
+//           returns: { reply: string }
+//           GET /tutor/messages?persona=X  returns: { items: TutorMessage[] }
+// Persona chat history should be tied to the student's profile per
+// the Blueprint, not a standalone save/load mechanism.
+
+export type TutorPersona = "Newton" | "Curie" | "Euler" | "Lovelace";
+
+export interface TutorMessage {
+  id: string;
+  role: "user" | "assistant";
+  body: string;
+  createdAt: string;
+}
+
+export async function getTutorHistory(persona: TutorPersona) {
+  return authedFetch<{ items: TutorMessage[] }>(`/tutor/messages?persona=${persona}`);
+}
+
+export async function sendTutorMessage(persona: TutorPersona, message: string) {
+  return authedFetch<{ reply: string }>("/tutor/messages", {
+    method: "POST",
+    body: JSON.stringify({ persona, message }),
+  });
+}
+
+// ---- Guidance / Roadmap ------------------------------------------------
+// Expected: GET /guidance/roadmap
+//           returns gap analysis toward the student's target role,
+//           built from anonymized aggregate archetypes — never a
+//           scraped individual profile, per the Blueprint's boundary.
+
+export interface RoadmapSkillStep {
+  name: string;
+  status: "verified" | "gap";
+  verifyHref?: string;
+}
+
+export interface RoadmapArchetype {
+  title: string;
+  description: string;
+  takenByPct: number;
+}
+
+export interface Roadmap {
+  targetRole: string;
+  steps: RoadmapSkillStep[];
+  archetypes: RoadmapArchetype[];
+}
+
+export async function getRoadmap() {
+  return authedFetch<Roadmap>("/guidance/roadmap");
+}
+
+// ---- University portal --------------------------------------------------
+// Expected: a new Role value "UNIVERSITY" plus a UniversityAdmin
+// profile scoped to exactly one University row (mirrors
+// RecruiterProfile -> Company), and CAREER_CENTER_ADMIN-style
+// ownership scoping on every endpoint below (same pattern as
+// RecruiterToolsService — resolve the university from the caller's
+// own profile, never trust a client-supplied universityId).
+
+export interface UniversityDashboard {
+  universityName: string;
+  stats: { placementRatePct: number; studentsPlacedYtd: number; activePartners: number; upcomingEvents: number };
+  topCompanies: Array<{ name: string; hires: number }>;
+  topProgrammes: Array<{ name: string; placementRatePct: number }>;
+  recentActivity: string[];
+}
+
+export async function getUniversityDashboard() {
+  return authedFetch<UniversityDashboard>("/university/dashboard");
+}
+
+export interface UniversityPartner {
+  id: string;
+  name: string;
+  industry: string;
+}
+
+export async function getUniversityPartners(params: { search?: string; industry?: string } = {}) {
+  const q = new URLSearchParams();
+  if (params.search) q.set("search", params.search);
+  if (params.industry && params.industry !== "all") q.set("industry", params.industry);
+  const suffix = q.toString() ? `?${q.toString()}` : "";
+  return authedFetch<{ items: UniversityPartner[] }>(`/university/partners${suffix}`);
+}
+
+export interface UniversityEvent {
+  id: string;
+  title: string;
+  date: string;
+  registeredCount: number;
+  status: "ACTIVE" | "UPCOMING";
+}
+
+export async function getUniversityEvents() {
+  return authedFetch<{ items: UniversityEvent[] }>("/university/events");
+}
+
+export async function createUniversityEvent(input: { title: string; date: string }) {
+  return authedFetch<UniversityEvent>("/university/events", { method: "POST", body: JSON.stringify(input) });
+}
+
+export interface UniversityAnalytics {
+  outcomes: { employedOrStudyingPct: number; avgStartingSalaryRm: number; avgOffersPerStudent: number };
+  byFaculty: Array<{ name: string; employabilityPct: number }>;
+  byIndustry: Array<{ name: string; pct: number }>;
+}
+
+export async function getUniversityAnalytics() {
+  return authedFetch<UniversityAnalytics>("/university/analytics");
+}
+
+export async function getJob(id: string) {
+  return authedFetch<JobPosting>(`/jobs/${id}`);
+}
+
 export async function createJob(input: {
   title: string;
   description: string;

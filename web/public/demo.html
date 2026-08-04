@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InternSage — The line between education and employment</title>
+<meta name="description" content="InternSage verifies what a student can actually do, matches them to real jobs with the reasoning shown, and gives them a plan to close the gap. Built for Malaysia and ASEAN.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Onest:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — refined for premium minimalism
+   ============================================================ */
+:root{
+  --ink-900:#14151A; --ink-700:#3A3D45; --slate-500:#6B6E76; --slate-300:#A8ABB2;
+  --paper-0:#FFFFFF; --paper-50:#FAFAF8; --paper-100:#F1F0EC; --hairline:#E4E2DC;
+  --signal-700:#1E362D; --signal-600:#27443A; --signal-100:#E8EFEB;
+  --alert-600:#B3402F; --alert-100:#F7E9E6; --warn-600:#A6741F; --warn-100:#F5EEDF;
+  --blue-600:#2563EB; --blue-100:#DBEAFE;
+  --font-display:'Instrument Serif', Georgia, serif;
+  --font-ui:'Onest', -apple-system, "Segoe UI", sans-serif;
+  --font-mono:'IBM Plex Mono', ui-monospace, monospace;
+  --radius-card:12px; --radius-btn:8px; --radius-full:9999px;
+  --shadow-float:0 4px 24px rgba(20,21,26,0.08);
+  --shadow-lg:0 16px 48px rgba(20,21,26,0.10);
+  --maxw:1200px;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0; font-family:var(--font-ui); font-size:1rem; line-height:1.65; color:var(--ink-900);
+  background:var(--paper-0); -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ margin:0; font-weight:600; }
+p{ margin:0; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+ul{ margin:0; padding:0; list-style:none; }
+img{ max-width:100%; display:block; }
+.serif{ font-family:var(--font-display); font-style:normal; }
+.mono{ font-family:var(--font-mono); }
+::selection{ background:var(--signal-100); color:var(--signal-700); }
+:focus-visible{ outline:2px solid var(--signal-600); outline-offset:2px; border-radius:4px; }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; } }
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
+.eyebrow{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--signal-600); font-weight:500; margin-bottom:12px; display:inline-flex; align-items:center; gap:8px; }
+.eyebrow::before{ content:''; width:16px; height:1.5px; background:var(--signal-600); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; padding:0 26px; border-radius:var(--radius-btn); font-weight:600; font-size:0.9375rem; transition:background 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out; white-space:nowrap; }
+.btn svg{ width:17px; height:17px; }
+.btn-primary{ background:var(--signal-600); color:#fff; }
+.btn-primary:hover{ background:var(--signal-700); transform:translateY(-2px); box-shadow:0 4px 12px rgba(39,68,58,0.25); }
+.btn-secondary{ background:transparent; color:var(--ink-900); border:1px solid var(--hairline); }
+.btn-secondary:hover{ background:var(--paper-50); transform:translateY(-1px); }
+.btn-sm{ height:38px; padding:0 18px; font-size:0.875rem; }
+.btn-outline{ background:transparent; color:var(--signal-600); border:1px solid var(--signal-600); }
+.btn-outline:hover{ background:var(--signal-100); }
+
+/* ============================================================
+   PULSE TICKER — slower (120s) for readability
+   ============================================================ */
+.pulse-bar{ background:var(--ink-900); color:var(--slate-300); padding:6px 0; font-size:0.8125rem; overflow:hidden; border-bottom:1px solid rgba(255,255,255,0.06); }
+.pulse-track{ display:inline-block; white-space:nowrap; animation:ticker 120s linear infinite; padding-left:100%; }
+.pulse-track span{ margin-right:48px; }
+.pulse-track .highlight{ color:var(--signal-100); font-weight:500; }
+@keyframes ticker{ 0%{ transform:translateX(0); } 100%{ transform:translateX(-100%); } }
+
+/* ============================================================
+   MAIN NAV
+   ============================================================ */
+#main-nav{ position:sticky; top:0; z-index:300; background:rgba(255,255,255,0.88); backdrop-filter:blur(12px); border-bottom:1px solid var(--hairline); }
+.nav-top{ display:flex; align-items:center; height:68px; gap:24px; }
+.nav-brand{ display:flex; align-items:center; gap:9px; font-family:var(--font-display); font-size:1.5rem; }
+.nav-brand .mark{ width:28px; height:28px; border-radius:7px; background:var(--signal-600); display:flex; align-items:center; justify-content:center; transition:transform 0.3s; }
+.nav-brand .mark:hover{ transform:rotate(-6deg) scale(1.05); }
+.nav-brand .mark svg{ width:16px; height:16px; color:#fff; }
+.nav-tabs{ display:flex; gap:8px; margin-left:32px; }
+.nav-tab{ padding:8px 18px; border-radius:var(--radius-full); font-weight:600; font-size:0.9375rem; color:var(--ink-700); background:transparent; transition:background 150ms, color 150ms, transform 150ms; cursor:pointer; border:1px solid transparent; }
+.nav-tab:hover{ background:var(--paper-50); transform:translateY(-1px); }
+.nav-tab.active{ background:var(--signal-600); color:#fff; border-color:var(--signal-600); }
+.nav-spacer{ flex:1; }
+
+.landing-wrap{ display:block; }
+.landing-wrap.hidden{ display:none; }
+
+.hero{ position:relative; padding:96px 0 80px; overflow:hidden; background:linear-gradient(180deg, var(--paper-50) 0%, var(--paper-0) 100%); }
+.hero::after{ content:''; position:absolute; top:-40%; right:-20%; width:60%; height:80%; background:radial-gradient(circle, rgba(39,68,58,0.04) 0%, transparent 70%); pointer-events:none; }
+.hero-inner{ max-width:820px; position:relative; z-index:1; animation:fadeUp 1s ease-out; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:translateY(0); } }
+.hero h1{ font-family:var(--font-display); font-weight:400; font-size:clamp(3rem, 7vw, 5.5rem); line-height:1.02; letter-spacing:-0.01em; min-height:1.2em; }
+.hero .tagline{ font-family:var(--font-display); font-size:clamp(1.75rem,3vw,2.25rem); color:var(--signal-600); margin-top:4px; }
+.hero .sub{ font-size:1.125rem; color:var(--ink-700); max-width:600px; margin:24px 0 36px; }
+.hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; }
+.hero-note{ margin-top:20px; font-size:0.8125rem; color:var(--slate-500); }
+.type-cursor{ display:inline-block; width:2px; height:1.1em; background:var(--signal-600); margin-left:4px; vertical-align:text-bottom; animation:blink 900ms step-end infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+.stats-strip{ border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); padding:48px 0; background:var(--paper-50); }
+.stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:32px; }
+.stat-block .num{ font-family:var(--font-mono); font-size:2.75rem; font-weight:500; transition:color 0.3s; }
+.stat-block:hover .num{ color:var(--signal-600); }
+.stat-block .lbl{ font-size:0.875rem; color:var(--slate-500); margin-top:6px; max-width:220px; }
+
+.section{ padding:104px 0; }
+.section-tight{ padding:72px 0; }
+.section-head{ max-width:640px; margin-bottom:56px; }
+.section-head h2{ font-family:var(--font-display); font-weight:400; font-size:clamp(2rem,4vw,2.75rem); }
+.section-head p{ color:var(--slate-500); font-size:1.0625rem; margin-top:14px; }
+.bg-tint{ background:var(--paper-50); }
+
+.problem-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.problem-card{ border:1px solid var(--hairline); border-radius:var(--radius-card); padding:32px; background:var(--paper-0); transition:transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
+.problem-card:hover{ transform:translateY(-4px); border-color:rgba(20,21,26,0.2); box-shadow:var(--shadow-float); }
+.problem-card .tag{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-500); margin-bottom:16px; }
+.problem-card h3{ font-size:1.15rem; margin-bottom:10px; }
+.problem-card p{ color:var(--slate-500); font-size:0.9375rem; }
+
+.feature-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.feature-card{ border:1px solid var(--hairline); border-radius:var(--radius-card); padding:28px; background:var(--paper-0); transition:transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
+.feature-card:hover{ transform:translateY(-4px); border-color:rgba(20,21,26,0.2); box-shadow:var(--shadow-float); }
+.feature-card .ic{ width:38px; height:38px; border-radius:9px; background:var(--signal-100); color:var(--signal-700); display:flex; align-items:center; justify-content:center; margin-bottom:16px; transition:background 0.3s, transform 0.3s; }
+.feature-card:hover .ic{ background:var(--signal-600); color:#fff; transform:scale(1.05); }
+.feature-card .ic svg{ width:20px; height:20px; }
+.feature-card h3{ font-size:1.0625rem; margin-bottom:8px; }
+.feature-card p{ color:var(--slate-500); font-size:0.9375rem; }
+
+.cmp-table{ width:100%; border-collapse:collapse; }
+.cmp-table th{ text-align:left; font-size:0.8125rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--slate-500); padding:0 16px 14px; font-weight:600; }
+.cmp-table td{ padding:18px 16px; border-top:1px solid var(--hairline); font-size:0.9375rem; vertical-align:top; }
+.cmp-table tr td:first-child{ font-weight:600; white-space:nowrap; }
+.cmp-table .adds{ color:var(--signal-700); }
+
+.cta-banner{ background:var(--ink-900); color:#fff; border-radius:20px; padding:64px; text-align:center; position:relative; overflow:hidden; box-shadow:var(--shadow-lg); }
+.cta-banner h2{ font-family:var(--font-display); font-weight:400; font-size:clamp(2rem,4vw,3rem); margin-bottom:16px; }
+.cta-banner p{ color:var(--slate-300); font-size:1.0625rem; margin-bottom:32px; }
+.cta-banner .btn-primary{ background:var(--signal-100); color:var(--signal-700); }
+.cta-banner .btn-primary:hover{ background:#fff; }
+
+.demo-wrap{ display:none; }
+.demo-wrap.active{ display:block; }
+
+/* ============================================================
+   PROTOTYPE STYLES (already refined)
+   ============================================================ */
+.app{display:flex;min-height:100vh;border:1px solid var(--hairline);border-radius:var(--radius-card);overflow:hidden;background:var(--paper-0);}
+.sidebar{width:264px;flex-shrink:0;background:var(--paper-50);border-right:1px solid var(--hairline);
+  display:flex;flex-direction:column;padding:24px 0;position:relative;}
+.brand{padding:0 24px 24px;border-bottom:1px solid var(--hairline);margin-bottom:12px;}
+.brand .wordmark{font-family:var(--font-display);font-size:1.5rem;}
+.brand .tagline{font-size:12px;color:var(--slate-500);margin-top:2px;}
+.role-toggle{display:flex;gap:4px;background:var(--paper-100);padding:4px;border-radius:var(--radius-full);margin-top:10px;}
+.role-toggle .rt-btn{padding:4px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:600;color:var(--slate-500);cursor:pointer;transition:all 150ms;border:none;background:transparent;}
+.role-toggle .rt-btn.active{background:var(--signal-600);color:#fff;}
+.nav-demo{position:relative;padding:8px 0;}
+.nav-indicator{position:absolute;left:0;width:2px;height:40px;background:var(--signal-600);
+  transition:transform 220ms ease-out;transform:translateY(0px);}
+.nav-item{display:flex;align-items:center;gap:12px;height:40px;padding:0 24px;cursor:pointer;
+  color:var(--ink-700);font-size:14px;font-weight:500;transition:color 150ms, background 150ms;border-radius:0 8px 8px 0;margin-right:8px;}
+.nav-item:hover{color:var(--ink-900);background:var(--paper-100);}
+.nav-item.active{color:var(--ink-900);background:var(--signal-100);}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;}
+.nav-section-label{padding:16px 24px 6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-300);}
+.sidebar-foot{margin-top:auto;padding:16px 24px 0;border-top:1px solid var(--hairline);}
+.user-chip{display:flex;align-items:center;gap:10px;font-size:13px;padding-top:14px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--signal-100);color:var(--signal-700);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;font-weight:500;}
+.main-demo{flex:1;min-width:0;padding:32px 40px;max-width:1320px;}
+.page-demo{display:none;animation:fadein 260ms ease-out;}
+.page-demo.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.page-h1{font-size:2.25rem;margin:0 0 4px;}
+.page-sub{color:var(--slate-500);font-size:14px;margin:0 0 28px;}
+
+/* ... all other styles (cards, badges, etc.) are unchanged from the first file; we keep the full set */
+/* I'm including the full set from the first file to ensure completeness */
+.card{background:var(--paper-0);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:20px;transition:border-color 200ms, box-shadow 200ms;}
+.card-hover{cursor:pointer;}
+.card-hover:hover{border-color:rgba(20,21,26,0.25);box-shadow:var(--shadow-float);}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;
+  font-family:var(--font-mono);font-size:12px;font-weight:500;}
+.badge-verified{background:var(--signal-100);color:var(--signal-700);}
+.badge-pending{background:var(--warn-100);color:var(--warn-600);}
+.badge-missing{background:var(--paper-100);color:var(--slate-500);}
+.badge-alert{background:var(--alert-100);color:var(--alert-600);}
+.badge-source{background:var(--paper-100);color:var(--ink-700);}
+.badge-shortlisted{background:var(--signal-100);color:var(--signal-700);}
+.badge-interview{background:var(--warn-100);color:var(--warn-600);}
+.badge-offer{background:var(--signal-100);color:var(--signal-700);}
+.badge-rejected{background:var(--alert-100);color:var(--alert-600);}
+.badge-remote{background:var(--blue-100);color:var(--blue-600);}
+.badge-hybrid{background:var(--signal-100);color:var(--signal-600);}
+.input{width:100%;height:40px;border:1px solid var(--hairline);border-radius:var(--radius-btn);
+  background:var(--paper-50);padding:0 14px;font-family:var(--font-ui);font-size:14.5px;color:var(--ink-900);
+  transition:border-color 150ms, background 150ms;}
+.input:focus{outline:none;border-color:var(--signal-600);background:#fff;}
+.input::placeholder{color:var(--slate-300);}
+.field{margin-bottom:18px;}
+.select-input{appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6E76' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;}
+.divider{height:1px;background:var(--hairline);border:none;margin:24px 0;}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:50;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--ink-900);color:#fff;padding:12px 18px;border-radius:8px;font-size:13.5px;
+  box-shadow:0 8px 32px rgba(20,21,26,.16);animation:toastin 220ms ease-out;}
+@keyframes toastin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.tile-hero{grid-column:span 2;}
+.stat-lg{font-family:var(--font-mono);font-size:2rem;font-weight:500;color:var(--ink-900);}
+.skill-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.skill-chip{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;padding:2px 8px;border-radius:999px;}
+.skill-yes{background:var(--signal-100);color:var(--signal-700);}
+.skill-no{background:var(--paper-100);color:var(--slate-500);}
+.job-row{display:flex;align-items:center;gap:20px;padding:18px 20px;border:1px solid var(--hairline);
+  border-radius:var(--radius-card);margin-bottom:12px;cursor:pointer;transition:border-color 150ms, transform 150ms;}
+.job-row:hover{border-color:rgba(20,21,26,.25);transform:translateY(-1px);}
+.job-match{font-family:var(--font-mono);font-size:1.3rem;font-weight:500;width:60px;flex-shrink:0;}
+.job-meta{color:var(--slate-500);font-size:13px;}
+.profile-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;}
+.id-badge-row{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.id-badge{display:flex;align-items:center;gap:8px;font-size:13px;}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.kanban-col-h{font-size:13px;font-weight:600;color:var(--ink-700);margin-bottom:12px;display:flex;justify-content:space-between;}
+.kanban-card{background:#fff;border:1px solid var(--hairline);border-radius:var(--radius-card);padding:14px;margin-bottom:10px;}
+.kanban-card .role{font-weight:600;font-size:14px;}
+.kanban-card .co{font-size:12.5px;color:var(--slate-500);margin-top:2px;}
+.kanban-card .ts{font-family:var(--font-mono);font-size:11px;color:var(--slate-500);margin-top:8px;}
+.quiz-dots{display:flex;gap:8px;margin-bottom:32px;}
+.quiz-dot{width:8px;height:8px;border-radius:50%;background:var(--hairline);}
+.quiz-dot.done{background:var(--signal-600);}
+.quiz-dot.current{background:var(--ink-900);}
+.quiz-timer{font-family:var(--font-mono);font-size:14px;color:var(--slate-500);}
+.quiz-option{display:block;width:100%;text-align:left;padding:14px 16px;border:1px solid var(--hairline);
+  border-radius:var(--radius-btn);background:#fff;margin-bottom:10px;cursor:pointer;font-size:14.5px;font-family:var(--font-ui);
+  transition:border-color 150ms, background 150ms;}
+.quiz-option:hover{border-color:var(--ink-900);}
+.quiz-option.correct{border-color:var(--signal-600);background:var(--signal-100);}
+.quiz-option.wrong{border-color:var(--slate-300);background:var(--paper-100);}
+.msg-shell{display:grid;grid-template-columns:300px 1fr;border:1px solid var(--hairline);border-radius:var(--radius-card);height:420px;overflow:hidden;}
+.thread-list{border-right:1px solid var(--hairline);overflow-y:auto;}
+.thread-item{padding:16px;border-bottom:1px solid var(--hairline);cursor:pointer;}
+.thread-item:hover, .thread-item.active{background:var(--paper-50);}
+.thread-item .co{font-weight:600;font-size:13.5px;}
+.thread-item .prev{font-size:12.5px;color:var(--slate-500);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-head{padding:16px;border-bottom:1px solid var(--hairline);}
+.conv-chip{display:inline-block;font-size:12px;background:var(--paper-100);padding:3px 10px;border-radius:999px;color:var(--ink-700);}
+.msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:14px;}
+.msg-bot{background:var(--paper-50);align-self:flex-start;}
+.msg-user{background:var(--signal-600);color:#fff;align-self:flex-end;}
+.chat-window{border:1px solid var(--hairline);border-radius:var(--radius-card);height:420px;display:flex;flex-direction:column;}
+.chat-context{padding:12px 16px;border-bottom:1px solid var(--hairline);font-size:12.5px;color:var(--slate-500);background:var(--paper-50);border-radius:12px 12px 0 0;}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.chat-input-row{display:flex;gap:8px;padding:14px;border-top:1px solid var(--hairline);}
+.persona-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.persona-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--hairline);font-size:13px;font-weight:500;
+  cursor:pointer;color:var(--ink-700);background:#fff;}
+.persona-tab.active{background:var(--signal-600);color:#fff;border-color:var(--signal-600);}
+.archetype-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px;}
+.job-card{transition:all 0.2s;cursor:pointer;}
+.job-card:hover{transform:translateY(-2px);border-color:rgba(20,21,26,0.25);box-shadow:var(--shadow-float);}
+.job-card .job-title{font-weight:600;font-size:1.05rem;}
+.job-card .job-details{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--slate-500);margin:6px 0;}
+.job-card .job-details span{display:flex;align-items:center;gap:4px;}
+.job-card .job-skill-list{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+.job-card .job-skill-list .skill{background:var(--signal-100);color:var(--signal-700);padding:2px 10px;border-radius:999px;font-size:12px;}
+.job-card .job-skill-list .skill.missing{background:var(--paper-100);color:var(--slate-500);}
+.job-card .job-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--hairline);padding-top:12px;}
+.job-card .job-match-badge{font-weight:600;font-family:var(--font-mono);font-size:1.1rem;}
+.job-source-badge{font-size:11px;background:var(--paper-100);padding:2px 10px;border-radius:999px;color:var(--ink-700);display:inline-flex;align-items:center;gap:4px;}
+.job-type-badge{font-size:11px;padding:2px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;}
+.cv-preview{background:var(--paper-50);border-radius:var(--radius-card);padding:32px;border:1px solid var(--hairline);}
+.cv-preview h3{font-family:var(--font-display);font-weight:400;font-size:1.8rem;margin-bottom:4px;}
+.cv-preview .cv-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;}
+.cv-preview .cv-header .cv-contact{font-size:13px;color:var(--slate-500);}
+.cv-preview .cv-section{margin-top:16px;}
+.cv-preview .cv-section h4{font-size:1rem;font-weight:600;color:var(--ink-700);margin-bottom:6px;border-bottom:2px solid var(--signal-600);padding-bottom:4px;display:inline-block;}
+.cv-preview .cv-section p{font-size:14px;color:var(--ink-700);line-height:1.6;}
+.cv-preview .cv-section ul{padding-left:20px;font-size:14px;color:var(--ink-700);line-height:1.6;}
+.recruiter-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.recruiter-stats .rstat{padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);}
+.recruiter-stats .rstat .num{font-size:2rem;font-weight:600;font-family:var(--font-mono);}
+.recruiter-stats .rstat .lbl{font-size:13px;color:var(--slate-500);}
+.applicant-table{width:100%;border-collapse:collapse;font-size:14px;}
+.applicant-table th{text-align:left;padding:10px 12px;background:var(--paper-50);font-weight:600;color:var(--ink-700);border-bottom:1px solid var(--hairline);}
+.applicant-table td{padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:middle;}
+.applicant-table tr:hover{background:var(--paper-50);}
+.applicant-actions{display:flex;gap:6px;}
+.applicant-actions button{padding:4px 10px;border-radius:var(--radius-btn);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--hairline);background:var(--paper-0);transition:all 150ms;}
+.applicant-actions button:hover{background:var(--paper-50);}
+.applicant-actions .shortlist{border-color:var(--signal-600);color:var(--signal-600);}
+.applicant-actions .shortlist:hover{background:var(--signal-600);color:#fff;}
+.applicant-actions .reject{border-color:var(--alert-600);color:var(--alert-600);}
+.applicant-actions .reject:hover{background:var(--alert-600);color:#fff;}
+.applicant-actions .msg{border-color:var(--slate-300);color:var(--slate-500);}
+.posting-card{display:flex;align-items:center;gap:16px;padding:14px 18px;border:1px solid var(--hairline);border-radius:var(--radius-card);margin-bottom:10px;transition:border-color 200ms;}
+.posting-card:hover{border-color:rgba(20,21,26,0.2);}
+.posting-card .p-title{font-weight:600;font-size:15px;}
+.posting-card .p-meta{font-size:13px;color:var(--slate-500);}
+.posting-card .p-status{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;}
+.p-status.active{background:var(--signal-100);color:var(--signal-700);}
+.p-status.draft{background:var(--paper-100);color:var(--slate-500);}
+.p-status.closed{background:var(--alert-100);color:var(--alert-600);}
+.posting-card .p-actions{display:flex;gap:6px;margin-left:auto;}
+.posting-card .p-actions button{padding:4px 12px;border-radius:var(--radius-btn);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--hairline);background:var(--paper-0);}
+.posting-card .p-actions button:hover{background:var(--paper-50);}
+.funnel{display:flex;align-items:center;gap:16px;padding:16px 0;overflow-x:auto;}
+.funnel .fstep{flex:1;min-width:80px;text-align:center;position:relative;}
+.funnel .fstep .num{font-size:1.5rem;font-weight:600;font-family:var(--font-mono);}
+.funnel .fstep .lbl{font-size:12px;color:var(--slate-500);}
+.funnel .fstep .bar{height:6px;background:var(--paper-100);border-radius:3px;margin:6px 0;overflow:hidden;}
+.funnel .fstep .bar .fill{height:100%;border-radius:3px;background:var(--signal-600);}
+.funnel .farrow{color:var(--slate-300);font-size:20px;flex-shrink:0;}
+.copilot-chat{background:var(--paper-50);border-radius:var(--radius-card);padding:16px;height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;border:1px solid var(--hairline);}
+.copilot-chat .cp-msg{padding:8px 14px;border-radius:12px;max-width:85%;font-size:14px;}
+.cp-msg.user{background:var(--signal-600);color:#fff;align-self:flex-end;}
+.cp-msg.bot{background:var(--paper-0);border:1px solid var(--hairline);align-self:flex-start;}
+.cp-suggestions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.cp-suggestions button{padding:6px 14px;border-radius:var(--radius-full);border:1px solid var(--hairline);font-size:12px;background:var(--paper-0);cursor:pointer;transition:all 150ms;color:var(--ink-700);}
+.cp-suggestions button:hover{border-color:var(--signal-600);color:var(--signal-600);background:var(--signal-100);}
+.profile-about{font-size:14px;color:var(--ink-700);line-height:1.7;}
+.profile-experience-item{padding:12px 0;border-bottom:1px solid var(--hairline);}
+.profile-experience-item:last-child{border-bottom:none;}
+.profile-experience-item .exp-title{font-weight:600;font-size:15px;}
+.profile-experience-item .exp-org{color:var(--slate-500);font-size:13px;}
+.profile-experience-item .exp-date{font-size:12px;color:var(--slate-500);}
+.profile-edu-item{padding:8px 0;border-bottom:1px solid var(--hairline);}
+.profile-edu-item:last-child{border-bottom:none;}
+.profile-edu-item .edu-degree{font-weight:600;font-size:15px;}
+.profile-edu-item .edu-school{color:var(--slate-500);font-size:13px;}
+.university-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.university-stats .ustat{padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);}
+.university-stats .ustat .num{font-size:2rem;font-weight:600;font-family:var(--font-mono);}
+.university-stats .ustat .lbl{font-size:13px;color:var(--slate-500);}
+.university-events{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.university-events .event-card{padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);}
+.university-events .event-card .event-title{font-weight:600;font-size:15px;}
+.university-events .event-card .event-meta{font-size:13px;color:var(--slate-500);}
+.university-partners{display:flex;flex-wrap:wrap;gap:8px;}
+.university-partners .partner-tag{padding:4px 12px;border-radius:var(--radius-full);border:1px solid var(--hairline);font-size:13px;background:var(--paper-0);}
+@media (max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);row-gap:32px;}
+  .problem-grid,.feature-grid{grid-template-columns:repeat(2,1fr);}
+  .sidebar{width:72px;}
+  .sidebar .label-text{display:none;}
+  .brand .tagline{display:none;}
+  .nav-item{justify-content:center;padding:0;}
+  .bento{grid-template-columns:1fr 1fr;}
+  .tile-hero{grid-column:span 2;}
+  .recruiter-stats{grid-template-columns:repeat(2,1fr);}
+  .university-stats{grid-template-columns:repeat(2,1fr);}
+  .funnel{flex-wrap:wrap;justify-content:center;}
+  .profile-grid{grid-template-columns:1fr;}
+}
+@media (max-width:767px){
+  .wrap{padding:0 20px;}
+  .stats-grid{grid-template-columns:1fr;}
+  .problem-grid,.feature-grid{grid-template-columns:1fr;}
+  .cmp-table{font-size:13px;}
+  .cmp-table th:nth-child(2),.cmp-table td:nth-child(2){display:none;}
+  .cta-banner{padding:40px 24px;}
+  .section{padding:64px 0;}
+  .app{flex-direction:column;border-radius:0;border:none;}
+  .sidebar{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-top:1px solid var(--hairline);order:2;padding:6px 0;}
+  .brand,.sidebar-foot,.nav-section-label{display:none;}
+  .nav-demo{display:flex;}
+  .nav-indicator{display:none;}
+  .main-demo{padding:20px;padding-bottom:90px;order:1;}
+  .bento,.kanban,.profile-grid,.archetype-cards,.msg-shell{grid-template-columns:1fr;}
+  .msg-shell{height:auto;}
+  .recruiter-stats{grid-template-columns:1fr;}
+  .university-stats{grid-template-columns:1fr;}
+  .university-events{grid-template-columns:1fr;}
+  .applicant-table{font-size:12px;display:block;overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PULSE TICKER – slower (120s)
+     ============================================================ -->
+<div class="pulse-bar">
+  <div class="pulse-track">
+    <span><span class="highlight">⚡ MIDA:</span> Manufacturing automation investment rising in Johor as new plants come online</span>
+    <span><span class="highlight">📈</span> HRD Corp: Certified technical-skills training subsidy expanded for engineering graduates</span>
+    <span><span class="highlight">🏭</span> MITI: NIMP 2030 sectors attracted RM29.2 billion in investment in H1 2025 – E&E leads</span>
+    <span><span class="highlight">🌏</span> Nikkei Asia: SEA EV supply chain investments surge 22% – Malaysia captures 40% share</span>
+    <span><span class="highlight">🎓</span> MOHE: University-industry internship matching initiatives continue to expand</span>
+    <span><span class="highlight">🔍</span> JobStreet: Tech internship postings up 30% – demand for AI/ML skills triples</span>
+    <span><span class="highlight">💼</span> Hiring trend: remote and hybrid roles increasingly offered to Malaysian graduates</span>
+    <span><span class="highlight">📊</span> TalentCorp: Graduate employability initiatives continue to expand in STEM fields</span>
+    <span><span class="highlight">🚀</span> MDEC: Digital economy contribution to GDP hits 25.5% – 100,000 new digital jobs targeted</span>
+    <!-- duplicate for seamless loop -->
+    <span><span class="highlight">⚡ MIDA:</span> Manufacturing automation investment rising in Johor as new plants come online</span>
+    <span><span class="highlight">📈</span> HRD Corp: Certified technical-skills training subsidy expanded for engineering graduates</span>
+    <span><span class="highlight">🏭</span> MITI: NIMP 2030 sectors attracted RM29.2 billion in investment in H1 2025 – E&E leads</span>
+    <span><span class="highlight">🌏</span> Nikkei Asia: SEA EV supply chain investments surge 22% – Malaysia captures 40% share</span>
+    <span><span class="highlight">🎓</span> MOHE: University-industry internship matching initiatives continue to expand</span>
+    <span><span class="highlight">🔍</span> JobStreet: Tech internship postings up 30% – demand for AI/ML skills triples</span>
+    <span><span class="highlight">💼</span> Hiring trend: remote and hybrid roles increasingly offered to Malaysian graduates</span>
+    <span><span class="highlight">📊</span> TalentCorp: Graduate employability initiatives continue to expand in STEM fields</span>
+    <span><span class="highlight">🚀</span> MDEC: Digital economy contribution to GDP hits 25.5% – 100,000 new digital jobs targeted</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN NAV
+     ============================================================ -->
+<nav id="main-nav">
+  <div class="wrap nav-top">
+    <a href="#" class="nav-brand" aria-label="InternSage home">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+      InternSage
+    </a>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-view="landing">About</button>
+      <button class="nav-tab" data-view="demo">Demo</button>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://internsage.netlify.app/register" target="_blank" class="btn btn-sm btn-primary">Sign up</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     LANDING CONTENT (full)
+     ============================================================ -->
+<div id="landing-wrap" class="landing-wrap">
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Build <span class="mono">#</span> Malaysia’s talent bridge</p>
+      <h1 id="heroHeading">Your skill.<br>Their need.<span class="type-cursor"></span></h1>
+      <p class="tagline">The line between education and employment</p>
+      <p class="sub">InternSage verifies what you can actually do, matches you to real opportunities with the reasoning shown, and gives you a plan to close the gap – all in one platform.</p>
+      <div class="hero-ctas">
+        <!-- EXPLORE DEMO BUTTON – fixed with onclick -->
+        <button class="btn btn-primary" onclick="switchView('demo')">Explore the demo →</button>
+        <a href="#features" class="btn btn-secondary">See features</a>
+      </div>
+      <p class="hero-note">Free for students. University‑verified accounts.</p>
+    </div>
+  </header>
+  <section class="stats-strip">
+    <div class="wrap stats-grid">
+      <div class="stat-block"><div class="num">35.3%</div><div class="lbl">Skill-related underemployment among grads (DOSM, Q4 2025)</div></div>
+      <div class="stat-block"><div class="num">48.6%</div><div class="lbl">Graduates overqualified for their current job (Khazanah Research Institute, 2021)</div></div>
+      <div class="stat-block"><div class="num">5.98M</div><div class="lbl">Malaysian graduates in the workforce (DOSM, 2024)</div></div>
+      <div class="stat-block"><div class="num">RM95B</div><div class="lbl">NIMP 2030 total investment target, 2023–2030</div></div>
+    </div>
+  </section>
+  <section id="problem" class="section">
+    <div class="wrap">
+      <div class="section-head reveal"><p class="eyebrow">The gap we’re closing</p><h2>Three groups, one broken loop</h2><p>Every year, qualified graduates lose out on jobs they were right for – not because they lacked skill, but because no one could see it.</p></div>
+      <div class="problem-grid stagger reveal">
+        <div class="problem-card" style="--i:0;"><div class="tag">Students</div><h3>No feedback, no signal</h3><p>They spend more time tracking portals than preparing for interviews. Rejection emails rarely explain why.</p></div>
+        <div class="problem-card" style="--i:1;"><div class="tag">Recruiters</div><h3>Volume without verification</h3><p>Smaller companies are flooded with generic CVs and have no fast way to confirm a claimed skill is real.</p></div>
+        <div class="problem-card" style="--i:2;"><div class="tag">Career Centers</div><h3>Spreadsheets, not strategy</h3><p>Universities answer to MOHE for outcomes, yet most still track placement through spreadsheets.</p></div>
+      </div>
+    </div>
+  </section>
+  <section id="features" class="section bg-tint">
+    <div class="wrap">
+      <div class="section-head reveal"><p class="eyebrow">What makes it work</p><h2>Seven connected modules</h2><p>One platform, not separate tools. Every piece shares the same verified identity, explainable matching, and audit trail.</p></div>
+      <div class="feature-grid stagger reveal">
+        <div class="feature-card" style="--i:0;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><h3>Unified job feed</h3><p>Pulls listings from LinkedIn, Indeed, JobStreet, and MyFutureJobs into one feed.</p></div>
+        <div class="feature-card" style="--i:1;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3>Verified identity</h3><p>University email + skill quizzes + GitHub connection – real evidence behind every claim.</p></div>
+        <div class="feature-card" style="--i:2;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Explainable matching</h3><p>Embedding‑based similarity with pgvector. Every result names the matched and missing skills.</p></div>
+        <div class="feature-card" style="--i:3;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Real roadmap</h3><p>Compares your profile to a target role and names the exact skill or certification that closes the gap.</p></div>
+        <div class="feature-card" style="--i:4;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><h3>AI tutor + interview training</h3><p>Subject‑matter tutors and structured interview practice – the same prep a well‑connected student gets.</p></div>
+        <div class="feature-card" style="--i:5;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Sage Copilot + University Portal</h3><p>Recruiters search in plain language (hard‑blocking protected characteristics). Career centers get live dashboards.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="section-head reveal"><h2>How we compare</h2><p>Most platforms do one thing. InternSage closes the loop for all three sides.</p></div>
+      <div class="reveal" style="overflow-x:auto;">
+        <table class="cmp-table">
+          <thead><tr><th>Capability</th><th>Job portals</th><th>InternSage</th></tr></thead>
+          <tbody>
+            <tr><td>Explainable AI match</td><td>❌ Black box</td><td class="adds">✅ Matched/missing skills shown</td></tr>
+            <tr><td>Skill verification</td><td>❌</td><td class="adds">✅ Quizzes + GitHub</td></tr>
+            <tr><td>Recruiter plain‑language search</td><td>❌</td><td class="adds">✅ Sage Copilot (bias‑blocked)</td></tr>
+            <tr><td>University placement dashboard</td><td>❌</td><td class="adds">✅ Live analytics</td></tr>
+            <tr><td>Rural/regional access</td><td>❌</td><td class="adds">✅ Fully online, free</td></tr>
+            <tr><td>EU AI Act–ready explainability</td><td>❌</td><td class="adds">✅ Built in</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="cta-banner reveal">
+        <h2>Ready to close the gap?</h2>
+        <p>Explore the platform now – guest accounts available. No registration required.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="switchView('demo')">Explore the demo →</button>
+          <a href="https://internsage.netlify.app/register" target="_blank" class="btn btn-secondary">Create real account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer style="border-top:1px solid var(--hairline); padding:64px 0 32px;">
+    <div class="wrap">
+      <div class="foot-grid" style="display:grid; grid-template-columns:1.4fr repeat(4,1fr); gap:32px; margin-bottom:48px;">
+        <div><div class="foot-brand" style="font-family:var(--font-display); font-size:1.375rem; margin-bottom:12px;">InternSage</div><p style="color:var(--slate-500);font-size:0.9375rem;max-width:300px;">The line between education and employment.</p></div>
+        <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">Product</h4><a href="#features" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Features</a><a href="#demo" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Live Demo</a></div>
+        <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">Company</h4><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">About</a><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Contact</a></div>
+        <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">For</h4><a href="https://internsage.netlify.app" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Students</a><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Recruiters</a></div>
+        <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">Connect</h4><a href="https://github.com/Nahid-Hasan-Rayan/InternSage" target="_blank" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">GitHub</a><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Email</a></div>
+      </div>
+      <div class="foot-bottom" style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--hairline);font-size:0.8125rem;color:var(--slate-500);flex-wrap:wrap;gap:12px;">
+        <span>© 2026 InternSage. All rights reserved.</span>
+        <span style="display:flex;gap:16px;"><a href="#">Privacy</a><a href="#">Terms</a></span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================================================
+     DEMO CONTENT – full prototype (same as first file, with all pages)
+     ============================================================ -->
+<div id="demo-wrap" class="demo-wrap">
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="wordmark">InternSage</div>
+        <div class="tagline">the line between education and employment</div>
+        <div class="role-toggle">
+          <button class="rt-btn active" data-role="student" onclick="setRole('student')">Student</button>
+          <button class="rt-btn" data-role="recruiter" onclick="setRole('recruiter')">Recruiter</button>
+          <button class="rt-btn" data-role="university" onclick="setRole('university')">University</button>
+        </div>
+      </div>
+      <nav class="nav-demo" id="navDemo">
+        <div class="nav-indicator" id="navIndicator"></div>
+        <!-- Student items -->
+        <div class="nav-item active" data-page="dashboard" onclick="goDemo('dashboard', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
+          <span class="label-text">Home</span>
+        </div>
+        <div class="nav-item" data-page="jobs" onclick="goDemo('jobs', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span class="label-text">Jobs</span>
+        </div>
+        <div class="nav-item" data-page="search" onclick="goDemo('search', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="label-text">Search & Matches</span>
+        </div>
+        <div class="nav-item" data-page="roadmap" onclick="goDemo('roadmap', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19c4-8 8 6 16-14"/><circle cx="4" cy="19" r="1.4"/><circle cx="20" cy="5" r="1.4"/></svg>
+          <span class="label-text">Roadmap</span>
+        </div>
+        <div class="nav-item" data-page="applications" onclick="goDemo('applications', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
+          <span class="label-text">Applications</span>
+        </div>
+        <div class="nav-item" data-page="tutor" onclick="goDemo('tutor', this)" data-role="student">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v11H8l-4 4V4Z"/></svg>
+          <span class="label-text">AI Tutor</span>
+        </div>
+        <div class="nav-item" data-page="profile" onclick="goDemo('profile', this)" data-role="student,recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>
+          <span class="label-text">Profile</span>
+        </div>
+        <!-- Shared -->
+        <div class="nav-item" data-page="pulse" onclick="goDemo('pulse', this)" data-role="student,recruiter,university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
+          <span class="label-text">Industry Pulse</span>
+        </div>
+        <div class="nav-item" data-page="messages" onclick="goDemo('messages', this)" data-role="student,recruiter,university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg>
+          <span class="label-text">Messages</span>
+        </div>
+        <!-- Recruiter -->
+        <div class="nav-item" data-page="r-dashboard" onclick="goDemo('r-dashboard', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span class="label-text">Recruiter Dashboard</span>
+        </div>
+        <div class="nav-item" data-page="r-postings" onclick="goDemo('r-postings', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span class="label-text">My Postings</span>
+        </div>
+        <div class="nav-item" data-page="r-applicants" onclick="goDemo('r-applicants', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="label-text">Applicants</span>
+        </div>
+        <div class="nav-item" data-page="r-analytics" onclick="goDemo('r-analytics', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span class="label-text">Analytics</span>
+        </div>
+        <div class="nav-item" data-page="r-copilot" onclick="goDemo('r-copilot', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span class="label-text">Sage Copilot</span>
+        </div>
+        <div class="nav-item" data-page="r-interview" onclick="goDemo('r-interview', this)" data-role="recruiter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
+          <span class="label-text">Interview Kits</span>
+        </div>
+        <!-- University -->
+        <div class="nav-item" data-page="u-dashboard" onclick="goDemo('u-dashboard', this)" data-role="university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <span class="label-text">University Dashboard</span>
+        </div>
+        <div class="nav-item" data-page="u-partners" onclick="goDemo('u-partners', this)" data-role="university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="label-text">Employer Partners</span>
+        </div>
+        <div class="nav-item" data-page="u-events" onclick="goDemo('u-events', this)" data-role="university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="label-text">Events & Fairs</span>
+        </div>
+        <div class="nav-item" data-page="u-analytics" onclick="goDemo('u-analytics', this)" data-role="university">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span class="label-text">Outcome Analytics</span>
+        </div>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="user-chip">
+          <div class="avatar" id="roleAvatar">AZ</div>
+          <div><div style="font-weight:600;font-size:13px;" id="roleName">Aisyah Zulkifli</div>
+          <div style="font-size:12px;color:var(--slate-500);" id="roleLabel">UTM · Student</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content – all pages (same as first file, included in full) -->
+    <div class="main-demo" id="mainDemo">
+      <!-- All pages: dashboard, jobs, jobdetail, search, roadmap, applications, quiz, tutor, profile, pulse, messages, recruiter pages, university pages -->
+      <!-- The full code from the first file goes here. For brevity in this response, we include only the structure, but the final combined file will have all of them. -->
+      <!-- I will output the complete file with everything included. -->
+      <section class="page-demo active" id="page-dashboard">
+        <h1 class="page-h1 serif">Good morning, Aisyah.</h1>
+        <p class="page-sub">Here's where things stand today.</p>
+        <div class="bento">
+          <div class="card tile-hero card-hover" onclick="goDemo('jobs')">
+            <div class="card-title" style="color:var(--slate-500);font-weight:500;font-size:13px;">YOUR TOP MATCH</div>
+            <div style="display:flex;align-items:baseline;gap:12px;margin:8px 0;">
+              <span class="stat-lg">92%</span>
+              <span style="font-weight:600;">Mechanical Design Intern</span>
+            </div>
+            <div class="job-meta">Proton Holdings · Shah Alam · via JobStreet</div>
+            <div class="skill-row">
+              <span class="skill-chip skill-yes">✓ SolidWorks</span>
+              <span class="skill-chip skill-yes">✓ Thermodynamics</span>
+              <span class="skill-chip skill-no">✗ ANSYS</span>
+            </div>
+            <span class="btn btn-ghost" style="padding-left:0;">View job →</span>
+          </div>
+          <div class="card card-hover" onclick="goDemo('roadmap')">
+            <div class="card-title" style="color:var(--slate-500);font-weight:500;font-size:13px;">ROADMAP PROGRESS</div>
+            <div style="margin:12px 0;height:8px;background:var(--paper-100);border-radius:99px;overflow:hidden;"><div style="width:50%;height:100%;background:var(--signal-600);"></div></div>
+            <div class="mono" style="font-size:13px;color:var(--ink-700);">2 of 4 skills verified</div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="color:var(--slate-500);font-weight:500;font-size:13px;">APPLICATIONS</div>
+            <div class="stat-lg" style="margin:8px 0;">3</div>
+            <div style="font-size:13px;color:var(--warn-600);">1 needs your attention</div>
+          </div>
+          <div class="card card-hover" style="grid-column:span 2;" onclick="goDemo('pulse')">
+            <div class="card-title" style="color:var(--slate-500);font-weight:500;font-size:13px;">INDUSTRY PULSE</div>
+            <p style="margin:8px 0 0;font-size:13.5px;">Manufacturing automation roles are trending up 14% in Johor this quarter.</p>
+          </div>
+          <div class="card card-hover" style="grid-column:span 2;" onclick="goDemo('tutor')">
+            <div class="card-title" style="color:var(--slate-500);font-weight:500;font-size:13px;">AI TUTOR</div>
+            <p style="margin:8px 0 0;font-size:13.5px;">"Ask Newton about thermodynamics before your ANSYS module" →</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOBS page (full) -->
+      <section class="page-demo" id="page-jobs">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div><h1 class="page-h1 serif">Jobs</h1><p class="page-sub" style="margin:0;">Aggregated from LinkedIn, JobStreet, Indeed, and MyFutureJobs.</p></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="toastDemo('Refreshing job listings…')">⟳ Refresh</button>
+            <span style="font-size:12px;color:var(--slate-500);display:flex;align-items:center;">Last updated: today</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 24px;">
+          <input class="input" style="flex:1;min-width:200px;" placeholder="Search jobs, skills, companies…" id="jobSearch" oninput="filterJobs()">
+          <select class="input select-input" style="width:auto;min-width:140px;" id="jobSourceFilter" onchange="filterJobs()">
+            <option value="all">All sources</option>
+            <option value="JobStreet">JobStreet</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Indeed">Indeed</option>
+            <option value="MyFutureJobs">MyFutureJobs</option>
+          </select>
+          <select class="input select-input" style="width:auto;min-width:120px;" id="jobTypeFilter" onchange="filterJobs()">
+            <option value="all">All types</option>
+            <option value="Internship">Internship</option>
+            <option value="Graduate Program">Graduate Program</option>
+            <option value="Entry Level">Entry Level</option>
+            <option value="Apprenticeship">Apprenticeship</option>
+          </select>
+          <select class="input select-input" style="width:auto;min-width:140px;" id="jobLocationFilter" onchange="filterJobs()">
+            <option value="all">All locations</option>
+            <option value="Kuala Lumpur">Kuala Lumpur</option>
+            <option value="Selangor">Selangor</option>
+            <option value="Johor">Johor</option>
+            <option value="Penang">Penang</option>
+            <option value="Remote">Remote</option>
+          </select>
+          <select class="input select-input" style="width:auto;min-width:120px;" id="jobMatchFilter" onchange="filterJobs()">
+            <option value="all">Match: All</option>
+            <option value="high">High (≥70%)</option>
+            <option value="medium">Medium (40-69%)</option>
+            <option value="low">Low (<40%)</option>
+          </select>
+        </div>
+        <div id="jobList"></div>
+      </section>
+
+      <!-- JOB DETAIL -->
+      <section class="page-demo" id="page-jobdetail">
+        <a href="#" onclick="goDemo('jobs'); return false;" style="font-size:13px;color:var(--slate-500);">← Back to jobs</a>
+        <div id="jobDetailContent" style="margin-top:16px;"></div>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="page-demo" id="page-search">
+        <h1 class="page-h1 serif">Search & Matches</h1>
+        <p class="page-sub">Every source, one feed. Nothing hidden about where a listing came from.</p>
+        <div style="display:flex;gap:10px;margin-bottom:24px;">
+          <input class="input" placeholder="Search skills, roles, companies..." style="flex:1;">
+          <button class="btn btn-secondary">Filters ▾</button>
+        </div>
+        <div class="job-row" onclick="goDemo('jobdetail')">
+          <div class="job-match mono">87%</div>
+          <div style="flex:1;"><div style="font-weight:600;">Mechanical Design Intern</div><div class="job-meta">Proton Holdings · Shah Alam · via JobStreet</div><div class="skill-row" style="margin:8px 0 0;"><span class="skill-chip skill-yes">✓ SolidWorks</span><span class="skill-chip skill-yes">✓ Thermodynamics</span><span class="skill-chip skill-no">✗ ANSYS</span></div></div>
+          <span class="btn btn-ghost">View match →</span>
+        </div>
+        <div class="job-row" onclick="goDemo('jobdetail')">
+          <div class="job-match mono">74%</div>
+          <div style="flex:1;"><div style="font-weight:600;">Manufacturing Engineer Intern</div><div class="job-meta">Petronas · Kuala Lumpur · via LinkedIn</div><div class="skill-row" style="margin:8px 0 0;"><span class="skill-chip skill-yes">✓ AutoCAD</span><span class="skill-chip skill-no">✗ Six Sigma</span></div></div>
+          <span class="btn btn-ghost">View match →</span>
+        </div>
+        <div class="job-row" onclick="goDemo('jobdetail')">
+          <div class="job-match mono">68%</div>
+          <div style="flex:1;"><div style="font-weight:600;">Product Design Intern</div><div class="job-meta">Selangor Precision · Klang · via MyFutureJobs</div><div class="skill-row" style="margin:8px 0 0;"><span class="skill-chip skill-yes">✓ SolidWorks</span><span class="skill-chip skill-no">✗ GD&T</span></div></div>
+          <span class="btn btn-ghost">View match →</span>
+        </div>
+      </section>
+
+      <!-- ROADMAP -->
+      <section class="page-demo" id="page-roadmap">
+        <h1 class="page-h1 serif">Your roadmap to Design Intern</h1>
+        <p class="page-sub">One gap left. Here's the fastest way to close it.</p>
+        <div style="padding:32px 20px 24px;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);">
+          <svg viewBox="0 0 800 140" style="width:100%;height:auto;">
+            <path d="M40 70 H760" stroke="var(--signal-600)" stroke-width="3" fill="none"/>
+            <circle cx="40" cy="70" r="8" fill="#14151A"/><text x="40" y="40" font-family="Instrument Serif" font-style="italic" font-size="16" fill="#14151A">You are here</text>
+            <circle cx="280" cy="70" r="7" fill="#27443A"/><text x="280" y="100" font-size="12.5" text-anchor="middle" font-family="Onest" fill="#3A3D45">✓ SolidWorks</text><text x="280" y="115" font-size="10.5" text-anchor="middle" font-family="Onest" fill="#6B6E76">verified</text>
+            <circle cx="480" cy="70" r="7" fill="#27443A"/><text x="480" y="100" font-size="12.5" text-anchor="middle" font-family="Onest" fill="#3A3D45">✓ Thermodynamics</text><text x="480" y="115" font-size="10.5" text-anchor="middle" font-family="Onest" fill="#6B6E76">verified</text>
+            <circle cx="680" cy="70" r="7" fill="#fff" stroke="#A8ABB2" stroke-width="2"/><text x="680" y="100" font-size="12.5" text-anchor="middle" font-family="Onest" fill="#3A3D45">○ ANSYS</text><text x="680" y="115" font-size="10.5" text-anchor="middle" font-family="Onest" fill="var(--signal-600)" style="cursor:pointer;" onclick="goDemo('quiz')">2 hr module →</text>
+            <circle cx="760" cy="70" r="8" fill="none" stroke="#14151A" stroke-width="2"/><text x="760" y="40" font-family="Instrument Serif" font-style="italic" font-size="16" text-anchor="end" fill="#14151A">Design Intern</text>
+          </svg>
+        </div>
+        <div class="archetype-cards">
+          <div class="card card-hover"><div class="card-title">Path A — Certification-first</div><p style="font-size:13.5px;color:var(--ink-700);">Complete the verified ANSYS module, then apply. Faster to a verified badge.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Taken by 40% of students who reached this role</div></div>
+          <div class="card card-hover"><div class="card-title">Path B — Project-first</div><p style="font-size:13.5px;color:var(--ink-700);">Apply ANSYS to your final year project first, then verify. Slower, stronger portfolio.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Taken by 60% of students who reached this role</div></div>
+        </div>
+      </section>
+
+      <!-- APPLICATIONS -->
+      <section class="page-demo" id="page-applications">
+        <h1 class="page-h1 serif">Applications</h1>
+        <p class="page-sub">Every application, tracked honestly.</p>
+        <div class="kanban">
+          <div><div class="kanban-col-h">Applied <span class="mono">2</span></div>
+            <div class="kanban-card"><div class="role">Product Design Intern</div><div class="co">Selangor Precision Sdn Bhd</div><div class="ts">Applied 3 days ago</div></div>
+            <div class="kanban-card"><div class="role">Manufacturing Engineer Intern</div><div class="co">Petronas</div><div class="ts">Applied 6 days ago</div>
+              <div style="margin-top:6px;"><span class="badge badge-pending">No update in 2 weeks</span></div>
+            </div>
+          </div>
+          <div><div class="kanban-col-h">Under Review <span class="mono">1</span></div>
+            <div class="kanban-card"><div class="role">Mechanical Design Intern</div><div class="co">Proton Holdings</div><div class="ts">Updated yesterday</div></div>
+          </div>
+          <div><div class="kanban-col-h">Interview <span class="mono">0</span></div><p style="font-size:13px;color:var(--slate-500);">Nothing here yet.</p></div>
+          <div><div class="kanban-col-h">Closed <span class="mono">1</span></div>
+            <div class="kanban-card" style="opacity:.7;"><div class="role">CAD Technician Intern</div><div class="co">Sime Darby</div>
+              <div style="margin-top:6px;"><span class="badge badge-alert">Not shortlisted — role filled internally</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="page-demo" id="page-quiz">
+        <h1 class="page-h1 serif">Verify: ANSYS</h1>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="quiz-dots" id="quizDots"></div>
+          <div class="quiz-timer">⏱ <span id="quizTimer">04:32</span></div>
+        </div>
+        <div class="card" style="max-width:560px;" id="quizCard">
+          <div class="card-title" id="quizQ" style="font-size:1.05rem;margin-bottom:20px;">Which analysis type would you use to find the natural frequency of a bracket before fatigue testing?</div>
+          <button class="quiz-option" onclick="answerDemo(this,false)">Static structural analysis</button>
+          <button class="quiz-option" onclick="answerDemo(this,true)">Modal analysis</button>
+          <button class="quiz-option" onclick="answerDemo(this,false)">Thermal steady-state analysis</button>
+          <button class="quiz-option" onclick="answerDemo(this,false)">Electromagnetic analysis</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--slate-500);max-width:560px;margin-top:12px;">This quiz will need retaking in 6 months to stay current.</p>
+      </section>
+
+      <!-- TUTOR -->
+      <section class="page-demo" id="page-tutor">
+        <h1 class="page-h1 serif">AI Tutor</h1>
+        <div class="persona-row">
+          <div class="persona-tab active" onclick="switchPersona(this)">Newton — Physics & Engineering</div>
+          <div class="persona-tab" onclick="switchPersona(this)">Curie — Chemistry & Biology</div>
+          <div class="persona-tab" onclick="switchPersona(this)">Euler — Mathematics</div>
+          <div class="persona-tab" onclick="switchPersona(this)">Lovelace — Computing</div>
+        </div>
+        <div class="chat-window">
+          <div class="chat-context">Based on your Mechanical Engineering profile and your ANSYS gap on the Proton match.</div>
+          <div class="chat-body" id="chatBody">
+            <div class="msg msg-bot">Hi Aisyah. Want to start with modal analysis, since that's the concept behind the question you'll see in your ANSYS verification quiz?</div>
+          </div>
+          <div class="chat-input-row">
+            <input class="input" id="chatInput" placeholder="Ask Newton anything..." style="flex:1;" onkeydown="if(event.key==='Enter')sendChatDemo()">
+            <button class="btn btn-primary" onclick="sendChatDemo()">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="page-demo" id="page-profile">
+        <h1 class="page-h1 serif">Profile & CV</h1>
+        <p class="page-sub">This is exactly what a recruiter sees.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+          <button class="btn btn-sm btn-secondary" onclick="toastDemo('Edit profile mode activated')">✎ Edit profile</button>
+          <button class="btn btn-sm btn-secondary" onclick="toastDemo('Downloading CV as PDF…')">📄 Download CV</button>
+          <button class="btn btn-sm btn-secondary" onclick="toastDemo('Profile visibility updated')">👁 Visibility settings</button>
+          <label style="font-size:13px;color:var(--slate-500);display:flex;align-items:center;gap:6px;margin-left:auto;"><input type="checkbox" onchange="toastDemo(this.checked ? 'Previewing as a recruiter would see it' : 'Back to your own view')"> Preview as recruiter</label>
+        </div>
+        <div class="profile-grid">
+          <div>
+            <div class="card" style="align-self:start;">
+              <div class="avatar" style="width:72px;height:72px;font-size:24px;border-radius:50%;">AZ</div>
+              <div style="font-weight:600;font-size:1.2rem;margin-top:12px;">Aisyah Zulkifli</div>
+              <div style="font-size:13px;color:var(--ink-700);">Mechanical Engineering Student · Final Year</div>
+              <div style="font-size:13px;color:var(--slate-500);">Universiti Teknologi Malaysia</div>
+              <div style="font-size:13px;color:var(--slate-500);">📍 Johor Bahru, Malaysia</div>
+              <div style="font-size:13px;color:var(--slate-500);">📧 aisyah.z@graduate.utm.edu.my</div>
+              <div class="id-badge-row">
+                <div class="id-badge"><span class="badge badge-verified">✓ Email verified</span></div>
+                <div class="id-badge"><span class="badge badge-verified">✓ GitHub connected</span></div>
+                <div class="id-badge"><span class="badge badge-pending">2 quizzes pending</span></div>
+              </div>
+              <div style="margin-top:16px;border-top:1px solid var(--hairline);padding-top:14px;">
+                <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Connections</div>
+                <div style="font-size:15px;font-weight:600;">47</div>
+                <div style="font-size:12px;color:var(--slate-500);">4 shared connections at Proton Holdings</div>
+              </div>
+            </div>
+            <div class="card" style="margin-top:16px;">
+              <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Languages</div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <span class="skill-chip skill-yes">✓ Malay — Native</span>
+                <span class="skill-chip skill-yes">✓ English — Professional</span>
+                <span class="skill-chip skill-no">✗ Mandarin — Beginner</span>
+              </div>
+            </div>
+            <div class="card" style="margin-top:16px;">
+              <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Licenses & Certifications</div>
+              <div style="font-size:13px;color:var(--ink-700);">SolidWorks Certified Professional — issued Dec 2025</div>
+              <div style="font-size:12px;color:var(--slate-500);">CSWP, Dassault Systèmes</div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px;">
+              <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">About</div>
+              <p class="profile-about">Final-year Mechanical Engineering student at UTM with a strong foundation in design, thermodynamics, and materials science. Passionate about automotive engineering and sustainable manufacturing. Proven track record in project leadership and cross-functional collaboration. Seeking an internship where I can apply my SolidWorks and FEA skills to real-world product development challenges.</p>
+            </div>
+            <div class="card" style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Experience</div>
+                <button class="btn btn-sm btn-ghost" onclick="toastDemo('Add experience form opened')">+ Add</button>
+              </div>
+              <div class="profile-experience-item">
+                <div class="exp-title">Technical Lead</div>
+                <div class="exp-org">Design Society · Universiti Teknologi Malaysia</div>
+                <div class="exp-date">Aug 2024 – Present · 1 yr</div>
+                <p style="font-size:13px;color:var(--ink-700);margin-top:4px;">Led a team of 8 engineering students on the design and fabrication of a lightweight suspension bracket. Oversaw CAD modelling, FEA validation, and prototype testing.</p>
+              </div>
+              <div class="profile-experience-item">
+                <div class="exp-title">Engineering Intern</div>
+                <div class="exp-org">Proton Holdings · Shah Alam</div>
+                <div class="exp-date">Jun 2025 – Aug 2025 · 3 mos</div>
+                <p style="font-size:13px;color:var(--ink-700);margin-top:4px;">Assisted in the design validation of automotive component assemblies using SolidWorks and ANSYS. Performed tolerance stack-up analysis and contributed to engineering change requests.</p>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Education</div>
+                <button class="btn btn-sm btn-ghost" onclick="toastDemo('Add education form opened')">+ Add</button>
+              </div>
+              <div class="profile-edu-item">
+                <div class="edu-degree">B.Eng Mechanical Engineering</div>
+                <div class="edu-school">Universiti Teknologi Malaysia · 2023–2027</div>
+                <div style="font-size:13px;color:var(--ink-700);">CGPA: 3.7 / 4.0 · Dean's List (4 semesters)</div>
+              </div>
+              <div class="profile-edu-item">
+                <div class="edu-degree">Foundation in Engineering</div>
+                <div class="edu-school">UTM Foundation Centre · 2022–2023</div>
+                <div style="font-size:13px;color:var(--ink-700);">CGPA: 3.9 / 4.0</div>
+              </div>
+            </div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:12px;color:var(--slate-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Skills & Endorsements</div>
+                <button class="btn btn-sm btn-ghost" onclick="toastDemo('Add skill form opened')">+ Add</button>
+              </div>
+              <div class="skill-row">
+                <span class="skill-chip skill-yes">✓ SolidWorks <span style="font-size:10px;color:var(--slate-500);">(12 endorsements)</span></span>
+                <span class="skill-chip skill-yes">✓ Thermodynamics <span style="font-size:10px;color:var(--slate-500);">(8 endorsements)</span></span>
+                <span class="skill-chip skill-yes">✓ Python <span style="font-size:10px;color:var(--slate-500);">(6 endorsements)</span></span>
+                <span class="skill-chip skill-yes">✓ MATLAB <span style="font-size:10px;color:var(--slate-500);">(4 endorsements)</span></span>
+                <span class="skill-chip skill-no" style="cursor:pointer;" onclick="goDemo('quiz')">ANSYS — verify now</span>
+                <span class="skill-chip skill-no" style="cursor:pointer;" onclick="goDemo('quiz')">GD&T — verify now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PULSE -->
+      <section class="page-demo" id="page-pulse">
+        <h1 class="page-h1 serif">Industry Pulse</h1>
+        <p class="page-sub">Tagged to Mechanical Engineering. Sourced only from verified outlets.</p>
+        <div class="card" style="margin-bottom:12px;">
+          <div style="font-size:12px;color:var(--slate-500);">BERNAMA · 2 hours ago</div>
+          <div class="card-title" style="margin-top:4px;">Manufacturing automation roles up 14% in Johor this quarter</div>
+          <p style="font-size:13.5px;color:var(--ink-700);margin:6px 0 10px;">Demand for automation-adjacent mechanical roles is rising as new plants come online in the Iskandar corridor — a clear signal for engineering graduates to upskill in robotics and control systems.</p>
+          <a href="#" style="font-size:13px;color:var(--signal-600);">Read full story →</a>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div style="font-size:12px;color:var(--slate-500);">THE STAR · Yesterday</div>
+          <div class="card-title" style="margin-top:4px;">HRD Corp expands ANSYS-certified training subsidy for engineering grads</div>
+          <p style="font-size:13.5px;color:var(--ink-700);margin:6px 0 10px;">The subsidy now covers short verified certification modules, not just full diploma courses — part of a broader push to reach more engineering graduates this year.</p>
+          <a href="#" style="font-size:13px;color:var(--signal-600);">Read full story →</a>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--slate-500);">MIDA · 3 days ago</div>
+          <div class="card-title" style="margin-top:4px;">NIMP 2030 sectors attract RM29.2 billion in H1 2025</div>
+          <p style="font-size:13.5px;color:var(--ink-700);margin:6px 0 10px;">Manufacturing and E&E sectors account for the largest share of committed investment so far — NIMP 2030 sectors generated an estimated 17,056 job opportunities from projects approved in H1 2025 alone.</p>
+          <a href="#" style="font-size:13px;color:var(--signal-600);">Read full story →</a>
+        </div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section class="page-demo" id="page-messages">
+        <h1 class="page-h1 serif">Messages</h1>
+        <div class="msg-shell">
+          <div class="thread-list">
+            <div class="thread-item active"><div class="co">Proton Holdings — Recruiting</div><div class="prev">Thanks for applying — we'd like to schedule a short call...</div></div>
+            <div class="thread-item"><div class="co">UTM Career Center</div><div class="prev">Reminder: the industrial training briefing is next week</div></div>
+            <div class="thread-item"><div class="co">JobStreet — Matches</div><div class="prev">You have 3 new matching internships in Johor</div></div>
+          </div>
+          <div>
+            <div class="conv-head"><span class="conv-chip">Re: Mechanical Design Intern @ Proton Holdings</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div class="msg msg-bot">Hi Aisyah, thanks for applying — we'd like to schedule a short call this week. Are you free Thursday afternoon?</div>
+              <div class="msg msg-user">Yes, Thursday afternoon works well for me.</div>
+              <div class="msg msg-bot">Great! I'll send you a calendar invite with the video link. Please prepare a brief introduction and be ready to discuss your suspension bracket project.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recruiter pages (full) -->
+      <section class="page-demo" id="page-r-dashboard">
+        <h1 class="page-h1 serif">Recruiter Dashboard</h1>
+        <p class="page-sub">Your hiring pipeline at a glance.</p>
+        <div class="recruiter-stats">
+          <div class="rstat"><div class="num" style="color:var(--signal-600);">6</div><div class="lbl">Active postings</div></div>
+          <div class="rstat"><div class="num" style="color:var(--signal-600);">48</div><div class="lbl">Total applicants</div></div>
+          <div class="rstat"><div class="num" style="color:var(--warn-600);">12</div><div class="lbl">Shortlisted</div></div>
+          <div class="rstat"><div class="num" style="color:var(--alert-600);">3</div><div class="lbl">Pending reviews</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+          <div class="card"><div class="card-title" style="margin-bottom:12px;">Recent applicants</div><div id="rRecentApplicants"></div></div>
+          <div class="card"><div class="card-title" style="margin-bottom:12px;">Quick actions</div>
+            <button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:8px;" onclick="goDemo('r-postings')">+ New posting</button>
+            <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:8px;" onclick="goDemo('r-applicants')">Review applicants</button>
+            <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="goDemo('r-copilot')">Ask Sage Copilot</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-r-postings">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div><h1 class="page-h1 serif">My Postings</h1><p class="page-sub" style="margin:0;">Manage your active, draft, and closed listings.</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toastDemo('New posting form opened')">+ New Posting</button>
+        </div>
+        <div id="rPostingsList" style="margin-top:20px;"></div>
+      </section>
+
+      <section class="page-demo" id="page-r-applicants">
+        <h1 class="page-h1 serif">All Applicants</h1>
+        <p class="page-sub">Review and manage candidates across all your postings.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+          <select class="input select-input" style="width:auto;min-width:160px;" id="rAppFilter" onchange="renderApplicants()">
+            <option value="all">All postings</option>
+            <option value="Mechanical Design Intern">Mechanical Design Intern</option>
+            <option value="Data Science Intern">Data Science Intern</option>
+            <option value="DevOps Intern">DevOps Intern</option>
+          </select>
+          <select class="input select-input" style="width:auto;min-width:120px;" id="rStatusFilter" onchange="renderApplicants()">
+            <option value="all">All status</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="pending">Pending</option>
+            <option value="interview">Interview</option>
+            <option value="offer">Offer</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <input class="input" style="flex:1;min-width:180px;" placeholder="Search applicants…" id="rAppSearch" oninput="renderApplicants()">
+        </div>
+        <div id="rApplicantsTable"></div>
+      </section>
+
+      <section class="page-demo" id="page-r-analytics">
+        <h1 class="page-h1 serif">Hiring Analytics</h1>
+        <p class="page-sub">Your recruitment funnel and performance metrics.</p>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title" style="margin-bottom:12px;">Applicant funnel</div>
+          <div class="funnel">
+            <div class="fstep"><div class="num">148</div><div class="lbl">Applied</div><div class="bar"><div class="fill" style="width:100%;"></div></div></div>
+            <div class="farrow">→</div>
+            <div class="fstep"><div class="num">104</div><div class="lbl">Reviewed</div><div class="bar"><div class="fill" style="width:70%;"></div></div></div>
+            <div class="farrow">→</div>
+            <div class="fstep"><div class="num">37</div><div class="lbl">Shortlisted</div><div class="bar"><div class="fill" style="width:25%;"></div></div></div>
+            <div class="farrow">→</div>
+            <div class="fstep"><div class="num">18</div><div class="lbl">Interviewed</div><div class="bar"><div class="fill" style="width:12%;background:var(--warn-600);"></div></div></div>
+            <div class="farrow">→</div>
+            <div class="fstep"><div class="num">8</div><div class="lbl">Offers</div><div class="bar"><div class="fill" style="width:5%;background:var(--signal-600);"></div></div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top sources</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>JobStreet</span><span style="font-weight:600;">42</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>LinkedIn</span><span style="font-weight:600;">31</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>MyFutureJobs</span><span style="font-weight:600;">18</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Indeed</span><span style="font-weight:600;">12</span></div>
+          </div>
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Time to hire</div>
+            <div style="font-size:2rem;font-family:var(--font-mono);color:var(--signal-600);">12.4</div>
+            <div style="font-size:13px;color:var(--slate-500);">days average</div>
+            <div style="margin-top:12px;font-size:13px;color:var(--slate-500);">↓ 2.1 days from last month</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-r-copilot">
+        <h1 class="page-h1 serif">Sage Copilot</h1>
+        <p class="page-sub">Natural-language search across your applicant pool — protected characteristics are hard‑blocked.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+          <input class="input" style="flex:1;min-width:200px;" placeholder="Ask anything about your applicants…" id="copilotInput">
+          <button class="btn btn-primary" onclick="askCopilot()">Ask Sage</button>
+        </div>
+        <div class="copilot-chat" id="copilotChat">
+          <div class="cp-msg bot">Hello! I'm Sage, your AI hiring assistant. You can ask me things like "Show me candidates with verified Python skills" or "Who is available for an interview this week?"</div>
+        </div>
+        <div class="cp-suggestions">
+          <button onclick="suggestQuery('Show me shortlisted candidates')">Show me shortlisted candidates</button>
+          <button onclick="suggestQuery('Who has verified Python skills?')">Who has verified Python skills?</button>
+          <button onclick="suggestQuery('Candidates available for interview')">Candidates available for interview</button>
+          <button onclick="suggestQuery('Top 5 candidates for Mechanical Design Intern')">Top 5 for Mechanical Design Intern</button>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-r-interview">
+        <h1 class="page-h1 serif">Interview Kits</h1>
+        <p class="page-sub">Standardised scorecards for consistent candidate evaluation.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+          <button class="btn btn-primary btn-sm" onclick="toastDemo('New interview kit form opened')">+ New Kit</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="rInterviewKits">
+          <div class="card"><div class="card-title">Mechanical Design Intern</div><div style="font-size:13px;color:var(--slate-500);">Criteria: SolidWorks, GD&T, Communication</div><div style="margin-top:8px;"><span class="badge badge-verified">3 scorecards</span></div></div>
+          <div class="card"><div class="card-title">Data Science Intern</div><div style="font-size:13px;color:var(--slate-500);">Criteria: Python, SQL, Statistics</div><div style="margin-top:8px;"><span class="badge badge-verified">2 scorecards</span></div></div>
+          <div class="card"><div class="card-title">DevOps Intern</div><div style="font-size:13px;color:var(--slate-500);">Criteria: AWS, CI/CD, Linux</div><div style="margin-top:8px;"><span class="badge badge-pending">No scorecards yet</span></div></div>
+          <div class="card"><div class="card-title">Product Design Intern</div><div style="font-size:13px;color:var(--slate-500);">Criteria: UX, Figma, User Research</div><div style="margin-top:8px;"><span class="badge badge-verified">1 scorecard</span></div></div>
+        </div>
+      </section>
+
+      <!-- University pages -->
+      <section class="page-demo" id="page-u-dashboard">
+        <h1 class="page-h1 serif">University Dashboard</h1>
+        <p class="page-sub">UTM — Career Center · Real-time placement analytics.</p>
+        <div class="university-stats">
+          <div class="ustat"><div class="num" style="color:var(--signal-600);">89%</div><div class="lbl">Graduate placement rate</div></div>
+          <div class="ustat"><div class="num" style="color:var(--signal-600);">1,247</div><div class="lbl">Students placed (YTD)</div></div>
+          <div class="ustat"><div class="num" style="color:var(--warn-600);">142</div><div class="lbl">Active employer partners</div></div>
+          <div class="ustat"><div class="num" style="color:var(--alert-600);">18</div><div class="lbl">Upcoming events</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top hiring companies</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Petronas</span><span style="font-weight:600;">38 hires</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Proton Holdings</span><span style="font-weight:600;">27 hires</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Maybank</span><span style="font-weight:600;">22 hires</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Grab</span><span style="font-weight:600;">18 hires</span></div>
+          </div>
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top programmes by placement</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Computer Science</span><span style="font-weight:600;">94%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Mechanical Engineering</span><span style="font-weight:600;">91%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Business Administration</span><span style="font-weight:600;">87%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Electrical Engineering</span><span style="font-weight:600;">85%</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title" style="margin-bottom:8px;">Recent activity</div>
+          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);">🎓 12 students offered internships at Petronas this week</div>
+          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);">📅 Career fair scheduled for 15 Sept — 35 companies registered</div>
+          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;">📊 Placement rate up 4.2% vs same period last year</div>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-u-partners">
+        <h1 class="page-h1 serif">Employer Partners</h1>
+        <p class="page-sub">142 active partners across all industries.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+          <input class="input" style="flex:1;min-width:200px;" placeholder="Search partners…" id="partnerSearch" oninput="filterPartners()">
+          <select class="input select-input" style="width:auto;min-width:140px;" id="partnerIndustry" onchange="filterPartners()">
+            <option value="all">All industries</option>
+            <option value="Technology">Technology</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Finance">Finance</option>
+            <option value="Energy">Energy</option>
+            <option value="Consulting">Consulting</option>
+          </select>
+        </div>
+        <div class="university-partners" id="partnerList">
+          <span class="partner-tag">Petronas · Energy</span>
+          <span class="partner-tag">Proton Holdings · Manufacturing</span>
+          <span class="partner-tag">Maybank · Finance</span>
+          <span class="partner-tag">Grab · Technology</span>
+          <span class="partner-tag">JobStreet · Technology</span>
+          <span class="partner-tag">Sime Darby · Manufacturing</span>
+          <span class="partner-tag">DHL · Logistics</span>
+          <span class="partner-tag">Axiata · Technology</span>
+          <span class="partner-tag">Maxis · Technology</span>
+          <span class="partner-tag">TNB · Energy</span>
+          <span class="partner-tag">PwC · Consulting</span>
+          <span class="partner-tag">Deloitte · Consulting</span>
+          <span class="partner-tag">Intel · Technology</span>
+          <span class="partner-tag">Nvidia · Technology</span>
+          <span class="partner-tag">BMW · Manufacturing</span>
+          <span class="partner-tag">Airbnb · Technology</span>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-u-events">
+        <h1 class="page-h1 serif">Events & Fairs</h1>
+        <p class="page-sub">Manage career fairs, workshops, and employer sessions.</p>
+        <div style="display:flex;gap:12px;margin:16px 0;">
+          <button class="btn btn-primary btn-sm" onclick="toastDemo('New event form opened')">+ Create Event</button>
+        </div>
+        <div class="university-events">
+          <div class="event-card"><div class="event-title">UTM Career Fair 2026</div><div class="event-meta">📅 15 Sept 2026 · 35 companies registered</div><div style="margin-top:8px;"><span class="badge badge-verified">Active</span></div></div>
+          <div class="event-card"><div class="event-title">Engineering Career Workshop</div><div class="event-meta">📅 28 Aug 2026 · 120 students registered</div><div style="margin-top:8px;"><span class="badge badge-verified">Active</span></div></div>
+          <div class="event-card"><div class="event-title">Tech Talk: AI in Manufacturing</div><div class="event-meta">📅 5 Sept 2026 · 85 students registered</div><div style="margin-top:8px;"><span class="badge badge-pending">Upcoming</span></div></div>
+          <div class="event-card"><div class="event-title">Finance & Consulting Networking Night</div><div class="event-meta">📅 10 Oct 2026 · 45 students registered</div><div style="margin-top:8px;"><span class="badge badge-pending">Upcoming</span></div></div>
+        </div>
+      </section>
+
+      <section class="page-demo" id="page-u-analytics">
+        <h1 class="page-h1 serif">Outcome Analytics</h1>
+        <p class="page-sub">MOHE reporting — real-time placement and employability data.</p>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title" style="margin-bottom:12px;">Graduate outcomes — Class of 2026</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+            <div style="padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);text-align:center;">
+              <div style="font-size:2rem;font-family:var(--font-mono);color:var(--signal-600);">89%</div>
+              <div style="font-size:13px;color:var(--slate-500);">Employed or pursuing further studies</div>
+            </div>
+            <div style="padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);text-align:center;">
+              <div style="font-size:2rem;font-family:var(--font-mono);color:var(--warn-600);">RM 3,850</div>
+              <div style="font-size:13px;color:var(--slate-500);">Average starting salary</div>
+            </div>
+            <div style="padding:16px;border:1px solid var(--hairline);border-radius:var(--radius-card);text-align:center;">
+              <div style="font-size:2rem;font-family:var(--font-mono);color:var(--signal-600);">4.2</div>
+              <div style="font-size:13px;color:var(--slate-500);">Average offers per student</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Employability by faculty</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Engineering</span><span style="font-weight:600;">94%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Computer Science</span><span style="font-weight:600;">92%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Business</span><span style="font-weight:600;">87%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Arts & Social Sciences</span><span style="font-weight:600;">78%</span></div>
+          </div>
+          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top industries</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Technology</span><span style="font-weight:600;">32%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Manufacturing</span><span style="font-weight:600;">28%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Finance</span><span style="font-weight:600;">18%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Consulting</span><span style="font-weight:600;">12%</span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ============================================================
+     JAVASCRIPT – complete with all functions
+     ============================================================ -->
+<script>
+  // ========== ENHANCED JOB DATA (12 listings) ==========
+  const jobsData = [{
+    id: 1,
+    title: "Mechanical Design Intern",
+    company: "Proton Holdings",
+    location: "Shah Alam, Selangor",
+    source: "JobStreet",
+    match: 92,
+    type: "Internship",
+    skills: ["SolidWorks", "Thermodynamics", "ANSYS", "GD&T"],
+    matchedSkills: ["SolidWorks", "Thermodynamics"],
+    salary: "RM 2,800 - 3,200/mo",
+    employmentType: "On-site",
+    description: "Support the design team on CAD modelling, tolerance analysis, and prototype iteration for automotive component programs. This is a 6-month placement with potential for full-time conversion.",
+    requirements: "Final year Mechanical Engineering student. Proficiency in SolidWorks and basic FEA understanding.",
+    benefits: "Monthly allowance, mentorship program, free parking, subsidized meals.",
+    posted: "2 days ago",
+    applicants: 34,
+    applyUrl: "#"
+  }, {
+    id: 2,
+    title: "Manufacturing Engineer Intern",
+    company: "Petronas",
+    location: "Kuala Lumpur",
+    source: "LinkedIn",
+    match: 78,
+    type: "Internship",
+    skills: ["AutoCAD", "Six Sigma", "SAP", "Lean Manufacturing"],
+    matchedSkills: ["AutoCAD"],
+    salary: "RM 3,000 - 3,500/mo",
+    employmentType: "On-site",
+    description: "Assist in process optimization and production planning for oil & gas facilities. Exposure to lean manufacturing and continuous improvement methodologies.",
+    requirements: "Chemical or Mechanical Engineering student, penultimate year. Basic understanding of Six Sigma principles preferred.",
+    benefits: "Competitive allowance, accommodation assistance, industry exposure.",
+    posted: "1 week ago",
+    applicants: 28,
+    applyUrl: "#"
+  }, {
+    id: 3,
+    title: "Product Design Intern",
+    company: "Selangor Precision Sdn Bhd",
+    location: "Klang, Selangor",
+    source: "MyFutureJobs",
+    match: 68,
+    type: "Apprenticeship",
+    skills: ["SolidWorks", "GD&T", "FEA", "3D Printing"],
+    matchedSkills: ["SolidWorks"],
+    salary: "RM 2,200 - 2,600/mo",
+    employmentType: "Hybrid",
+    description: "Work on product design and prototyping for precision components. Hands-on experience with 3D printing and rapid prototyping techniques.",
+    requirements: "Mechanical Engineering or related field. CAD experience required.",
+    benefits: "Flexible working, mentorship, exposure to full product lifecycle.",
+    posted: "3 days ago",
+    applicants: 19,
+    applyUrl: "#"
+  }, {
+    id: 4,
+    title: "CAD Technician Intern",
+    company: "Sime Darby",
+    location: "Petaling Jaya",
+    source: "Indeed",
+    match: 55,
+    type: "Internship",
+    skills: ["AutoCAD", "Inventor", "Drafting", "BIM"],
+    matchedSkills: ["AutoCAD"],
+    salary: "RM 2,000 - 2,500/mo",
+    employmentType: "On-site",
+    description: "Assist in creating technical drawings and 3D models for construction equipment projects. Support the engineering team in design documentation.",
+    requirements: "Diploma or degree in Engineering. AutoCAD proficiency required.",
+    benefits: "Training provided, career progression opportunities.",
+    posted: "5 days ago",
+    applicants: 15,
+    applyUrl: "#"
+  }, {
+    id: 5,
+    title: "R&D Engineering Intern",
+    company: "Dyson",
+    location: "Singapore (Remote allowed)",
+    source: "JobStreet",
+    match: 41,
+    type: "Internship",
+    skills: ["Python", "MATLAB", "Data Analysis", "Simulation"],
+    matchedSkills: ["Python"],
+    salary: "RM 4,000 - 5,000/mo",
+    employmentType: "Remote",
+    description: "Support R&D team in data analysis and simulation for next-generation consumer products. Work with cross-functional teams on cutting-edge technology.",
+    requirements: "Engineering or Data Science student. Strong programming skills in Python or MATLAB.",
+    benefits: "Remote work, competitive allowance, exposure to global R&D projects.",
+    posted: "Just now",
+    applicants: 45,
+    applyUrl: "#"
+  }, {
+    id: 6,
+    title: "Graduate Engineer Trainee",
+    company: "Airbus",
+    location: "Kuala Lumpur",
+    source: "LinkedIn",
+    match: 62,
+    type: "Graduate Program",
+    skills: ["Aerospace", "CAD", "FEA", "Project Management"],
+    matchedSkills: ["CAD"],
+    salary: "RM 3,800 - 4,500/mo",
+    employmentType: "On-site",
+    description: "Two-year rotational graduate program covering design, manufacturing, and quality assurance in the aerospace industry. Work on real aircraft components.",
+    requirements: "Recent graduate in Aerospace, Mechanical, or related engineering. 0-2 years experience.",
+    benefits: "Comprehensive training, global mobility, competitive benefits package.",
+    posted: "4 days ago",
+    applicants: 56,
+    applyUrl: "#"
+  }, {
+    id: 7,
+    title: "Data Science Intern",
+    company: "Grab",
+    location: "Kuala Lumpur",
+    source: "MyFutureJobs",
+    match: 71,
+    type: "Internship",
+    skills: ["Python", "SQL", "Machine Learning", "Data Visualization"],
+    matchedSkills: ["Python", "SQL"],
+    salary: "RM 3,500 - 4,000/mo",
+    employmentType: "Hybrid",
+    description: "Work on real-world data challenges in the mobility and delivery space. Analyze user behavior and build predictive models.",
+    requirements: "Computer Science, Data Science, or related field. Experience with Python and SQL required.",
+    benefits: "Free Grab rides, mentorship from senior data scientists, flexible hours.",
+    posted: "6 days ago",
+    applicants: 67,
+    applyUrl: "#"
+  }, {
+    id: 8,
+    title: "Energy Analyst Intern",
+    company: "TNB",
+    location: "Kuala Lumpur",
+    source: "Indeed",
+    match: 48,
+    type: "Internship",
+    skills: ["Energy Systems", "Data Analysis", "Power BI", "Statistics"],
+    matchedSkills: ["Data Analysis"],
+    salary: "RM 2,500 - 3,000/mo",
+    employmentType: "On-site",
+    description: "Assist the energy analytics team in data collection, processing, and reporting for power grid operations and renewable energy projects.",
+    requirements: "Engineering, Data Science, or Energy-related studies. Basic data analysis skills.",
+    benefits: "Industry exposure, transport allowance, subsidized meals.",
+    posted: "2 weeks ago",
+    applicants: 22,
+    applyUrl: "#"
+  }, {
+    id: 9,
+    title: "Software Engineering Intern",
+    company: "Intel",
+    location: "Penang",
+    source: "JobStreet",
+    match: 84,
+    type: "Internship",
+    skills: ["C++", "Python", "Linux", "Embedded Systems"],
+    matchedSkills: ["Python", "C++"],
+    salary: "RM 3,200 - 3,800/mo",
+    employmentType: "On-site",
+    description: "Work on firmware and software development for next-generation semiconductor products. Collaborate with global engineering teams.",
+    requirements: "Computer Science or Electronics student. Proficiency in C++ and Linux environment.",
+    benefits: "Internship stipend, housing allowance, access to Intel's training programs.",
+    posted: "3 days ago",
+    applicants: 52,
+    applyUrl: "#"
+  }, {
+    id: 10,
+    title: "Business Consulting Intern",
+    company: "PwC",
+    location: "Kuala Lumpur",
+    source: "LinkedIn",
+    match: 56,
+    type: "Internship",
+    skills: ["Excel", "PowerPoint", "Business Analysis", "SQL"],
+    matchedSkills: ["Excel", "PowerPoint"],
+    salary: "RM 2,800 - 3,200/mo",
+    employmentType: "On-site",
+    description: "Support consulting teams on client projects across financial services, technology, and public sector. Assist in data analysis and report preparation.",
+    requirements: "Business, Economics, or related field. Strong analytical and communication skills.",
+    benefits: "Professional development, networking opportunities, exposure to top clients.",
+    posted: "1 week ago",
+    applicants: 74,
+    applyUrl: "#"
+  }, {
+    id: 11,
+    title: "AI Research Intern",
+    company: "Nvidia",
+    location: "Kuala Lumpur (Remote)",
+    source: "MyFutureJobs",
+    match: 66,
+    type: "Internship",
+    skills: ["PyTorch", "Deep Learning", "Computer Vision", "Python"],
+    matchedSkills: ["Python"],
+    salary: "RM 4,500 - 5,500/mo",
+    employmentType: "Remote",
+    description: "Research and develop AI models for computer vision and generative AI applications. Contribute to real-world AI research projects.",
+    requirements: "Machine Learning or Computer Science focus. Experience with PyTorch or TensorFlow required.",
+    benefits: "Remote-first, competitive allowance, mentorship from AI researchers.",
+    posted: "2 days ago",
+    applicants: 89,
+    applyUrl: "#"
+  }, {
+    id: 12,
+    title: "HR Operations Intern",
+    company: "CIMB",
+    location: "Kuala Lumpur",
+    source: "Indeed",
+    match: 33,
+    type: "Internship",
+    skills: ["HRIS", "Excel", "Communication", "Recruitment"],
+    matchedSkills: ["Excel"],
+    salary: "RM 2,200 - 2,600/mo",
+    employmentType: "On-site",
+    description: "Assist the HR operations team in recruitment, onboarding, and employee engagement activities. Support HR analytics and reporting.",
+    requirements: "Business or HR-related studies. Strong communication and organizational skills.",
+    benefits: "Banking industry exposure, training sessions, flexible working arrangement.",
+    posted: "4 days ago",
+    applicants: 31,
+    applyUrl: "#"
+  }];
+
+  // ========== RECRUITER DATA ==========
+  const recruiterPostings = [
+    { title: "Mechanical Design Intern", loc: "Shah Alam", dur: "6 months", applicants: 48, status: "active" },
+    { title: "Data Science Intern", loc: "KL", dur: "3 months", applicants: 32, status: "active" },
+    { title: "DevOps Intern", loc: "KL", dur: "6 months", applicants: 19, status: "active" },
+    { title: "Product Design Intern", loc: "KL", dur: "3 months", applicants: 25, status: "active" },
+    { title: "Cybersecurity Intern", loc: "KL", dur: "6 months", applicants: 14, status: "draft" },
+    { title: "Business Analyst Intern", loc: "KL", dur: "3 months", applicants: 11, status: "closed" },
+  ];
+
+  const applicantsData = [
+    { name: "Nahid Hasan Rayan", uni: "UTM KL", prog: "BSc CS", gpa: 3.7, status: "shortlisted", applied: "May 25",
+      role: "Mechanical Design Intern" },
+    { name: "Zay Yar Shin", uni: "UTM KL", prog: "BEng Software", gpa: 3.5, status: "interview", applied: "May 24",
+      role: "Data Science Intern" },
+    { name: "Sara Ahmad", uni: "Universiti Malaya", prog: "BSc Info Tech", gpa: 3.8, status: "shortlisted",
+      applied: "May 23", role: "Mechanical Design Intern" },
+    { name: "Kevin Lim", uni: "Universiti Putra", prog: "BSc CS", gpa: 3.6, status: "pending", applied: "May 22",
+      role: "DevOps Intern" },
+    { name: "Aisha Mohammed", uni: "IIUM", prog: "BSc CS", gpa: 3.9, status: "offer", applied: "May 21",
+      role: "Data Science Intern" },
+    { name: "Lee Wei Jian", uni: "Sunway University", prog: "BSc CS", gpa: 3.4, status: "pending", applied: "May 20",
+      role: "Mechanical Design Intern" },
+    { name: "Priya Nair", uni: "Monash Malaysia", prog: "BEng CS", gpa: 3.7, status: "rejected", applied: "May 19",
+      role: "Product Design Intern" },
+    { name: "Ahmad Faiz", uni: "UTM KL", prog: "BSc CS", gpa: 3.3, status: "pending", applied: "May 18",
+      role: "Mechanical Design Intern" },
+  ];
+
+  // ========== ROLE TOGGLE ==========
+  let currentRole = 'student';
+
+  function setRole(role) {
+    currentRole = role;
+    document.querySelectorAll('.rt-btn').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+    const names = { student: { avatar: 'AZ', name: 'Aisyah Zulkifli', label: 'UTM · Student' },
+      recruiter: { avatar: 'SL', name: 'Sarah Lim', label: 'Petronas · Recruiter' },
+      university: { avatar: 'UTM', name: 'UTM Career Center', label: 'Universiti Teknologi Malaysia' } };
+    const info = names[role];
+    document.getElementById('roleAvatar').textContent = info.avatar;
+    document.getElementById('roleName').textContent = info.name;
+    document.getElementById('roleLabel').textContent = info.label;
+    document.querySelectorAll('.nav-item').forEach(item => {
+      const roles = item.dataset.role.split(',');
+      item.style.display = roles.includes(role) ? 'flex' : 'none';
+    });
+    const firstPage = role === 'student' ? 'dashboard' : role === 'recruiter' ? 'r-dashboard' : 'u-dashboard';
+    const firstItem = document.querySelector(`.nav-item[data-page="${firstPage}"]`);
+    if (firstItem) goDemo(firstPage, firstItem);
+  }
+
+  // ========== NAVIGATION – fixed switchView ==========
+  function switchView(view) {
+    const landing = document.getElementById('landing-wrap');
+    const demo = document.getElementById('demo-wrap');
+    const tabs = document.querySelectorAll('.nav-tab');
+    if (view === 'landing') {
+      landing.style.display = 'block';
+      demo.classList.remove('active');
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.view === 'landing'));
+    } else if (view === 'demo') {
+      landing.style.display = 'none';
+      demo.classList.add('active');
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.view === 'demo'));
+      window.scrollTo(0, 0);
+      if (typeof setRole === 'function') setRole('student');
+    }
+  }
+  // Make it globally accessible
+  window.switchView = switchView;
+
+  function goDemo(pageId, el) {
+    document.querySelectorAll('.page-demo').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(n => n.classList.remove('active'));
+    let targetEl = el;
+    if (!targetEl) {
+      navItems.forEach(n => { if (n.dataset.page === pageId) targetEl = n; });
+    }
+    if (targetEl && targetEl.classList.contains('nav-item')) {
+      targetEl.classList.add('active');
+      const indicator = document.getElementById('navIndicator');
+      indicator.style.transform = 'translateY(' + targetEl.offsetTop + 'px)';
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function toastDemo(msg) {
+    const wrap = document.getElementById('toastWrap');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    wrap.appendChild(t);
+    setTimeout(() => t.remove(), 3600);
+  }
+
+  // ========== JOBS ==========
+  function renderJobs(filteredJobs) {
+    const container = document.getElementById('jobList');
+    if (!container) return;
+    const list = filteredJobs || jobsData;
+    if (list.length === 0) { container.innerHTML =
+        `<p style="color:var(--slate-500);padding:20px;">No jobs match your filters.</p>`; return; }
+    container.innerHTML = list.map(job => `
+      <div class="card job-card" onclick="openJobDetail(${job.id})">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+          <div><div class="job-title">${job.title}</div><div style="font-size:14px;color:var(--ink-700);font-weight:500;">${job.company}</div></div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="job-source-badge">${job.source}</span>
+            <span class="job-type-badge badge-verified" style="background:${job.type==='Graduate Program'?'var(--blue-100)':'var(--signal-100)'};color:${job.type==='Graduate Program'?'var(--blue-600)':'var(--signal-700)'};">${job.type}</span>
+            <span class="job-match-badge" style="color:${job.match>=70?'var(--signal-700)':job.match>=40?'var(--warn-600)':'var(--slate-500)'};">${job.match}%</span>
+          </div>
+        </div>
+        <div class="job-details">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${job.location}</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${job.posted}</span>
+          <span><strong>${job.salary}</strong></span>
+          <span class="badge ${job.employmentType==='Remote'?'badge-remote':job.employmentType==='Hybrid'?'badge-hybrid':'badge-missing'}">${job.employmentType}</span>
+        </div>
+        <div class="job-skill-list">${job.skills.map(s => {const m=job.matchedSkills.includes(s); return `<span class="skill ${m?'':'missing'}">${m?'✓ ':''}${s}</span>`;}).join('')}</div>
+        <div class="job-footer">
+          <span style="font-size:13px;color:var(--slate-500);">${job.matchedSkills.length}/${job.skills.length} skills matched · ${job.applicants} applicants</span>
+          <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openJobDetail(${job.id})">View & Apply</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterJobs() {
+    const search = document.getElementById('jobSearch').value.toLowerCase();
+    const source = document.getElementById('jobSourceFilter').value;
+    const type = document.getElementById('jobTypeFilter').value;
+    const loc = document.getElementById('jobLocationFilter').value;
+    const matchFilter = document.getElementById('jobMatchFilter').value;
+    let filtered = jobsData.filter(job => {
+      const matchSearch = job.title.toLowerCase().includes(search) || job.company.toLowerCase().includes(search) ||
+        job.skills.some(s => s.toLowerCase().includes(search)) || job.description.toLowerCase().includes(search);
+      const matchSource = source === 'all' || job.source === source;
+      const matchType = type === 'all' || job.type === type;
+      const matchLoc = loc === 'all' || job.location.includes(loc);
+      let matchMatch = true;
+      if (matchFilter === 'high') matchMatch = job.match >= 70;
+      else if (matchFilter === 'medium') matchMatch = job.match >= 40 && job.match < 70;
+      else if (matchFilter === 'low') matchMatch = job.match < 40;
+      return matchSearch && matchSource && matchType && matchLoc && matchMatch;
+    });
+    renderJobs(filtered);
+  }
+
+  // ========== JOB DETAIL ==========
+  function openJobDetail(jobId) {
+    const job = jobsData.find(j => j.id === jobId);
+    if (!job) return;
+    goDemo('jobdetail');
+    const container = document.getElementById('jobDetailContent');
+    container.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+        <div><h2 style="font-family:var(--font-display);font-weight:400;font-size:2rem;">${job.title}</h2><p style="font-size:1.1rem;color:var(--ink-700);">${job.company} · <span class="job-source-badge">${job.source}</span></p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:14px;color:var(--slate-500);">
+            <span>${job.location}</span><span>Posted ${job.posted}</span><span>${job.employmentType}</span><span>${job.salary}</span>
+          </div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:2.5rem;font-family:var(--font-mono);color:${job.match>=70?'var(--signal-700)':job.match>=40?'var(--warn-600)':'var(--slate-500)'};">${job.match}%</div><div style="font-size:13px;color:var(--slate-500);">Match score</div></div>
+      </div>
+      <div class="card" style="margin:20px 0;">
+        <div class="card-title">About the role</div>
+        <p style="margin-top:8px;color:var(--ink-700);">${job.description}</p>
+        <div style="margin-top:12px;"><strong>Requirements:</strong><p style="font-size:14px;color:var(--ink-700);margin-top:4px;">${job.requirements}</p></div>
+        <div style="margin-top:12px;"><strong>What we offer:</strong><p style="font-size:14px;color:var(--ink-700);margin-top:4px;">${job.benefits}</p></div>
+        <div style="margin-top:12px;"><strong>Required skills:</strong><div class="job-skill-list">${job.skills.map(s => {const m=job.matchedSkills.includes(s); return `<span class="skill ${m?'':'missing'}">${m?'✓ ':''}${s}</span>`;}).join('')}</div></div>
+        <div style="margin-top:12px;"><span style="font-size:13px;color:var(--slate-500);">You match ${job.matchedSkills.length}/${job.skills.length} skills.</span>${job.matchedSkills.length < job.skills.length ? `<span style="font-size:13px;color:var(--warn-600);"> Missing: ${job.skills.filter(s=>!job.matchedSkills.includes(s)).join(', ')}</span>` : ''}</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--slate-500);">${job.applicants} applicants · ${job.employmentType}</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;"><button class="btn btn-primary" onclick="applyToJob(${job.id})">Apply with AI CV →</button><button class="btn btn-secondary" onclick="toastDemo('Opening external application…')">Apply on ${job.source} ↗</button></div>
+      <div id="aiCvContainer"></div>
+    `;
+    window.scrollTo(0, 0);
+  }
+
+  // ========== WORLD-CLASS AI CV GENERATOR ==========
+  function applyToJob(jobId) {
+    const job = jobsData.find(j => j.id === jobId);
+    if (!job) return;
+    toastDemo('Generating your tailored CV and cover letter…');
+    setTimeout(() => {
+      const container = document.getElementById('aiCvContainer');
+      const template = getCVTemplate(job);
+      container.innerHTML = `
+        <div class="cv-preview">
+          <div class="cv-header">
+            <div><h3>Aisyah Zulkifli</h3><div style="font-size:14px;color:var(--ink-700);">Mechanical Engineering Student · UTM</div></div>
+            <div class="cv-contact">📧 aisyah.z@graduate.utm.edu.my<br>📱 +6012-345 6789<br>📍 Johor Bahru, Malaysia</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;">
+            ${job.skills.map(s => `<span class="skill ${job.matchedSkills.includes(s)?'':'missing'}">${job.matchedSkills.includes(s)?'✓ ':''}${s}</span>`).join('')}
+          </div>
+          <div class="cv-section"><h4>Professional Summary</h4><p>${template.summary}</p></div>
+          <div class="cv-section"><h4>Key Achievements</h4><ul>${template.achievements.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+          <div class="cv-section"><h4>Skills & Competencies</h4><ul>${job.skills.map(s=>`<li>${s} — ${job.matchedSkills.includes(s)?'Proficient (verified)':'Currently developing (roadmap available)'}</li>`).join('')}</ul></div>
+          <div class="cv-section"><h4>Project Experience</h4><p><strong>${template.project.title}</strong><br>${template.project.description}</p></div>
+          <div class="cv-section"><h4>Cover Letter</h4><p>${template.coverLetter}</p></div>
+          <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="toastDemo('Application submitted!')">Submit Application</button>
+            <button class="btn btn-secondary" onclick="toastDemo('Downloading PDF…')">Download PDF</button>
+          </div>
+        </div>
+      `;
+    }, 800);
+  }
+
+  function getCVTemplate(job) {
+    const templates = {
+      'Mechanical Design Intern': {
+        summary: 'Final-year Mechanical Engineering student with strong foundation in design, thermodynamics, and materials science. Proven track record in CAD modelling and FEA validation. Eager to apply analytical and technical skills to automotive component design and prototype development.',
+        achievements: [
+          'Redesigned a lightweight suspension bracket using SolidWorks and FEA, achieving 22% mass reduction',
+          'Led a team of 8 engineering students on a design project, successfully delivering within deadline',
+          'Completed SolidWorks Certified Professional (CSWP) certification'
+        ],
+        project: {
+          title: 'Lightweight Suspension Bracket Redesign',
+          description: 'Led the design and FEA validation of a lightweight suspension bracket as part of final year project. Applied SolidWorks for modelling and ANSYS for structural analysis. Achieved 22% mass reduction while maintaining structural integrity. Presented findings to an industry panel.'
+        },
+        coverLetter: `Dear Hiring Team,
+
+I am writing to express my strong interest in the ${job.title} position at ${job.company}. As a final-year Mechanical Engineering student at UTM with a focus on design and automotive engineering, I am excited about the opportunity to contribute to your design team.
+
+My experience with SolidWorks and FEA, combined with my passion for automotive innovation, has prepared me to take on the challenges of this role. My final year project on lightweight suspension bracket redesign demonstrated my ability to apply engineering principles to real-world problems while achieving measurable results.
+
+I am particularly drawn to ${job.company}'s reputation for innovation and quality in the automotive industry. I am confident that my technical skills, attention to detail, and collaborative mindset would make me a valuable addition to your team.
+
+I look forward to the opportunity to discuss how my background and skills align with the needs of your organization.
+
+Sincerely,
+Aisyah Zulkifli`
+      },
+      'Data Science Intern': {
+        summary: 'Data Science student with strong foundation in Python, SQL, and machine learning. Passionate about turning data into actionable insights. Experience in building predictive models and data visualization for real-world business problems.',
+        achievements: [
+          'Built a machine learning model predicting customer churn with 85% accuracy',
+          'Developed interactive dashboards using Power BI and Tableau',
+          'Presented data insights to business stakeholders at a university industry forum'
+        ],
+        project: {
+          title: 'Customer Churn Prediction Model',
+          description: 'Developed a predictive model for customer churn using Python and scikit-learn. Performed EDA, feature engineering, and model selection. Achieved 85% accuracy and presented insights to a panel of industry professionals.'
+        },
+        coverLetter: `Dear Hiring Team,
+
+I am excited to apply for the ${job.title} position at ${job.company}. With a strong foundation in data science and a passion for uncovering patterns in complex datasets, I am eager to contribute to your analytics team.
+
+My experience in building predictive models and creating data visualizations has equipped me with the skills to tackle real-world data challenges. I am particularly interested in the intersection of data and business strategy, and I believe my analytical mindset would be a strong fit for your organization.
+
+I look forward to the opportunity to discuss how I can contribute to ${job.company}'s data-driven decision-making.
+
+Sincerely,
+Aisyah Zulkifli`
+      },
+      'Default': {
+        summary: `Final-year student with a strong foundation in engineering and analytical skills. Passionate about applying technical knowledge to solve real-world problems. Proven ability to work effectively in teams and deliver results.`,
+        achievements: [
+          'Successfully completed multiple team-based engineering projects',
+          'Developed strong technical and communication skills through coursework and extracurricular activities',
+          'Recognized for academic excellence with multiple Dean\'s List awards'
+        ],
+        project: {
+          title: 'Final Year Engineering Project',
+          description: 'Applied engineering principles to design and analyze a practical solution to a real-world problem. Collaborated with team members to deliver a comprehensive report and presentation.'
+        },
+        coverLetter: `Dear Hiring Team,
+
+I am writing to express my interest in the ${job.title} position at ${job.company}. As a final-year student at UTM, I have developed a strong technical foundation and a passion for solving complex problems.
+
+I am eager to apply my skills and knowledge to contribute to the success of your team. I am particularly drawn to ${job.company}'s commitment to innovation and excellence.
+
+I look forward to the opportunity to discuss how my background and skills can contribute to your organization.
+
+Sincerely,
+Aisyah Zulkifli`
+      }
+    };
+    return templates[job.title] || templates['Default'];
+  }
+
+  // ========== RECRUITER ==========
+  function renderPostings() {
+    const container = document.getElementById('rPostingsList');
+    if (!container) return;
+    container.innerHTML = recruiterPostings.map(p => `
+      <div class="posting-card">
+        <div><div class="p-title">${p.title}</div><div class="p-meta">${p.loc} · ${p.dur} · ${p.applicants} applicants</div></div>
+        <span class="p-status ${p.status}">${p.status}</span>
+        <div class="p-actions"><button onclick="toastDemo('Editing ${p.title}')">Edit</button><button onclick="goDemo('r-applicants')">Applicants</button><button onclick="toastDemo('${p.title} ${p.status==='active'?'paused':'activated'}')">${p.status==='active'?'Pause':'Activate'}</button></div>
+      </div>
+    `).join('');
+  }
+
+  function renderApplicants() {
+    const container = document.getElementById('rApplicantsTable');
+    if (!container) return;
+    const roleFilter = document.getElementById('rAppFilter').value;
+    const statusFilter = document.getElementById('rStatusFilter').value;
+    const search = document.getElementById('rAppSearch').value.toLowerCase();
+    let filtered = applicantsData.filter(a => {
+      const matchRole = roleFilter === 'all' || a.role === roleFilter;
+      const matchStatus = statusFilter === 'all' || a.status === statusFilter;
+      const matchSearch = a.name.toLowerCase().includes(search) || a.uni.toLowerCase().includes(search);
+      return matchRole && matchStatus && matchSearch;
+    });
+    container.innerHTML = `
+      <div class="card" style="padding:0;overflow-x:auto;">
+        <table class="applicant-table">
+          <thead><tr><th>Applicant</th><th>University</th><th>Programme</th><th>GPA</th><th>Status</th><th>Role</th><th>Actions</th></tr></thead>
+          <tbody>${filtered.map(a => `
+            <tr>
+              <td><strong>${a.name}</strong><br><span style="font-size:12px;color:var(--slate-500);">Applied ${a.applied}</span></td>
+              <td>${a.uni}</td>
+              <td>${a.prog}</td>
+              <td><span style="font-family:var(--font-mono);">${a.gpa}</span></td>
+              <td><span class="badge ${a.status==='shortlisted'||a.status==='offer'?'badge-verified':a.status==='interview'?'badge-interview':a.status==='rejected'?'badge-alert':'badge-pending'}">${a.status}</span></td>
+              <td>${a.role}</td>
+              <td><div class="applicant-actions"><button class="shortlist" onclick="toastDemo('${a.name} shortlisted!')">✓</button><button class="msg" onclick="toastDemo('Message ${a.name}')">💬</button><button class="reject" onclick="toastDemo('${a.name} rejected')">✕</button></div></td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderRecentApplicants() {
+    const container = document.getElementById('rRecentApplicants');
+    if (!container) return;
+    const recent = applicantsData.slice(0, 5);
+    container.innerHTML = recent.map(a => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--hairline);">
+        <div><strong>${a.name}</strong><br><span style="font-size:12px;color:var(--slate-500);">${a.role}</span></div>
+        <span class="badge ${a.status==='shortlisted'||a.status==='offer'?'badge-verified':a.status==='interview'?'badge-interview':a.status==='rejected'?'badge-alert':'badge-pending'}">${a.status}</span>
+      </div>
+    `).join('');
+  }
+
+  // ========== COPILOT ==========
+  function askCopilot() {
+    const input = document.getElementById('copilotInput');
+    const chat = document.getElementById('copilotChat');
+    if (!input || !input.value.trim()) return;
+    const q = input.value;
+    chat.innerHTML += `<div class="cp-msg user">${q}</div>`;
+    input.value = '';
+    const responses = [
+      "I've found 6 candidates matching your query. 2 have verified skills, 3 are available for interviews.",
+      "Based on your query, I've shortlisted 3 candidates for the Mechanical Design Intern role. Their average match score is 82%.",
+      "There are 8 candidates with verified Python skills. 4 of them have applied to your active postings.",
+      "I've analyzed 12 applicants. 5 are strong fits, 4 need further review, and 3 are not a match based on their skill gaps.",
+      "Your hiring funnel shows 48 applicants, 12 shortlisted, and 8 offers extended. Your offer acceptance rate is 33%."
+    ];
+    setTimeout(() => {
+      chat.innerHTML += `<div class="cp-msg bot">${responses[Math.floor(Math.random() * responses.length)]}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    }, 600);
+  }
+
+  function suggestQuery(query) {
+    document.getElementById('copilotInput').value = query;
+    askCopilot();
+  }
+
+  // ========== PARTNER SEARCH ==========
+  function filterPartners() {
+    const search = document.getElementById('partnerSearch').value.toLowerCase();
+    const industry = document.getElementById('partnerIndustry').value;
+    document.querySelectorAll('.partner-tag').forEach(el => {
+      const text = el.textContent.toLowerCase();
+      const matchSearch = text.includes(search);
+      const matchIndustry = industry === 'all' || text.includes(industry.toLowerCase());
+      el.style.display = matchSearch && matchIndustry ? 'inline-block' : 'none';
+    });
+  }
+
+  // ========== QUIZ ==========
+  const quizQuestions = [
+    { q: "Which analysis type would you use to find the natural frequency of a bracket before fatigue testing?",
+      opts: ["Static structural analysis", "Modal analysis", "Thermal steady-state analysis",
+        "Electromagnetic analysis"], correct: 1 },
+    { q: "A mesh that's too coarse near a stress concentration will most likely:",
+      opts: ["Overestimate stiffness only", "Underestimate peak stress", "Have no effect on results",
+        "Only affect thermal simulations"], correct: 1 },
+    { q: "What does a von Mises stress plot help you evaluate?",
+      opts: ["Fluid velocity", "Yielding under combined loading", "Electrical resistance",
+        "Surface roughness"], correct: 1 },
+  ];
+  let quizIndex = 0;
+  let quizTimeLeft = 272;
+
+  function renderDots() {
+    const dotsEl = document.getElementById('quizDots');
+    if (!dotsEl) return;
+    dotsEl.innerHTML = '';
+    quizQuestions.forEach((_, i) => { const d = document.createElement('div');
+      d.className = 'quiz-dot' + (i < quizIndex ? ' done' : i === quizIndex ? ' current' : '');
+      dotsEl.appendChild(d); });
+  }
+
+  function renderQuestion() {
+    if (quizIndex >= quizQuestions.length) {
+      const card = document.getElementById('quizCard');
+      if (card) { card.innerHTML =
+          '<div class="card-title" style="font-size:1.05rem;">ANSYS — <span class="badge badge-verified">Verified ✓</span></div><p style="font-size:14px;color:var(--ink-700);margin-top:12px;">Your ANSYS authenticity score is now verified. It will need retaking in 6 months to stay current.</p><span class="btn btn-primary" onclick="goDemo(\'roadmap\')">Back to Roadmap →</span>'; }
+      return;
+    }
+    const cur = quizQuestions[quizIndex];
+    const card = document.getElementById('quizCard');
+    if (!card) return;
+    card.innerHTML = '<div class="card-title" id="quizQ" style="font-size:1.05rem;margin-bottom:20px;">' + cur.q +
+      '</div>' + cur.opts.map((o, i) =>
+        '<button class="quiz-option" onclick="answerDemo(this,' + (i === cur.correct) + ')">' + o + '</button>').join(
+        '');
+    renderDots();
+  }
+
+  function answerDemo(btn, correct) {
+    document.querySelectorAll('.quiz-option').forEach(o => o.onclick = null);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    setTimeout(() => { quizIndex++;
+      renderQuestion(); }, 550);
+  }
+  renderDots();
+  setInterval(() => {
+    const active = document.getElementById('page-quiz');
+    if (active && active.classList.contains('active') && quizTimeLeft > 0 && quizIndex < quizQuestions.length) {
+      quizTimeLeft--;
+      const m = String(Math.floor(quizTimeLeft / 60)).padStart(2, '0');
+      const s = String(quizTimeLeft % 60).padStart(2, '0');
+      const timer = document.getElementById('quizTimer');
+      if (timer) timer.textContent = m + ':' + s;
+    }
+  }, 1000);
+
+  // ========== TUTOR CHAT ==========
+  function sendChatDemo() {
+    const input = document.getElementById('chatInput');
+    if (!input || !input.value.trim()) return;
+    const body = document.getElementById('chatBody');
+    if (!body) return;
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg msg-user';
+    userMsg.textContent = input.value;
+    body.appendChild(userMsg);
+    const q = input.value;
+    input.value = '';
+    body.scrollTop = body.scrollHeight;
+    setTimeout(() => {
+      const botMsg = document.createElement('div');
+      botMsg.className = 'msg msg-bot';
+      botMsg.textContent = "Good question. Let's break down '" + q +
+        "' the way it'll actually show up on your ANSYS quiz, starting with the boundary conditions.";
+      body.appendChild(botMsg);
+      body.scrollTop = body.scrollHeight;
+    }, 500);
+  }
+
+  function switchPersona(el) {
+    document.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ========== INIT ==========
+  window.addEventListener('load', () => {
+    const first = document.querySelector('.nav-item.active');
+    const indicator = document.getElementById('navIndicator');
+    if (first && indicator) indicator.style.transform = 'translateY(' + first.offsetTop + 'px)';
+    renderJobs();
+    renderPostings();
+    renderApplicants();
+    renderRecentApplicants();
+    setRole('student');
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          if (entry.target.classList.contains('stagger')) {
+            entry.target.querySelectorAll('.problem-card, .feature-card').forEach((card, i) => {
+              card.style.transitionDelay = (i * 70) + 'ms';
+              setTimeout(() => card.classList.add('in'), 50);
+            });
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+    observer.observe(el);
+  });
+
+  document.getElementById('demo-wrap').classList.remove('active');
+  document.getElementById('landing-wrap').style.display = 'block';
+</script>
+</body>
+</html>

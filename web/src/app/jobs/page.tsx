@@ -9,6 +9,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
@@ -46,19 +47,19 @@ export default function JobsPage() {
   }, []);
 
   React.useEffect(() => {
-    getSession().then(async (session) => {
+    Promise.all([getSession(), listJobs()]).then(async ([session, result]) => {
       if (!session) {
         router.push("/login");
         return;
       }
       setUser(session);
-      await refresh();
+      setJobs(result.items);
       if (session.role === "RECRUITER") {
         const skillList = await listSkills().catch(() => []);
         setSkills(skillList);
       }
     });
-  }, [router, refresh]);
+  }, [router]);
 
   async function handleApply(jobPostingId: string) {
     try {
@@ -170,14 +171,18 @@ export default function JobsPage() {
         </Card>
       )}
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {jobs.map((job) => (
           <Card key={job.id} className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-display text-sm font-semibold text-ink-900">{job.title}</h3>
-                <p className="text-xs text-slate-500">{job.company.name} · {job.location ?? "Remote/Unspecified"}</p>
-              </div>
+            <div className="flex items-start justify-between gap-4">
+              <Link href={`/jobs/${job.id}`} className="min-w-0 flex-1">
+                <h3 className="font-display text-base font-semibold text-ink-900 hover:text-signal-700">
+                  {job.title}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {job.company.name} · {job.location ?? "Location flexible"}
+                </p>
+              </Link>
               {user.role === "STUDENT" ? (
                 <Button size="sm" onClick={() => handleApply(job.id)}>
                   Apply
@@ -188,14 +193,20 @@ export default function JobsPage() {
                 </Button>
               )}
             </div>
-            <p className="mt-2 text-xs text-slate-500">{job.description}</p>
-            <div className="mt-2 flex flex-wrap gap-1">
+            <p className="mt-2 line-clamp-2 text-xs text-slate-500">{job.description}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {job.requiredSkills.map((rs) => (
-                <span key={rs.skill.id} className="rounded-full bg-paper-100 px-2 py-0.5 text-[10px] text-slate-500">
+                <span
+                  key={rs.skill.id}
+                  className="rounded-full border border-hairline bg-paper-100 px-2.5 py-0.5 text-[11px] text-ink-700"
+                >
                   {rs.skill.name}
                 </span>
               ))}
             </div>
+            <Link href={`/jobs/${job.id}`} className="mt-3 inline-block text-xs text-signal-700 hover:underline">
+              View full details →
+            </Link>
           </Card>
         ))}
         {jobs.length === 0 && <p className="text-sm text-slate-500">No active postings yet.</p>}

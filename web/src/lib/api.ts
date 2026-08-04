@@ -8,7 +8,7 @@ export interface SessionUser {
   id: string;
   email: string;
   fullName: string;
-  role: "STUDENT" | "RECRUITER";
+  role: "STUDENT" | "RECRUITER" | "ADMIN" | "UNIVERSITY";
   verified: boolean;
 }
 
@@ -50,7 +50,7 @@ export async function register(input: {
   email: string;
   password: string;
   fullName: string;
-  role: "STUDENT" | "RECRUITER";
+  role: "STUDENT" | "RECRUITER" | "ADMIN" | "UNIVERSITY";
 }) {
   const res = await fetch(`${API_BASE}/auth/register`, {
     method: "POST",
