@@ -32,8 +32,8 @@ export class RegisterDto {
 
   // ADMIN is intentionally excluded — nobody can self-register as
   // an admin. Admin accounts are provisioned out-of-band.
-  @IsEnum([Role.STUDENT, Role.RECRUITER], {
-    message: 'Role must be either STUDENT or RECRUITER.',
+  @IsEnum([Role.STUDENT, Role.RECRUITER, Role.UNIVERSITY], {
+    message: 'Role must be STUDENT, RECRUITER, or UNIVERSITY.',
   })
   role!: Role;
 

@@ -20,7 +20,7 @@
 
 jest.mock('@prisma/client', () => ({
   PrismaClient: class {},
-  Role: { STUDENT: 'STUDENT', RECRUITER: 'RECRUITER', ADMIN: 'ADMIN' },
+  Role: { STUDENT: 'STUDENT', RECRUITER: 'RECRUITER', UNIVERSITY: 'UNIVERSITY', ADMIN: 'ADMIN' },
   ProfileVisibility: {
     ALL_VERIFIED_RECRUITERS: 'ALL_VERIFIED_RECRUITERS',
     APPLIED_ONLY: 'APPLIED_ONLY',
@@ -59,8 +59,7 @@ describe('AuthService', () => {
       user: { findUnique: jest.fn() },
       university: { findUnique: jest.fn() },
       company: { findUnique: jest.fn() },
-      $transaction: jest.fn(),
-    };
+      $transaction: jest.fn(),    };
     jwt = { sign: jest.fn().mockReturnValue('signed.jwt.token') };
     analytics = { record: jest.fn().mockResolvedValue(undefined) };
     service = new AuthService(prisma, jwt, analytics);
@@ -172,6 +171,53 @@ describe('AuthService', () => {
         ...baseRegisterDto,
         email: 'recruiter@padu.com',
         role: 'RECRUITER' as any,
+      });
+
+      expect(result.user.verified).toBe(true);
+    });
+  });
+
+  describe('register — university domain verification', () => {
+    it('rejects a university admin whose institution domain is not a whitelisted tenant', async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
+      prisma.university.findUnique.mockResolvedValue(null); // no matching university
+
+      await expect(
+        service.register({
+          ...baseRegisterDto,
+          email: 'admin@unlisted-college.edu',
+          role: 'UNIVERSITY' as any,
+        }),
+      ).rejects.toThrow(BadRequestException);
+
+      // Same strictest assertion as the recruiter case: an
+      // unmatched institution must never reach $transaction.
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+
+    it('verifies and creates a university admin profile when the institution domain matches', async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
+      prisma.university.findUnique.mockResolvedValue({ id: 'uni-1', name: 'UTM' });
+      prisma.$transaction.mockImplementation(async (fn: any) => {
+        const tx = {
+          user: {
+            create: jest.fn().mockResolvedValue({
+              id: 'user-4',
+              email: 'admin@utm.my',
+              fullName: 'Career Centre Admin',
+              role: 'UNIVERSITY',
+              verified: true,
+            }),
+          },
+          universityAdminProfile: { create: jest.fn().mockResolvedValue({}) },
+        };
+        return fn(tx);
+      });
+
+      const result = await service.register({
+        ...baseRegisterDto,
+        email: 'admin@utm.my',
+        role: 'UNIVERSITY' as any,
       });
 
       expect(result.user.verified).toBe(true);

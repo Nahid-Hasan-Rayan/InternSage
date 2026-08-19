@@ -32,7 +32,7 @@ They talk to each other over HTTPS: the frontend calls the backend's public Verc
    create extension if not exists vector;
    ```
 3. Get your two connection strings from Project Settings → Database → Connection string:
-   - **Transaction pooler** (port 6543) → this becomes `DATABASE_URL`. Append `?pgbouncer=true&connection_limit=1` to the end.
+   - **Transaction pooler** (port 6543) → this becomes `DATABASE_URL`. Append `?pgbouncer=true&connection_limit=5` to the end — **not** `connection_limit=1`, see the note in `server/prisma/schema.prisma`'s datasource block (marker `NHR-BE-PERF-001`) for why that specific value was the confirmed cause of slow page loads.
    - **Direct connection** (port 5432) → this becomes `DIRECT_URL`.
 
    Why both: Vercel serverless functions are short-lived and can spin up many concurrent instances, each wanting its own DB connection — without pooling you exhaust Postgres's connection limit almost immediately. `prisma migrate`, however, needs a direct connection because PgBouncer's transaction mode doesn't support the prepared statements migrations use. See `server/prisma/schema.prisma`'s datasource block.

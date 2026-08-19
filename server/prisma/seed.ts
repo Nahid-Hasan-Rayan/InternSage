@@ -159,12 +159,52 @@ async function main(): Promise<void> {
     },
   });
 
+  // ---------------------------------------------------------------
+  // Decision Room — salary benchmarks
+  // ------------------------------------------------------------
+  //  Author : Nahid Hasan Rayan
+  //  Marker : NHR-BE-SEED-002
+  //
+  //  Sourced from Randstad Malaysia's 2025 Job Market Outlook &
+  //  Salary Guide (the same report already cited as reference [3]
+  //  in the URIIS paper) — junior/middle/senior monthly bands
+  //  (MYR, basic salary, permanent role) re-used here as this
+  //  table's p25/median/p75 columns. That's an honest approximation
+  //  of the source's own bands, not a statistical percentile
+  //  computed by InternSage — see the `source` field on every row,
+  //  which the frontend doesn't currently render but exists for
+  //  auditability, same principle as AuditLog elsewhere in this
+  //  schema. NEVER add a row here without a real, dated, named
+  //  source — see DecisionRoomService's header comment for why this
+  //  table is curated rather than computed.
+  // ---------------------------------------------------------------
+  const salarySource = 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide';
+  const salaryAsOf = new Date('2024-12-19'); // report's own publish date
+  const salaryBenchmarks: Array<{ role: string; region: string; p25: number; median: number; p75: number }> = [
+    { role: 'Software Engineer', region: 'Malaysia', p25: 3_500, median: 10_000, p75: 17_000 },
+    { role: 'Data Analyst', region: 'Malaysia', p25: 5_000, median: 10_000, p75: 17_000 },
+    { role: 'Business Analyst', region: 'Malaysia', p25: 4_000, median: 6_500, p75: 9_000 },
+    { role: 'UI/UX Designer', region: 'Malaysia', p25: 4_000, median: 13_000, p75: 25_000 },
+    { role: 'DevOps Engineer', region: 'Malaysia', p25: 4_000, median: 8_000, p75: 12_000 },
+    { role: 'Cloud Engineer', region: 'Malaysia', p25: 4_000, median: 6_000, p75: 9_000 },
+    { role: 'Mechanical Engineer', region: 'Malaysia', p25: 5_000, median: 7_000, p75: 9_000 },
+    { role: 'Account Executive', region: 'Malaysia', p25: 3_500, median: 4_500, p75: 5_500 },
+  ];
+  for (const row of salaryBenchmarks) {
+    await prisma.salaryBenchmark.upsert({
+      where: { role_region: { role: row.role, region: row.region } },
+      update: { p25: row.p25, median: row.median, p75: row.p75, source: salarySource, asOf: salaryAsOf },
+      create: { ...row, source: salarySource, asOf: salaryAsOf },
+    });
+  }
+
   // eslint-disable-next-line no-console
   console.log('Seeded:', {
     university: utm.name,
     company: paduAnalytics.name,
     verificationQuestions: jsQuestions.length,
     samplePosting: samplePosting.title,
+    salaryBenchmarks: salaryBenchmarks.length,
   });
   // eslint-disable-next-line no-console
   console.log('\nTry registering with:');

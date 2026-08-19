@@ -95,6 +95,15 @@ class EnvironmentVariables {
   JOB_RSS_FEED_URLS?: string;
 
   // Must be the literal string "true" to enable — see
+  // ArbeitnowJobAdapter's header comment. Arbeitnow's public
+  // job-board API is a real, documented-for-reuse source (not a
+  // scrape), but still stays off by default so a fresh deploy never
+  // silently starts calling an external API nobody chose.
+  @IsString()
+  @IsOptional()
+  JOB_ARBEITNOW_ENABLED?: string;
+
+  // Must be the literal string "true" to enable — see
   // ScraperJobAdapter's header comment on why this stays off by
   // default even when set to anything else.
   @IsString()

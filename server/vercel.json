@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/internal/jobs/aggregate", "schedule": "0 2 * * *" },
+    { "path": "/api/internal/matching/recompute", "schedule": "0 3 * * *" },
+    { "path": "/api/verification/internal/decay", "schedule": "0 4 * * *" },
+    { "path": "/api/decision-room/internal/recompute-trends", "schedule": "0 3 * * 1" }
+  ]
+}

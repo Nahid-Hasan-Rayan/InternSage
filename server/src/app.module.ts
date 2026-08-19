@@ -40,6 +40,8 @@ import { ApplicationsModule } from './applications/applications.module';
 import { RecruiterToolsModule } from './recruiter-tools/recruiter-tools.module';
 import { CopilotModule } from './copilot/copilot.module';
 import { MessagingModule } from './messaging/messaging.module';
+import { DecisionRoomModule } from './decision-room/decision-room.module';
+import { UniversityModule } from './university/university.module';
 import { RequestLoggingInterceptor } from './common/interceptors/request-logging.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { validateEnv } from './config/env.validation';
@@ -75,6 +77,8 @@ import { validateEnv } from './config/env.validation';
     RecruiterToolsModule,
     CopilotModule,
     MessagingModule,
+    DecisionRoomModule,
+    UniversityModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

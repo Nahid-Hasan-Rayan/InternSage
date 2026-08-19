@@ -21,6 +21,11 @@
  *     a fake "recruiter" contacting real students) than a student
  *     signing up early — companies must be onboarded as tenants
  *     before their staff can register.
+ *   - UNIVERSITY follows the RECRUITER pattern, not the STUDENT
+ *     one: an admin account sees cohort-wide data across every
+ *     student at that university, a higher-trust surface than any
+ *     individual profile, so an unmatched domain is rejected the
+ *     same way an unmatched company is.
  */
 
 import {
@@ -117,6 +122,34 @@ export class AuthService {
       });
 
       void this.analytics.record({ type: 'AUTH_REGISTER', userId: user.id, userRole: Role.RECRUITER });
+      return this.issueSession(user);
+    }
+
+    if (dto.role === Role.UNIVERSITY) {
+      const university = await this.prisma.university.findUnique({ where: { emailDomain: domain } });
+      if (!university) {
+        throw new BadRequestException(
+          'Your institution is not yet a partner on InternSage. Contact us to onboard your university before registering.',
+        );
+      }
+
+      const user = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        const created = await tx.user.create({
+          data: {
+            email: dto.email,
+            fullName: dto.fullName,
+            passwordHash,
+            role: Role.UNIVERSITY,
+            verified: true, // domain matched a whitelisted university — verified by construction
+          },
+        });
+        await tx.universityAdminProfile.create({
+          data: { userId: created.id, universityId: university.id },
+        });
+        return created;
+      });
+
+      void this.analytics.record({ type: 'AUTH_REGISTER', userId: user.id, userRole: Role.UNIVERSITY });
       return this.issueSession(user);
     }
 

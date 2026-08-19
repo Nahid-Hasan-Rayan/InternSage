@@ -43,7 +43,15 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto; -- gen_random_uuid() for the seed/guest
 -- ------------------------------------------------------------
 
 DO $$ BEGIN
-  CREATE TYPE "Role" AS ENUM ('STUDENT', 'RECRUITER', 'ADMIN');
+  CREATE TYPE "Role" AS ENUM ('STUDENT', 'RECRUITER', 'UNIVERSITY', 'ADMIN');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Handles the case where "Role" already existed from a prior run of
+-- this file (the CREATE TYPE above is skipped via duplicate_object
+-- in that case, so the new enum value needs its own idempotent
+-- statement, or it would silently never get added).
+DO $$ BEGIN
+  ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'UNIVERSITY';
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
@@ -163,6 +171,42 @@ CREATE UNIQUE INDEX IF NOT EXISTS "recruiter_profiles_userId_key" ON "recruiter_
 CREATE INDEX IF NOT EXISTS "recruiter_profiles_companyId_idx" ON "recruiter_profiles"("companyId");
 
 -- ------------------------------------------------------------
+-- University portal — mirrors recruiter_profiles -> companies
+-- exactly (see prisma/schema.prisma's NHR-BE-SCHEMA-008 comment).
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "university_admin_profiles" (
+  "id"           TEXT NOT NULL,
+  "userId"       TEXT NOT NULL,
+  "universityId" TEXT NOT NULL,
+  "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "university_admin_profiles_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "university_admin_profiles_userId_key" ON "university_admin_profiles"("userId");
+CREATE INDEX IF NOT EXISTS "university_admin_profiles_universityId_idx" ON "university_admin_profiles"("universityId");
+
+CREATE TABLE IF NOT EXISTS "university_partners" (
+  "id"           TEXT NOT NULL,
+  "universityId" TEXT NOT NULL,
+  "name"         TEXT NOT NULL,
+  "industry"     TEXT NOT NULL,
+  "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "university_partners_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "university_partners_universityId_idx" ON "university_partners"("universityId");
+
+CREATE TABLE IF NOT EXISTS "university_events" (
+  "id"           TEXT NOT NULL,
+  "universityId" TEXT NOT NULL,
+  "title"        TEXT NOT NULL,
+  "date"         TIMESTAMP(3) NOT NULL,
+  "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "university_events_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "university_events_universityId_idx" ON "university_events"("universityId");
+CREATE INDEX IF NOT EXISTS "university_events_date_idx" ON "university_events"("date");
+
+-- ------------------------------------------------------------
 -- Observability
 -- ------------------------------------------------------------
 
@@ -264,6 +308,41 @@ CREATE TABLE IF NOT EXISTS "match_scores" (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "match_scores_studentProfileId_jobPostingId_key" ON "match_scores"("studentProfileId", "jobPostingId");
 CREATE INDEX IF NOT EXISTS "match_scores_studentProfileId_idx" ON "match_scores"("studentProfileId");
+
+-- ------------------------------------------------------------
+-- Decision Room — see src/decision-room/decision-room.service.ts's
+-- header comment for why these two tables are populated so
+-- differently: snapshots are computed weekly from this platform's
+-- OWN job_required_skills data (NHR-BE-DECISION-SVC-001's internal
+-- cron route), benchmarks are curated/source-attributed and only
+-- ever change by hand (see the seed insert below).
+-- ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "skill_demand_snapshots" (
+  "id"           TEXT NOT NULL,
+  "skillId"      TEXT NOT NULL,
+  "period"       TEXT NOT NULL,
+  "postingCount" INTEGER NOT NULL,
+  "computedAt"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "skill_demand_snapshots_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "skill_demand_snapshots_skillId_period_key" ON "skill_demand_snapshots"("skillId", "period");
+CREATE INDEX IF NOT EXISTS "skill_demand_snapshots_period_idx" ON "skill_demand_snapshots"("period");
+
+CREATE TABLE IF NOT EXISTS "salary_benchmarks" (
+  "id"        TEXT NOT NULL,
+  "role"      TEXT NOT NULL,
+  "region"    TEXT NOT NULL,
+  "p25"       INTEGER NOT NULL,
+  "median"    INTEGER NOT NULL,
+  "p75"       INTEGER NOT NULL,
+  "source"    TEXT NOT NULL,
+  "asOf"      TIMESTAMP(3) NOT NULL,
+  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "salary_benchmarks_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "salary_benchmarks_role_region_key" ON "salary_benchmarks"("role", "region");
+
 
 -- ------------------------------------------------------------
 -- Trust & verification
@@ -444,6 +523,22 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
+  ALTER TABLE "university_admin_profiles" ADD CONSTRAINT "university_admin_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "university_admin_profiles" ADD CONSTRAINT "university_admin_profiles_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "universities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "university_partners" ADD CONSTRAINT "university_partners_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "universities"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "university_events" ADD CONSTRAINT "university_events_universityId_fkey" FOREIGN KEY ("universityId") REFERENCES "universities"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
   ALTER TABLE "job_postings" ADD CONSTRAINT "job_postings_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
@@ -492,6 +587,10 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
+  ALTER TABLE "skill_demand_snapshots" ADD CONSTRAINT "skill_demand_snapshots_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "skills"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
   ALTER TABLE "experiences" ADD CONSTRAINT "experiences_professionalProfileId_fkey" FOREIGN KEY ("professionalProfileId") REFERENCES "professional_profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
@@ -532,6 +631,23 @@ ON CONFLICT ("emailDomain") DO NOTHING;
 INSERT INTO "skills" ("id", "name", "category")
 VALUES (gen_random_uuid()::text, 'JavaScript', 'SOFTWARE')
 ON CONFLICT ("name") DO NOTHING;
+
+-- Decision Room salary benchmarks — sourced from Randstad Malaysia's
+-- 2025 Job Market Outlook & Salary Guide (same report cited as
+-- reference [3] in the URIIS paper), junior/middle/senior monthly
+-- MYR bands re-used as p25/median/p75. See seed.ts's matching block
+-- (NHR-BE-SEED-002) for the full sourcing note — never add a row
+-- here without a real, dated, named source.
+INSERT INTO "salary_benchmarks" ("id", "role", "region", "p25", "median", "p75", "source", "asOf", "updatedAt") VALUES
+  (gen_random_uuid()::text, 'Software Engineer',   'Malaysia', 3500, 10000, 17000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'Data Analyst',         'Malaysia', 5000, 10000, 17000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'Business Analyst',     'Malaysia', 4000, 6500,  9000,  'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'UI/UX Designer',       'Malaysia', 4000, 13000, 25000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'DevOps Engineer',      'Malaysia', 4000, 8000,  12000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'Cloud Engineer',       'Malaysia', 4000, 6000,  9000,  'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'Mechanical Engineer',  'Malaysia', 5000, 7000,  9000,  'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
+  (gen_random_uuid()::text, 'Account Executive',    'Malaysia', 3500, 4500,  5500,  'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP)
+ON CONFLICT ("role", "region") DO NOTHING;
 
 -- ============================================================
 -- Guest exploration accounts

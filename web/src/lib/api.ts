@@ -2,7 +2,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 // The backend sets a global prefix (`app.setGlobalPrefix('api')` in
 // main.ts) — every route actually lives under /api/..., not at the
 // root. Centralized here so this can't drift out of sync per-call.
-const API_BASE = `${API_URL}/api`;
+export const API_BASE = `${API_URL}/api`;
 
 export interface SessionUser {
   id: string;

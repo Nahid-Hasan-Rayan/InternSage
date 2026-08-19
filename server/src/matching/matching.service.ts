@@ -87,6 +87,25 @@ export class MatchingService {
       include: { requiredSkills: { include: { skill: true } } },
     });
 
+    // NHR-BE-PERF-002 — weights are looked up per COMPANY, not per
+    // posting, but this used to call loadWeights() inside the loop
+    // below once per posting regardless — N nearly-always-repeated
+    // DB round-trips for N postings, even when most postings share a
+    // handful of companies. Cached here instead: one query per
+    // distinct company actually seen this run, not one per posting.
+    // Matters more than it might look — this is the path both the
+    // "Recompute" button and the nightly recomputeForAllStudents cron
+    // run, and postings-per-company only grows as aggregation (RSS,
+    // Arbeitnow) adds more listings from the same recurring posters.
+    const weightsCache = new Map<string, Awaited<ReturnType<typeof this.loadWeights>>>();
+    const weightsForCompany = async (companyId: string) => {
+      const cached = weightsCache.get(companyId);
+      if (cached) return cached;
+      const loaded = await this.loadWeights(companyId);
+      weightsCache.set(companyId, loaded);
+      return loaded;
+    };
+
     const results = [];
     for (const posting of postings) {
       const requiredNames = posting.requiredSkills.map((r) => r.skill.name.toLowerCase());
@@ -100,7 +119,7 @@ export class MatchingService {
       );
       const normalizedTextSimilarity = (textSimilarity + 1) / 2; // [-1,1] -> [0,1]
 
-      const weights = await this.loadWeights(posting.companyId);
+      const weights = await weightsForCompany(posting.companyId);
       const authenticityComponent = skillSet.authenticityAvg / 100;
 
       // Explainability requirement: the score is a documented weighted

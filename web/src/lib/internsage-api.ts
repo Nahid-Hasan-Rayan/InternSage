@@ -10,7 +10,7 @@
  * than inventing a parallel shape here.
  */
 
-import { authedFetch } from "./api";
+import { authedFetch, API_BASE } from "./api";
 
 // ---- Jobs ---------------------------------------------------------
 
@@ -400,4 +400,75 @@ export async function submitVerification(sessionId: string, answers: number[]) {
     `/verification/sessions/${sessionId}/submit`,
     { method: "POST", body: JSON.stringify({ answers }) },
   );
+}
+
+// ---- Decision Room (student market-intelligence dashboard) ----------------
+// Expected: GET /decision-room/trends (batch-computed weekly, never
+// live-per-request). GET /decision-room/insights (short, server-
+// generated notes tied to the student's own profile).
+
+export interface TrendPoint { period: string; value: number; }
+export interface SkillDemandTrend { skillName: string; points: TrendPoint[]; changePct: number; }
+export interface SalaryBand { role: string; region: string; p25: number; median: number; p75: number; }
+export interface DecisionRoomTrends { skillDemand: SkillDemandTrend[]; salaryBands: SalaryBand[]; updatedAt: string; }
+
+export async function getDecisionRoomTrends() {
+  return authedFetch<DecisionRoomTrends>("/decision-room/trends");
+}
+
+export interface DecisionRoomInsight { id: string; text: string; tone: "positive" | "neutral" | "attention"; }
+
+export async function getDecisionRoomInsights() {
+  return authedFetch<{ items: DecisionRoomInsight[] }>("/decision-room/insights");
+}
+
+// ---- Verified exports (watermarked, code-checkable) ------------------------
+// Expected: POST /exports/verified body:{reportType} -> {code,downloadUrl,issuedAt}
+// GET /verify/:code (PUBLIC) -> {valid,reportType,issuedTo,issuedAt} or 404.
+// Code must be server-issued/stored — never accepted just because a
+// client presents one.
+
+export type VerifiedReportType = "decision-room-progress" | "university-analytics" | "recruiter-analytics";
+export interface VerifiedExport { code: string; downloadUrl: string; issuedAt: string; }
+
+export async function requestVerifiedExport(reportType: VerifiedReportType) {
+  return authedFetch<VerifiedExport>("/exports/verified", { method: "POST", body: JSON.stringify({ reportType }) });
+}
+
+export interface VerificationResult { valid: boolean; reportType?: VerifiedReportType; issuedTo?: string; issuedAt?: string; }
+
+/** Public — no auth. */
+export async function verifyExportCode(code: string) {
+  const res = await fetch(`${API_BASE}/verify/${encodeURIComponent(code)}`);
+  if (res.status === 404) return { valid: false } as VerificationResult;
+  if (!res.ok) throw new Error("Couldn't check this code right now.");
+  return (await res.json()) as VerificationResult;
+}
+
+// ---- Featured students (university showcase) -------------------------------
+export interface FeaturedStudentCandidate { userId: string; fullName: string; major: string | null; verifiedSkillCount: number; avgAuthenticityScore: number | null; }
+export interface FeaturedStudent { id: string; userId: string; fullName: string; major: string | null; reason: string; featuredAt: string; }
+
+export async function getFeaturedStudentCandidates() {
+  return authedFetch<{ items: FeaturedStudentCandidate[] }>("/university/featured-students/candidates");
+}
+export async function getFeaturedStudents() {
+  return authedFetch<{ items: FeaturedStudent[] }>("/university/featured-students");
+}
+export async function featureStudent(studentUserId: string, reason: string) {
+  return authedFetch<FeaturedStudent>("/university/featured-students", { method: "POST", body: JSON.stringify({ studentUserId, reason }) });
+}
+export async function unfeatureStudent(id: string) {
+  return authedFetch<void>(`/university/featured-students/${id}`, { method: "DELETE" });
+}
+
+// ---- Recruiter company analytics -------------------------------------------
+export interface RecruiterAnalytics {
+  funnel: { applied: number; underReview: number; interview: number; offer: number; rejected: number };
+  avgTimeToOfferDays: number | null;
+  topSkillsAmongApplicants: Array<{ skill: string; count: number }>;
+  postingPerformance: Array<{ jobTitle: string; applicants: number; avgMatchScore: number }>;
+}
+export async function getRecruiterAnalytics() {
+  return authedFetch<RecruiterAnalytics>("/recruiter-tools/analytics");
 }

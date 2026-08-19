@@ -27,8 +27,22 @@ datasource db {
   // for a serverless deployment (Vercel), since each function
   // invocation can open its own connection and a serverless app
   // exhausts Postgres's direct connection limit almost immediately
-  // without pooling. Append `?pgbouncer=true&connection_limit=1` —
+  // without pooling. Append `?pgbouncer=true&connection_limit=5` —
   // see README.md's Supabase setup section for the exact string.
+  //
+  // NHR-BE-PERF-001 — do not "fix" this back down to
+  // connection_limit=1. That looked like the safe, minimal value
+  // and was the documented setting for a while, but it silently
+  // serializes every concurrent query *within a single request* —
+  // Prisma queues anything past 1 open connection behind it. Any
+  // handler using Promise.all() for several queries at once
+  // (DecisionRoomService.getTrends, UniversityService.getDashboard,
+  // and others) was/is running those queries one at a time instead
+  // of in parallel, on top of Vercel's own cold-start cost. 5 is
+  // still conservative for PgBouncer in transaction-pooling mode —
+  // it multiplexes many client-side connections over few real
+  // Postgres ones exactly so a per-instance limit like this can be
+  // higher than 1 without endangering the underlying database.
   url       = env("DATABASE_URL")
   // Supabase's DIRECT connection (port 5432), bypassing the pooler.
   // `prisma migrate` needs this — PgBouncer's transaction mode
@@ -44,6 +58,7 @@ datasource db {
 enum Role {
   STUDENT
   RECRUITER
+  UNIVERSITY
   ADMIN
 }
 
@@ -83,6 +98,7 @@ model User {
   studentProfile       StudentProfile?
   professionalProfile  ProfessionalProfile?
   recruiterProfile     RecruiterProfile?
+  universityAdminProfile UniversityAdminProfile?
 
   @@map("users")
 }
@@ -99,6 +115,9 @@ model University {
   createdAt   DateTime @default(now())
 
   studentProfiles StudentProfile[]
+  adminProfiles   UniversityAdminProfile[]
+  partners        UniversityPartner[]
+  events          UniversityEvent[]
 
   @@map("universities")
 }
@@ -170,6 +189,66 @@ model RecruiterProfile {
 
   @@index([companyId])
   @@map("recruiter_profiles")
+}
+
+// ---------------------------------------------------------------
+// University portal
+// ------------------------------------------------------------
+//  Author : Nahid Hasan Rayan
+//  Marker : NHR-BE-SCHEMA-008
+//
+//  UniversityAdminProfile mirrors RecruiterProfile -> Company
+//  exactly on purpose: same "one profile row scoped to exactly one
+//  tenant, resolved from the authenticated user, never a
+//  client-supplied id" shape that already governs recruiter access.
+//  See AuthService.register's UNIVERSITY branch — like RECRUITER
+//  (and unlike STUDENT), an unmatched domain is REJECTED outright,
+//  not let in unverified: a university admin sees cohort-wide
+//  student data, which is a higher-trust surface than an individual
+//  student's own profile.
+// ---------------------------------------------------------------
+
+model UniversityAdminProfile {
+  id           String     @id @default(uuid())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  universityId String
+  university   University @relation(fields: [universityId], references: [id])
+  createdAt    DateTime   @default(now())
+
+  @@index([universityId])
+  @@map("university_admin_profiles")
+}
+
+/// A curated directory entry the university admin adds by hand —
+/// NOT auto-derived from job/application data (that's what
+/// UniversityService's topCompanies computation is for, deliberately
+/// kept separate; see its own header comment for why). "industry"
+/// only exists here because neither Company nor JobPosting carries
+/// an industry taxonomy today.
+model UniversityPartner {
+  id           String     @id @default(uuid())
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  name         String
+  industry     String
+  createdAt    DateTime   @default(now())
+
+  @@index([universityId])
+  @@map("university_partners")
+}
+
+model UniversityEvent {
+  id           String     @id @default(uuid())
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  title        String
+  date         DateTime
+  createdAt    DateTime   @default(now())
+
+  @@index([universityId])
+  @@index([date])
+  @@map("university_events")
 }
 
 // ---------------------------------------------------------------
@@ -506,6 +585,7 @@ model Skill {
   userSkills UserSkill[]
   jobRequiredSkills    JobRequiredSkill[]
   verificationQuestions VerificationQuestion[]
+  demandSnapshots       SkillDemandSnapshot[]
 
   @@map("skills")
 }
@@ -634,4 +714,67 @@ model AuditLog {
   @@index([action, createdAt])
   @@index([actorId])
   @@map("audit_logs")
+}
+
+// ---------------------------------------------------------------
+// Decision Room — market-intelligence backing data
+// ------------------------------------------------------------
+//  Author : Nahid Hasan Rayan
+//  Marker : NHR-BE-SCHEMA-007
+//
+//  Design notes (mirrors the MatchScore precedent: never computed
+//  live on a page load):
+//   - SkillDemandSnapshot is 100% derived from InternSage's own
+//     JobPosting/JobRequiredSkill data (real postings this platform
+//     has, not a scraped or invented labour-market figure) — see
+//     DecisionRoomService.recomputeSkillDemand, called only by the
+//     internal cron route, same pattern as MatchingService/
+//     VerificationService's own recompute/decay jobs. GET
+//     /decision-room/trends only ever reads the latest stored rows.
+//     Early on, with few postings, these numbers will be small and
+//     sparse — that's honest, not a bug to paper over.
+//   - SalaryBenchmark is the opposite kind of data on purpose: it's
+//     NOT computable from InternSage's own (currently too-thin)
+//     posting volume, so it is curated, source-attributed reference
+//     data (see prisma/seed.ts), following the same
+//     "verified-outlet allowlist" principle the Industry Pulse
+//     module is meant to use — never a fabricated number, always
+//     traceable to a named, dated public source.
+// ---------------------------------------------------------------
+
+model SkillDemandSnapshot {
+  id           String   @id @default(uuid())
+  skillId      String
+  skill        Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  /// ISO week label, e.g. "2026-W33" — see decision-room.util.ts's
+  /// isoWeekLabel, the same bucketing DecisionRoomTrends.skillDemand
+  /// points render on the frontend's line chart.
+  period       String
+  postingCount Int
+  computedAt   DateTime @default(now())
+
+  @@unique([skillId, period])
+  @@index([period])
+  @@map("skill_demand_snapshots")
+}
+
+/// role+region is the natural key a recruiter/student would look
+/// this up by — see prisma/seed.ts for the initial seeded rows and
+/// their cited source.
+model SalaryBenchmark {
+  id        String   @id @default(uuid())
+  role      String
+  region    String
+  p25       Int
+  median    Int
+  p75       Int
+  /// Named source this row came from, e.g. "Randstad Malaysia —
+  /// 2025 Job Market Outlook & Salary Guide" — never blank, never
+  /// "estimated".
+  source    String
+  asOf      DateTime
+  updatedAt DateTime @updatedAt
+
+  @@unique([role, region])
+  @@map("salary_benchmarks")
 }

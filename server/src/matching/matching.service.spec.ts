@@ -143,4 +143,49 @@ describe('MatchingService', () => {
     await service.recomputeForStudent('student-1');
     expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledWith({ where: { companyId: 'company-1' } });
   });
+
+  it('NHR-BE-PERF-002: looks up weights once per distinct company, not once per posting', async () => {
+    prisma.studentProfile.findUnique.mockResolvedValue({ userId: 'user-1' });
+    prisma.professionalProfile.findUnique.mockResolvedValue({
+      id: 'pp-1',
+      headline: '',
+      skills: [],
+      experiences: [],
+      projects: [],
+    });
+    prisma.jobPosting.findMany.mockResolvedValue([
+      { id: 'job-1', companyId: 'company-1', title: 't1', requirementsText: 'r', requiredSkills: [] },
+      { id: 'job-2', companyId: 'company-1', title: 't2', requirementsText: 'r', requiredSkills: [] },
+      { id: 'job-3', companyId: 'company-1', title: 't3', requirementsText: 'r', requiredSkills: [] },
+    ]);
+    prisma.recruiterWeights.findUnique.mockResolvedValue(null);
+    prisma.matchScore.upsert.mockImplementation(({ create }: any) => Promise.resolve(create));
+
+    const results = await service.recomputeForStudent('student-1');
+
+    expect(results).toHaveLength(3);
+    // Three postings, same company -> one DB round-trip, not three.
+    expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledTimes(1);
+  });
+
+  it('NHR-BE-PERF-002: still looks up weights separately for genuinely different companies', async () => {
+    prisma.studentProfile.findUnique.mockResolvedValue({ userId: 'user-1' });
+    prisma.professionalProfile.findUnique.mockResolvedValue({
+      id: 'pp-1',
+      headline: '',
+      skills: [],
+      experiences: [],
+      projects: [],
+    });
+    prisma.jobPosting.findMany.mockResolvedValue([
+      { id: 'job-1', companyId: 'company-1', title: 't1', requirementsText: 'r', requiredSkills: [] },
+      { id: 'job-2', companyId: 'company-2', title: 't2', requirementsText: 'r', requiredSkills: [] },
+    ]);
+    prisma.recruiterWeights.findUnique.mockResolvedValue(null);
+    prisma.matchScore.upsert.mockImplementation(({ create }: any) => Promise.resolve(create));
+
+    await service.recomputeForStudent('student-1');
+
+    expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledTimes(2);
+  });
 });
