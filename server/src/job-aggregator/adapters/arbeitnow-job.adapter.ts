@@ -175,4 +175,4 @@ export class ArbeitnowJobAdapter implements JobSourceAdapter {
 
     return results;
   }
-}
+}// Build fix - node-fetch removed
