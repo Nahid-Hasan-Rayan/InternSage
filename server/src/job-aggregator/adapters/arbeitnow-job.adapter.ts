@@ -48,6 +48,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JobSource } from '@prisma/client';
 import { JobSourceAdapter, RawListing } from '../job-source-adapter.interface';
 
+// Use node-fetch as a safe fallback for serverless environments (like Vercel)
+import fetch from 'node-fetch';
+
 const API_BASE = 'https://www.arbeitnow.com/api/job-board-api';
 /** Hard cap so one aggregation run can never turn into an unbounded
  * crawl — Arbeitnow returns ~100 listings/page; new dedup-skipped
