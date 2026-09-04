@@ -1,6 +1,5 @@
 # InternSage — Monitoring & Analytics
 
-**Author:** Nahid Hasan Rayan
 
 This document explains what was added for observability, why it's split the way it is, and what to reach for next as the platform grows.
 

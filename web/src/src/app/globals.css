@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* ============================================================
+   InternSage — Design tokens (v2)
+   Author: Nahid Hasan Rayan
+   Migrated from the fact-checked landing-page demo's "premium
+   minimalism" language — paper/ink base, signal-green accent,
+   Instrument Serif (display) + Onest (UI) + IBM Plex Mono (data).
+   Replaces the earlier brass/ink dark theme app-wide so the real
+   app and the marketing site are visually one product, not two.
+   ============================================================ */
+
+:root {
+  --ink-900: #14151a;
+  --ink-700: #3a3d45;
+  --slate-500: #6b6e76;
+  --slate-300: #a8abb2;
+
+  --paper-0: #ffffff;
+  --paper-50: #fafaf8;
+  --paper-100: #f1f0ec;
+  --hairline: #e4e2dc;
+
+  --signal-700: #1e362d;
+  --signal-600: #27443a;
+  --signal-100: #e8efeb;
+
+  --alert-600: #b3402f;
+  --alert-100: #f7e9e6;
+  --warn-600: #a6741f;
+  --warn-100: #f5eedf;
+  --blue-600: #2563eb;
+  --blue-100: #dbeafe;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-ui: "Onest", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-full: 9999px;
+  --shadow-float: 0 4px 24px rgba(20, 21, 26, 0.08);
+  --shadow-lg: 0 16px 48px rgba(20, 21, 26, 0.1);
+}
+
+@theme inline {
+  --color-ink-900: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-slate-500: var(--slate-500);
+  --color-slate-300: var(--slate-300);
+
+  --color-paper-0: var(--paper-0);
+  --color-paper-50: var(--paper-50);
+  --color-paper-100: var(--paper-100);
+  --color-hairline: var(--hairline);
+
+  --color-signal-700: var(--signal-700);
+  --color-signal-600: var(--signal-600);
+  --color-signal-100: var(--signal-100);
+
+  --color-alert-600: var(--alert-600);
+  --color-alert-100: var(--alert-100);
+  --color-warn-600: var(--warn-600);
+  --color-warn-100: var(--warn-100);
+  --color-blue-600: var(--blue-600);
+  --color-blue-100: var(--blue-100);
+
+  --font-display: var(--font-display);
+  --font-ui: var(--font-ui);
+  --font-mono: var(--font-mono);
+
+  --radius-card: var(--radius-card);
+  --radius-btn: var(--radius-btn);
+  --radius-full: var(--radius-full);
+  --shadow-float: var(--shadow-float);
+  --shadow-lg: var(--shadow-lg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-900);
+  background: var(--paper-50);
+}
+
+.serif {
+  font-family: var(--font-display);
+  font-style: normal;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--signal-100);
+  color: var(--signal-700);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal-600);
+  outline-offset: 2px;
+}
+
+/* Decorative backdrop ring behind auth screens — subtle concentric
+   rings evoking the "precision instrument" concept, adapted for the
+   light paper background (was a glowing dark-mode ring before). */
+.calibration-ring {
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    transparent 0%,
+    transparent 55%,
+    var(--hairline) 56%,
+    var(--hairline) 57%,
+    transparent 58%,
+    transparent 78%,
+    var(--hairline) 79%,
+    var(--hairline) 80%,
+    transparent 81%
+  );
+}

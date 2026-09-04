@@ -1,113 +1,130 @@
 # InternSage
 
-**Author:** Nahid Hasan Rayan
+**The evidence layer between education and employment.**
 
-A monorepo containing both halves of InternSage:
+A CV tells you what someone claims. InternSage shows what the evidence actually supports — and turns that into better decisions for students, recruiters, and university career centres, on one connected platform instead of three disconnected ones.
+
+![NestJS](https://img.shields.io/badge/backend-NestJS%2011-E0234E?logo=nestjs&logoColor=white)
+![Next.js](https://img.shields.io/badge/frontend-Next.js%2016-000000?logo=nextdotjs&logoColor=white)
+![Prisma](https://img.shields.io/badge/ORM-Prisma%205-2D3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL%20%2B%20pgvector-4169E1?logo=postgresql&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict%20mode-3178C6?logo=typescript&logoColor=white)
+
+**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology — including "Sage Copilot" and "Career & Workforce Decision Room" 
+
+---
+
+## Why this exists
+
+In Q4 2025, 35.3% of tertiary-educated employed Malaysians were in skill-related underemployment — not unemployed, just in roles that don't use what they actually studied. Meanwhile, 56% of Malaysian employers report a shortage of candidates with the skills they need. That gap isn't really about job discovery. It's about three separate people — a student, a recruiter, and a university career centre — all working from incomplete, unverified information, with no shared evidence layer connecting what any of them actually knows.
+
+InternSage is that layer.
+
+## The loop
+
+```mermaid
+flowchart LR
+    A[VERIFY] --> B[MATCH]
+    B --> C[EXPLAIN]
+    C --> D["ACT / IMPROVE"]
+    D --> E[MEASURE]
+    E -.outcomes feed back.-> A
+
+    style A fill:#1a3a2e,stroke:#2d5a45,color:#fff
+    style B fill:#1a3a2e,stroke:#2d5a45,color:#fff
+    style C fill:#1a3a2e,stroke:#2d5a45,color:#fff
+    style D fill:#1a3a2e,stroke:#2d5a45,color:#fff
+    style E fill:#1a3a2e,stroke:#2d5a45,color:#fff
+```
+
+A claimed skill becomes trustworthy through institutional identity, a timed skill assessment, and portfolio evidence. That evidence drives an explainable match score — deterministic, not a black box. Recruiters query the verified pool in plain language through Sage Copilot. Students and universities both get a Decision Room: career-path comparison at the individual level, cohort diagnostics at the institutional level. Every outcome — an application, an offer, a placement — feeds back into the loop instead of disappearing after one transaction.
+
+## Three sides, one evidence layer
+
+| | Friction today | What InternSage does |
+|---|---|---|
+| **Student** | Unverified skills, opaque rejections, no visibility into gaps | Evidence-backed profile, explainable matches, a real Decision Room for career planning |
+| **Recruiter / SME** | High application volume, no dedicated screening team | Verification-weighted ranking, plus Sage Copilot to query the pool in plain language |
+| **University** | Capability, employer demand, and outcomes tracked in three disconnected places | One dashboard linking cohort skill data, real placement signal, and employer partnerships |
+
+## What's actually built
+
+This isn't a mockup. 18 backend modules, 57 API endpoints, 149 automated tests — all real, all currently passing, all deployed.
+
+<details>
+<summary><strong>Full status by area</strong> (click to expand)</summary>
+
+| Area | Status |
+|---|---|
+| Identity, auth, domain-verified accounts | ✅ Live |
+| CV, skills, portfolio evidence | ✅ Live |
+| Job aggregation (real Malaysian postings + legitimate public APIs) | ✅ Live |
+| Matching engine | ✅ Live — deterministic skill-intersection is real; the semantic-similarity component is an honestly-documented placeholder today, with `pgvector` already provisioned for the real embedding upgrade |
+| Verification (timed skill assessment) | ✅ Live |
+| Applications & recruiter workflow | ✅ Live |
+| Sage Copilot (recruiter search assistant) | ✅ Live — closed-vocabulary query extraction, never freeform LLM-generated queries, with protected characteristics excluded at the query layer itself, not just by prompt instruction |
+| Decision Room (student + market trends) | ✅ Live |
+| University portal (dashboard, analytics, partners, events) | ✅ Live |
+| Messaging | ✅ Live |
+| Featured students | 🚧 Scoped, not yet built |
+| Industry Pulse, AI Tutor, Guidance/Roadmap, verified exports | 🚧 Frontend built, backend pending |
+
+</details>
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph Client
+        WEB["Next.js 16 — App Router"]
+    end
+    subgraph Backend["NestJS backend — 18 modules"]
+        API["REST API — 57 endpoints"]
+        MATCH["Matching engine"]
+        COPILOT["Sage Copilot — closed-vocabulary query extraction"]
+        AGG["Job aggregation — pluggable source adapters"]
+    end
+    subgraph Data
+        PG[("PostgreSQL + pgvector")]
+    end
+    LLM["OpenRouter — interprets input only, never generates the query or the output"]
+
+    WEB <--> API
+    API --> MATCH --> PG
+    API --> COPILOT --> LLM
+    COPILOT --> PG
+    AGG --> PG
+```
+
+A deliberate split runs through the whole backend: **decisions are computed deterministically, a language model is only ever used to interpret an ambiguous input into a constrained, whitelisted structure — never to generate a query freely, and never to narrate or fabricate an output.** Sage Copilot's LLM call extracts search filters (skill, university, year) from a recruiter's plain-language question; the actual database query is then built entirely from that fixed, whitelisted shape, never from freeform text the model produced. Match scores and Decision Room insights are separate, non-LLM code paths entirely — real arithmetic and deterministic templates, not generated language. If the LLM is unavailable, Sage Copilot falls back to a rule-based parser covering the same fixed set of filters — degraded, not broken.
+
+## Repo structure
 
 ```
 internsage/
   web/     — Next.js frontend (App Router, React 19, Tailwind v4)
-  server/  — NestJS backend (Prisma + Postgres, deployable as Vercel serverless functions)
-  infra/   — docker-compose.yml for local Postgres+pgvector
+  server/  — NestJS backend (Prisma + PostgreSQL, deployed as Vercel serverless functions)
+  infra/   — docker-compose.yml for local Postgres + pgvector
 ```
 
-Each of `web/` and `server/` has its own README with local-dev instructions. **This file is the deployment guide** — how to get both running on Vercel, backed by Supabase Postgres.
+Each of `web/` and `server/` has its own README with local-dev setup. **[`DEPLOYMENT.md`](./DEPLOYMENT.md) is the full guide** for standing up your own instance on Vercel + Supabase.
 
-## Why two Vercel projects, one repo
-
-Vercel deploys one "project" per app, but both can live in this single repository — you point Vercel at the same GitHub repo twice, with a different **Root Directory** each time. This is the standard, well-supported pattern for a monorepo with a separate frontend and backend (rather than trying to force NestJS into Next.js's `/api` routes, which would mean rewriting the whole backend).
-
-| | Root Directory | What it deploys |
-|---|---|---|
-| Project 1 — `internsage-web` | `web` | The Next.js frontend |
-| Project 2 — `internsage-api` | `server` | NestJS, running as Vercel serverless functions (see `server/api/index.ts`) |
-
-They talk to each other over HTTPS: the frontend calls the backend's public Vercel URL, configured via `NEXT_PUBLIC_API_URL`.
-
-## 1. Supabase setup (the database)
-
-1. Create a project at [supabase.com](https://supabase.com).
-2. **Enable pgvector** (needed for Phase 2's matching engine, harmless to enable now) — Project → Database → Extensions → search `vector` → Enable. Or run in the SQL editor:
-   ```sql
-   create extension if not exists vector;
-   ```
-3. Get your two connection strings from Project Settings → Database → Connection string:
-   - **Transaction pooler** (port 6543) → this becomes `DATABASE_URL`. Append `?pgbouncer=true&connection_limit=5` to the end — **not** `connection_limit=1`, see the note in `server/prisma/schema.prisma`'s datasource block (marker `NHR-BE-PERF-001`) for why that specific value was the confirmed cause of slow page loads.
-   - **Direct connection** (port 5432) → this becomes `DIRECT_URL`.
-
-   Why both: Vercel serverless functions are short-lived and can spin up many concurrent instances, each wanting its own DB connection — without pooling you exhaust Postgres's connection limit almost immediately. `prisma migrate`, however, needs a direct connection because PgBouncer's transaction mode doesn't support the prepared statements migrations use. See `server/prisma/schema.prisma`'s datasource block.
-
-4. Run the migration once, from your own machine (not from Vercel — migrations shouldn't run as part of a serverless build):
-   ```bash
-   cd server
-   cp .env.example .env   # fill in DATABASE_URL, DIRECT_URL, JWT_SECRET, CORS_ORIGINS
-   npm install
-   npx prisma migrate deploy
-   ```
-
-   **Alternative — paste raw SQL instead:** if you'd rather not run Prisma CLI against production, `server/supabase/schema.sql` is a hand-derived, byte-for-byte match of `prisma/schema.prisma` you can paste directly into Supabase's SQL Editor. It includes the seed data too. See the comment at the top of that file for the one follow-up step (`prisma migrate resolve --applied`) so Prisma doesn't try to recreate the tables later.
-
-## 2. Deploy the backend (`server/`)
-
-1. In Vercel: **New Project** → import this repo → **Root Directory: `server`**.
-2. Framework preset: **Other** (Vercel will pick up `server/vercel.json`, which routes everything through `server/api/index.ts`).
-3. Environment variables (Project → Settings → Environment Variables) — set all of these for Production (and Preview, if you want preview deploys to work):
-
-   | Variable | Value |
-   |---|---|
-   | `DATABASE_URL` | Supabase pooled connection string (step 1) |
-   | `DIRECT_URL` | Supabase direct connection string (step 1) |
-   | `JWT_SECRET` | `openssl rand -base64 48` — 32+ chars, the app refuses to boot otherwise |
-   | `JWT_EXPIRES_IN` | `1d` |
-   | `CORS_ORIGINS` | Your frontend's Vercel URL, e.g. `https://internsage-web.vercel.app` (no trailing slash) |
-   | `METRICS_TOKEN` | `openssl rand -base64 32` — see `server/docs/MONITORING.md` |
-   | `NODE_ENV` | `production` |
-
-4. Deploy. Vercel runs `npm run vercel-build` (which runs `prisma generate` — see `server/package.json`) before building the function.
-5. Verify: `curl https://internsage-api.vercel.app/api/health` should return `{"status":"ok",...}`.
-
-## 3. Deploy the frontend (`web/`)
-
-1. In Vercel: **New Project** → import the same repo again → **Root Directory: `web`**.
-2. Framework preset: **Next.js** (auto-detected).
-3. Environment variable:
-
-   | Variable | Value |
-   |---|---|
-   | `NEXT_PUBLIC_API_URL` | Your backend's Vercel URL from step 2, e.g. `https://internsage-api.vercel.app` (no trailing slash, no `/api` suffix — `web/src/lib/api.ts` appends that itself) |
-
-4. Deploy.
-5. **Go back to the backend project** and update `CORS_ORIGINS` to match the frontend's actual deployed URL (you won't know it until after the first deploy), then redeploy the backend.
-
-## 4. Post-deploy checklist
-
-- [ ] `GET https://internsage-api.vercel.app/api/health` → `200 {"status":"ok"}`
-- [ ] Register a test account through the deployed frontend, confirm login works (cookie-based session — check that `CORS_ORIGINS` and the frontend URL match *exactly*, including `https://`)
-- [ ] `GET https://internsage-api.vercel.app/api/metrics` with header `x-metrics-token: <your METRICS_TOKEN>` → Prometheus text output
-- [ ] Promote your own account to `ADMIN` (see `server/docs/MONITORING.md`), then load `/admin/analytics` on the deployed frontend and confirm it shows data
-
-## What's NOT handled by this setup
-
-- **Migrations don't run automatically on deploy.** This is deliberate — running schema migrations as a side effect of a serverless build is risky (concurrent deploys, no rollback story). Run `npx prisma migrate deploy` yourself, from a machine with `DIRECT_URL` set, whenever the schema changes.
-- **No CI/CD pipeline yet** (tests running before deploy, preview-deploy gating, etc.) — Vercel will happily deploy code that fails `npm test`. Worth adding a GitHub Actions workflow that runs `npm test` in `server/` before merge, once this is being worked on by more than one person.
-- **`AI_SERVICE_URL`** — Phase 2 (job matching) isn't built yet; leave unset for now.
-
-## Local development (both apps together)
+## Running it locally
 
 ```bash
-# Terminal 1 — Postgres
-cd infra && docker compose up -d
+git clone https://github.com/Nahid-Hasan-Rayan/InternSage.git
+cd InternSage
 
-# Terminal 2 — backend
-cd server
-cp .env.example .env   # local values already point at the docker-compose DB
-npm install
-npx prisma migrate dev --name init
-npm run start:dev      # http://localhost:3000
+# Backend
+cd server && cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, CORS_ORIGINS
+npm install && npx prisma db seed && npm run start:dev
 
-# Terminal 3 — frontend
-cd web
-cp .env.local.example .env.local
-npm install
-npm run dev             # http://localhost:3001
+# Frontend, in a second terminal
+cd web && cp .env.local.example .env.local
+npm install && npm run dev
 ```
+
+
+## License
+
+Copyright (c) 2026 Nahid Hasan Rayan. All rights reserved. See [`LICENSE`](./LICENSE).

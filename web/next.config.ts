@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 /**
  * InternSage — Next.js config
- * Author: Nahid Hasan Rayan
  *
  * Security headers here are defense-in-depth for the frontend only —
  * the real security boundary is the backend (auth guards, CORS
