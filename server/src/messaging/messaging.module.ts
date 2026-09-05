@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MessagingModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MSG-MOD-001
- * File   : src/messaging/messaging.module.ts
  */
 
 import { Module } from '@nestjs/common';

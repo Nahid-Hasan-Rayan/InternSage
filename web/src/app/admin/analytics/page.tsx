@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Admin analytics dashboard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-ADMIN-ANALYTICS-001
- * File   : src/app/admin/analytics/page.tsx
  *
  * Reads from the backend's ADMIN-only endpoints (see
  * AnalyticsController on the backend — @Roles(Role.ADMIN)). The

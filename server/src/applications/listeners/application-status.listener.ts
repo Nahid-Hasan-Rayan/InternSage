@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ApplicationStatusListener
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APPLICATIONS-LISTENER-001
- * File   : src/applications/listeners/application-status.listener.ts
  *
  * The whole point of ApplicationsService emitting
  * `application.statusChanged` instead of calling a notification

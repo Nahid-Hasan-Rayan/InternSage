@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — embedding.util
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-EMBED-UTIL-001
- * File   : src/common/embeddings/embedding.util.ts
  *
  * v1 ONLY. The Master Blueprint's target architecture for matching
  * is sentence-transformers embeddings computed by a separate

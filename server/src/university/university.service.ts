@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — UniversityService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-UNI-SVC-001
- * File   : src/university/university.service.ts
  *
  * Every number in this file is either computed from real rows this
  * platform actually has, or explicitly documented as an estimate

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuditService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUDIT-SVC-001
- * File   : src/common/audit/audit.service.ts
  *
  * `log()` never throws back into the caller — a failed audit write
  * must not block the real action it's describing, same fire-and-

@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 

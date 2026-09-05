@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CvModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CV-MOD-001
- * File   : src/cv/cv.module.ts
  */
 
 import { Module } from '@nestjs/common';

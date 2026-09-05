@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AnalyticsService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-ANALYTICS-SVC-001
- * File   : src/analytics/analytics.service.ts
  *
  * Two responsibilities, deliberately kept in one service because
  * they share the same table:

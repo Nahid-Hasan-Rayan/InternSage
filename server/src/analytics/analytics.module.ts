@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AnalyticsModule
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-ANALYTICS-MOD-001
- * File   : src/analytics/analytics.module.ts
  *
  * Exported so AuthService, ProfileService, etc. can inject
  * AnalyticsService to record deliberate product events (e.g.

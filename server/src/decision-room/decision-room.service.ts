@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — DecisionRoomService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DECISION-SVC-001
- * File   : src/decision-room/decision-room.service.ts
  *
  * Two very different kinds of "trend" live behind one endpoint, and
  * they're deliberately computed differently:

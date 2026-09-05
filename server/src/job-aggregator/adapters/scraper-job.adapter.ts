@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ScraperJobAdapter (disabled by default)
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-003
- * File   : src/job-aggregator/adapters/scraper-job.adapter.ts
  *
  * Kept as its own adapter, never merged into RssJobAdapter, so it
  * can be reviewed, rate-limited, and enabled/disabled independently

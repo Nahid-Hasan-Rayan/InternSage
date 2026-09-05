@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — UniversityService unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-UNI-TEST-001
- * File   : src/university/university.service.spec.ts
  */
 jest.mock('@prisma/client', () => ({
   PrismaClient: class {},

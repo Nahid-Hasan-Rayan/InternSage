@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Matches page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-MATCHES-001
- * File   : src/app/matches/page.tsx
  */
 
 "use client";

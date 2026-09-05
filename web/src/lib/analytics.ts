@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — frontend analytics client
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-ANALYTICS-001
- * File   : src/lib/analytics.ts
  *
  * Deliberately thin: forwards deliberate product events to the
  * backend's POST /api/analytics/event (see AnalyticsController on

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Login DTO
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-DTO-002
- * File   : src/auth/dto/login.dto.ts
  *
  * Deliberately light validation on login (unlike register) — we
  * don't want to leak password-policy details to someone probing

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — BackendPending
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-PENDING-001
- * File   : src/components/ui/backend-pending.tsx
  *
  * Used by pages whose backend is being built separately (Industry
  * Pulse, AI Tutor, Guidance/Roadmap, University portal — see

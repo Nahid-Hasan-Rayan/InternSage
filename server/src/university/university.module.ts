@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — UniversityModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-UNI-MOD-001
- * File   : src/university/university.module.ts
  */
 import { Module } from '@nestjs/common';
 import { UniversityController } from './university.controller';

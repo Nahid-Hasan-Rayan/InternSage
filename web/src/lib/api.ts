@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 // The backend sets a global prefix (`app.setGlobalPrefix('api')` in
 // main.ts) — every route actually lives under /api/..., not at the

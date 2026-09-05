@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * Motion tokens — one shared vocabulary for every animation in the app.
  * Research basis: never `ease-in` for entrances (reads as sluggish — the

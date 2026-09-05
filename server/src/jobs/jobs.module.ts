@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobsModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-MOD-001
- * File   : src/jobs/jobs.module.ts
  */
 import { Module } from '@nestjs/common';
 import { JobsController } from './jobs.controller';

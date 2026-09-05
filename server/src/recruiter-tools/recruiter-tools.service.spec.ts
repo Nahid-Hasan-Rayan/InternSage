@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RecruiterToolsService unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-TEST-001
- * File   : src/recruiter-tools/recruiter-tools.service.spec.ts
  */
 
 jest.mock('@prisma/client', () => ({

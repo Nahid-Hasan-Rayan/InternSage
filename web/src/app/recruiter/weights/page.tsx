@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Scoring rubric page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-WEIGHTS-001
- * File   : src/app/recruiter/weights/page.tsx
  */
 
 "use client";

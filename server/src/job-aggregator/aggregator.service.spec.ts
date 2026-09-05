@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AggregatorService unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-TEST-001
- * File   : src/job-aggregator/aggregator.service.spec.ts
  */
 jest.mock('@prisma/client', () => ({
   PrismaClient: class {},

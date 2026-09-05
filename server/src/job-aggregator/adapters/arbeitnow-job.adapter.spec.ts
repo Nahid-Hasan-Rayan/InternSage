@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ArbeitnowJobAdapter unit tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-TEST-002
- * File   : src/job-aggregator/adapters/arbeitnow-job.adapter.spec.ts
  *
  * fetchListings() itself (the actual fetch() call) is deliberately
  * not unit-tested here — same convention the RSS adapter already

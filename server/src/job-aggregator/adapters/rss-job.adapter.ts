@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RssJobAdapter
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-002
- * File   : src/job-aggregator/adapters/rss-job.adapter.ts
  *
  * Pulls from whatever feed URLs are configured in JOB_RSS_FEED_URLS
  * (comma-separated). Disabled by default (empty env var) so a fresh
@@ -15,6 +13,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JobSource } from '@prisma/client';
 import { JobSourceAdapter, RawListing } from '../job-source-adapter.interface';
+import { stripHtml } from './strip-html.util';
 function extractTag(block: string, tag: string): string {
   const match = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
   return match ? match[1].replace(/<!\[CDATA\[|\]\]>/g, '').trim() : '';
@@ -49,7 +48,7 @@ export class RssJobAdapter implements JobSourceAdapter {
         for (const item of items) {
           const title = extractTag(item, 'title');
           const link = extractTag(item, 'link');
-          const description = extractTag(item, 'description');
+          const description = stripHtml(extractTag(item, 'description'));
           if (!title || !link) {
             continue;
           }

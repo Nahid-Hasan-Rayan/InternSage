@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — DecisionRoomModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DECISION-MOD-001
- * File   : src/decision-room/decision-room.module.ts
  */
 import { Module } from '@nestjs/common';
 import { DecisionRoomController } from './decision-room.controller';

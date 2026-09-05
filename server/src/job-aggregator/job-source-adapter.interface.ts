@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobSourceAdapter interface
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-001
- * File   : src/job-aggregator/job-source-adapter.interface.ts
  *
  * Every adapter returns the same normalized shape regardless of
  * where the listing actually came from — AggregatorService never

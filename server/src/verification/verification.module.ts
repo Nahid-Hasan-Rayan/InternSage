@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — VerificationModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-VERIFY-MOD-001
- * File   : src/verification/verification.module.ts
  */
 import { Module } from '@nestjs/common';
 import { VerificationController } from './verification.controller';

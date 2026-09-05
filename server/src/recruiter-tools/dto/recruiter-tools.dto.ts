@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Recruiter tooling DTOs
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-DTO-001
- * File   : src/recruiter-tools/dto/recruiter-tools.dto.ts
  */
 
 import { Type } from 'class-transformer';

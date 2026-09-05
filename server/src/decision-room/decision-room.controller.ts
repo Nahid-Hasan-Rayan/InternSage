@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — DecisionRoomController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DECISION-CTRL-001
- * File   : src/decision-room/decision-room.controller.ts
  *
  * Route shapes match web/src/lib/internsage-api.ts exactly —
  * getDecisionRoomTrends()/getDecisionRoomInsights() were written

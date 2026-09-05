@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobsController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-CTRL-001
- * File   : src/jobs/jobs.controller.ts
  */
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { Role } from '@prisma/client';

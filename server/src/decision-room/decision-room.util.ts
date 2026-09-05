@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Decision Room utilities
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DECISION-UTIL-001
- * File   : src/decision-room/decision-room.util.ts
  *
  * isoWeekLabel is a deliberate byte-for-byte port of
  * web/src/app/decision-room/page.tsx's getIsoWeekLabel — the

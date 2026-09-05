@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ProfileController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PROFILE-CTRL-001
- * File   : src/profile/profile.controller.ts
  *
  * No route here accepts a profile id from the caller — the
  * identity comes only from `@CurrentUser()`, which is populated

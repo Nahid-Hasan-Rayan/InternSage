@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobsService unit tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-TEST-001
- * File   : src/jobs/jobs.service.spec.ts
  *
  * Covers the two branches that actually protect something: a
  * recruiter can't silently create the same posting twice, and a

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — VerificationController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-VERIFY-CTRL-001
- * File   : src/verification/verification.controller.ts
  *
  * Not part of the originally pasted code — VerificationService came
  * without a controller/module, so this wires it up following the

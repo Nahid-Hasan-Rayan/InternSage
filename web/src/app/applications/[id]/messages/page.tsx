@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Messages page
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-MESSAGES-001
- * File   : src/app/applications/[id]/messages/page.tsx
  *
  * REST + a short poll interval, not a WebSocket — matches
  * MessagingService's own note: Vercel serverless functions don't

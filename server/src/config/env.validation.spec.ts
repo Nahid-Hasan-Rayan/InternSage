@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Environment validation tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CONFIG-TEST-001
- * File   : src/config/env.validation.spec.ts
  *
  * The first test below exists specifically because of a real bug:
  * `enableImplicitConversion` alone did not coerce a string "3000"

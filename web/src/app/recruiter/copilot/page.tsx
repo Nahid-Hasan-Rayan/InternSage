@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Sage Copilot page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-COPILOT-001
- * File   : src/app/recruiter/copilot/page.tsx
  */
 
 "use client";

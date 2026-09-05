@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CvService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CV-SVC-001
- * File   : src/cv/cv.service.ts
  *
  * Same ownership rule as ProfileService: every write resolves the
  * caller's own ProfessionalProfile first via their userId, never

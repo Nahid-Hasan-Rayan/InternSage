@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuthController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-CTRL-001
- * File   : src/auth/auth.controller.ts
  *
  * register/login/logout are explicitly @Public() — everything else
  * in the app defaults to requiring a valid JWT (see JwtAuthGuard).

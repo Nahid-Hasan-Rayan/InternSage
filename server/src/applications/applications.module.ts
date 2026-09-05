@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ApplicationsModule
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APPLICATIONS-MOD-001
- * File   : src/applications/applications.module.ts
  *
  * Does NOT import/call EventEmitterModule.forRoot() itself —
  * that's called exactly once in AppModule, which makes EventEmitter2

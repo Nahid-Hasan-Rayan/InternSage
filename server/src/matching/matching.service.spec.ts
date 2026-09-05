@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MatchingService unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MATCH-TEST-001
- * File   : src/matching/matching.service.spec.ts
  */
 
 jest.mock('@prisma/client', () => ({
@@ -144,7 +143,7 @@ describe('MatchingService', () => {
     expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledWith({ where: { companyId: 'company-1' } });
   });
 
-  it('NHR-BE-PERF-002: looks up weights once per distinct company, not once per posting', async () => {
+  it('looks up weights once per distinct company, not once per posting', async () => {
     prisma.studentProfile.findUnique.mockResolvedValue({ userId: 'user-1' });
     prisma.professionalProfile.findUnique.mockResolvedValue({
       id: 'pp-1',
@@ -168,7 +167,7 @@ describe('MatchingService', () => {
     expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledTimes(1);
   });
 
-  it('NHR-BE-PERF-002: still looks up weights separately for genuinely different companies', async () => {
+  it('still looks up weights separately for genuinely different companies', async () => {
     prisma.studentProfile.findUnique.mockResolvedValue({ userId: 'user-1' });
     prisma.professionalProfile.findUnique.mockResolvedValue({
       id: 'pp-1',
@@ -187,5 +186,41 @@ describe('MatchingService', () => {
     await service.recomputeForStudent('student-1');
 
     expect(prisma.recruiterWeights.findUnique).toHaveBeenCalledTimes(2);
+  });
+
+  it('fires match-score writes concurrently rather than awaiting each one before starting the next', async () => {
+    prisma.studentProfile.findUnique.mockResolvedValue({ userId: 'user-1' });
+    prisma.professionalProfile.findUnique.mockResolvedValue({
+      id: 'pp-1',
+      headline: '',
+      skills: [],
+      experiences: [],
+      projects: [],
+    });
+    prisma.jobPosting.findMany.mockResolvedValue([
+      { id: 'job-1', companyId: 'company-1', title: 't1', requirementsText: 'r', requiredSkills: [] },
+      { id: 'job-2', companyId: 'company-1', title: 't2', requirementsText: 'r', requiredSkills: [] },
+      { id: 'job-3', companyId: 'company-1', title: 't3', requirementsText: 'r', requiredSkills: [] },
+    ]);
+    prisma.recruiterWeights.findUnique.mockResolvedValue(null);
+
+    let inFlight = 0;
+    let maxInFlight = 0;
+    prisma.matchScore.upsert.mockImplementation(async ({ create }: any) => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      // Yield without a real timer — proves these three calls were
+      // all outstanding at once, not one finishing before the next
+      // was even issued (which a sequential `for` loop would show as
+      // maxInFlight === 1).
+      await Promise.resolve();
+      inFlight -= 1;
+      return create;
+    });
+
+    const results = await service.recomputeForStudent('student-1');
+
+    expect(results).toHaveLength(3);
+    expect(maxInFlight).toBeGreaterThan(1);
   });
 });

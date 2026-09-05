@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobAggregatorModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-MOD-001
- * File   : src/job-aggregator/job-aggregator.module.ts
  */
 import { Module } from '@nestjs/common';
 import { AggregatorController } from './aggregator.controller';

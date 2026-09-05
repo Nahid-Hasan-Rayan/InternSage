@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — VerificationService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-VERIFY-SVC-001
- * File   : src/verification/verification.service.ts
  *
  * Timing is enforced server-side against `expiresAt`, never against
  * anything the client reports — the same principle the Build Plan

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JWT Passport strategy
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-STRAT-001
- * File   : src/auth/strategies/jwt.strategy.ts
  *
  * Beyond verifying the token's signature and expiry (handled by
  * passport-jwt itself), `validate()` re-checks that the user still

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MatchingService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MATCH-SVC-001
- * File   : src/matching/matching.service.ts
  *
  * A score is never computed live on a page load — recompute() is
  * called explicitly (by the student, or by the internal cron
@@ -87,7 +85,7 @@ export class MatchingService {
       include: { requiredSkills: { include: { skill: true } } },
     });
 
-    // NHR-BE-PERF-002 — weights are looked up per COMPANY, not per
+    // Weights are looked up per COMPANY, not per
     // posting, but this used to call loadWeights() inside the loop
     // below once per posting regardless — N nearly-always-repeated
     // DB round-trips for N postings, even when most postings share a
@@ -106,7 +104,18 @@ export class MatchingService {
       return loaded;
     };
 
-    const results = [];
+    // Score computation (synchronous, cheap) is kept separate from
+    // the actual database write below — with ~90+ active postings,
+    // writing them one at a time, awaited sequentially, meant this
+    // loop alone could take well over a minute (confirmed: a single
+    // recompute call logged at 135,690ms), and held the connection
+    // pool the whole time — which is also why unrelated analytics
+    // writes were timing out ("connection pool timeout: 20,
+    // connection limit: 5") during the exact same window. Promise.all
+    // below lets Prisma/PgBouncer parallelize the writes up to
+    // whatever connection_limit actually allows, instead of forcing
+    // one full round-trip to finish before the next can even start.
+    const computed = [];
     for (const posting of postings) {
       const requiredNames = posting.requiredSkills.map((r) => r.skill.name.toLowerCase());
       const matchedSkills = requiredNames.filter((name) => skillSet.skillNames.has(name));
@@ -131,14 +140,24 @@ export class MatchingService {
         weights.softSkillsWeight * 0.5; // neutral placeholder until soft-skills self-assessment ships
 
       const score = Math.round(Math.max(0, Math.min(1, rawScore)) * 100);
-
-      const matchScore = await this.prisma.matchScore.upsert({
-        where: { studentProfileId_jobPostingId: { studentProfileId, jobPostingId: posting.id } },
-        update: { score, matchedSkills, missingSkills, computedAt: new Date() },
-        create: { studentProfileId, jobPostingId: posting.id, score, matchedSkills, missingSkills },
-      });
-      results.push(matchScore);
+      computed.push({ jobPostingId: posting.id, score, matchedSkills, missingSkills });
     }
+
+    const results = await Promise.all(
+      computed.map((c) =>
+        this.prisma.matchScore.upsert({
+          where: { studentProfileId_jobPostingId: { studentProfileId, jobPostingId: c.jobPostingId } },
+          update: { score: c.score, matchedSkills: c.matchedSkills, missingSkills: c.missingSkills, computedAt: new Date() },
+          create: {
+            studentProfileId,
+            jobPostingId: c.jobPostingId,
+            score: c.score,
+            matchedSkills: c.matchedSkills,
+            missingSkills: c.missingSkills,
+          },
+        }),
+      ),
+    );
 
     void this.analytics.record({
       type: 'MATCHES_RECOMPUTED',

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Copilot intent shape
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-001
- * File   : src/copilot/intent-parser/intent-parser.interface.ts
  *
  * This is the entire surface a natural-language query is allowed
  * to become. CopilotService builds one Prisma query from this

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — JobsService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-SVC-001
- * File   : src/jobs/jobs.service.ts
  *
  * `dedupHash` is sha256(title + companyId + externalUrl) — this is
  * what lets the aggregator (and a recruiter re-posting the same

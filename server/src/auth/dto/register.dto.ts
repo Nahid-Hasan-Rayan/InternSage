@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Register DTO
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-DTO-001
- * File   : src/auth/dto/register.dto.ts
  *
  * Validation here is the first security checkpoint: malformed
  * input is rejected before it ever reaches AuthService.

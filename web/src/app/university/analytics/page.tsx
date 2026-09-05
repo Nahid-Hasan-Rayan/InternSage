@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — University analytics
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-UNIV-ANALYTICS-001
- * File   : src/app/university/analytics/page.tsx
  */
 
 "use client";

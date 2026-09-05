@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 import * as React from "react";
 import { cn } from "@/lib/utils";
 

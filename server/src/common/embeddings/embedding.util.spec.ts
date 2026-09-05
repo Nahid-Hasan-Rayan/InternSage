@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — embedding.util unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-EMBED-TEST-001
- * File   : src/common/embeddings/embedding.util.spec.ts
  */
 
 import { cosineSimilarity, embedText } from './embedding.util';

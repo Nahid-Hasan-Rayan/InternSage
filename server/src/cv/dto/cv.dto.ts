@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CV DTOs
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CV-DTO-001
- * File   : src/cv/dto/cv.dto.ts
  *
  * Grouped in one file since each is small — split out if any of
  * these grows past a handful of fields.

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Roadmap (Guidance Engine)
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-ROADMAP-001
- * File   : src/app/roadmap/page.tsx
  *
  * See getRoadmap()'s JSDoc in internsage-api.ts for the exact
  * expected endpoint contract. Archetypes are anonymized aggregate

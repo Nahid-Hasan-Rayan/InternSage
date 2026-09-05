@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — protected-characteristic.guard tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-TEST-001
- * File   : src/copilot/protected-characteristic.guard.spec.ts
  */
 
 import { containsProtectedCharacteristic } from './protected-characteristic.guard';

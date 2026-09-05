@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RequestLoggingInterceptor
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-INTERCEPTOR-001
- * File   : src/common/interceptors/request-logging.interceptor.ts
  *
  * Registered globally (APP_INTERCEPTOR in app.module.ts) so every
  * request — auth'd or not, successful or not — is measured exactly

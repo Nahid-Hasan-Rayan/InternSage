@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AggregatorController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-CTRL-001
- * File   : src/job-aggregator/aggregator.controller.ts
  *
  * @Public() because there is no end-user JWT on a Vercel Cron
  * call — CronSecretGuard is what actually protects this route.

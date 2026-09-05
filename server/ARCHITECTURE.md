@@ -1,6 +1,5 @@
 # InternSage Backend — Architecture & How to Extend It
 
-**Author:** Nahid Hasan Rayan
 
 This file is the map for adding the next feature without breaking what's already here. Read this before starting Phase 2.
 

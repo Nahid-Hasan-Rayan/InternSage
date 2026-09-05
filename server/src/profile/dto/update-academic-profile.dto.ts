@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Update Academic Profile DTO
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PROFILE-DTO-001
- * File   : src/profile/dto/update-academic-profile.dto.ts
  */
 
 import { IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';

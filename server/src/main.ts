@@ -1,11 +1,9 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * ============================================================
  *  InternSage backend — application entry point
  * ------------------------------------------------------------
- *  Author : Nahid Hasan Rayan
- *  Marker : NHR-BE-MAIN-002
- *  File   : src/main.ts
- *
  *  Security posture applied here, deliberately, before the app
  *  accepts a single request:
  *   1. Startup env validation lives in one place —

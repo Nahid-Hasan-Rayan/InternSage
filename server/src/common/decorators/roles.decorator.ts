@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — @Roles() decorator
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DEC-002
- * File   : src/common/decorators/roles.decorator.ts
  */
 
 import { SetMetadata } from '@nestjs/common';

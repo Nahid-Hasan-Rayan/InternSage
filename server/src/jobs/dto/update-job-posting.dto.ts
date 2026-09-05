@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — UpdateJobPostingDto
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-DTO-002
- * File   : src/jobs/dto/update-job-posting.dto.ts
  *
  * Every field optional (PartialType) — a recruiter PATCHing a
  * posting sends only what changed. When `requiredSkillIds` IS

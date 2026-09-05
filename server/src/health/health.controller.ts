@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Health check endpoint
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-HEALTH-001
- * File   : src/health/health.controller.ts
  *
  * Deliberately public and dependency-light — a load balancer or
  * container orchestrator should be able to hit this without

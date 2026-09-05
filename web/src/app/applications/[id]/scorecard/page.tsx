@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Scorecard page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-SCORECARD-001
- * File   : src/app/applications/[id]/scorecard/page.tsx
  */
 
 "use client";

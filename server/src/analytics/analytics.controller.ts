@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AnalyticsController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-ANALYTICS-CTRL-001
- * File   : src/analytics/analytics.controller.ts
  *
  * Two distinct trust boundaries in one controller, kept clearly
  * separate:

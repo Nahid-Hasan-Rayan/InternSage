@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 import { SkillCategory } from '@prisma/client';
 
 // The catalog was software-only for a while, which doesn't fit

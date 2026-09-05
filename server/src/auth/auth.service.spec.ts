@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuthService unit tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-TEST-001
- * File   : src/auth/auth.service.spec.ts
  *
  * These tests target exactly the branches called out as the
  * highest-value thing to test in the Build Plan (Phase 1, step

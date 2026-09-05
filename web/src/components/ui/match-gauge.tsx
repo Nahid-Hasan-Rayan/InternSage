@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MatchGauge
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-GAUGE-001
- * File   : src/components/ui/match-gauge.tsx
  *
  * The Master Blueprint calls this out specifically: "the radial dial
  * gauge — used for every score in the system (match %, authenticity,

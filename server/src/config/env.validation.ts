@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Environment variable schema
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CONFIG-001
- * File   : src/config/env.validation.ts
  *
  * Wired into ConfigModule.forRoot({ validate }) in app.module.ts.
  * Nest runs this *before* the application context finishes

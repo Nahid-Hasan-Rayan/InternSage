@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — OpenRouterIntentParser
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-003
- * File   : src/copilot/intent-parser/openrouter-intent-parser.ts
  *
  * This is the "server-side LLM call mapped to a constrained query"
  * the Blueprint describes for Sage Copilot — OpenRouter instead of
@@ -11,20 +9,34 @@
  * is asked to return strict JSON matching CopilotIntent and nothing
  * else; the response is parsed defensively and any field outside
  * CopilotIntent's shape is simply dropped, never trusted as-is.
- * OPENROUTER_MODEL defaults to a free-tier model — OpenRouter
- * rotates which models carry the ":free" suffix, so check
- * https://openrouter.ai/models?max_price=0 if this one stops
- * working and update the env var, no code change needed.
+ *
+ * FREE_MODEL_CANDIDATES is a priority-ordered list, not one hardcoded
+ * model — OpenRouter's `models` field tries each in order within the
+ * same request and moves on if one is down, deprecated, or rate-
+ * limited, rather than failing the whole call over a single stale
+ * ID. Free-tier models get rotated out with no warning (this file
+ * used to default to meta-llama/llama-3.1-8b-instruct:free, which
+ * OpenRouter has since retired in favor of the 3.3 release — that's
+ * exactly the failure mode this list exists to survive). Check
+ * https://openrouter.ai/models?max_price=0 if every candidate here
+ * ever goes stale at once, which is unlikely but not impossible.
+ *
  * Falls back to RuleBasedIntentParser whenever there's no API key,
- * the request fails, or the response isn't valid JSON — Copilot
- * must keep working even with zero budget or an OpenRouter outage.
+ * every candidate model fails, the request times out, or the
+ * response isn't valid JSON — Copilot must keep working even with
+ * zero budget or an OpenRouter outage.
  */
 
 import { Injectable, Logger } from '@nestjs/common';
 import { CopilotIntent, IntentParser } from './intent-parser.interface';
 import { RuleBasedIntentParser } from './rule-based-intent-parser';
 
-const DEFAULT_FREE_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+const FREE_MODEL_CANDIDATES = [
+  'meta-llama/llama-3.3-8b-instruct:free',
+  'openrouter/free', // OpenRouter's own router — self-maintained, always points at whatever free model is currently up, the most durable fallback available
+];
+
+const REQUEST_TIMEOUT_MS = 8_000;
 
 @Injectable()
 export class OpenRouterIntentParser implements IntentParser {
@@ -39,9 +51,13 @@ export class OpenRouterIntentParser implements IntentParser {
       return this.ruleBasedParser.parse(question, knownSkillNames);
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
@@ -51,7 +67,7 @@ export class OpenRouterIntentParser implements IntentParser {
           'X-Title': 'InternSage Sage Copilot',
         },
         body: JSON.stringify({
-          model: process.env.OPENROUTER_MODEL ?? DEFAULT_FREE_MODEL,
+          models: this.configuredModels(),
           temperature: 0,
           messages: [
             {
@@ -63,7 +79,9 @@ export class OpenRouterIntentParser implements IntentParser {
                 'minAuthenticity (0-100 number), major (string), universityName (string), ' +
                 'location (string), year (1-6 number). Never include any other keys. ' +
                 'If the question asks about gender, ethnicity, race, religion, age, ' +
-                'nationality, or disability, reply with exactly {} and nothing else.',
+                'nationality, or disability, reply with exactly {} and nothing else. ' +
+                'Reply with the raw JSON object only — no markdown code fences, no ' +
+                'explanation before or after it.',
             },
             { role: 'user', content: question },
           ],
@@ -81,12 +99,33 @@ export class OpenRouterIntentParser implements IntentParser {
         return this.ruleBasedParser.parse(question, knownSkillNames);
       }
 
-      const parsed = JSON.parse(content);
+      const parsed = JSON.parse(this.stripCodeFence(content));
       return this.sanitize(parsed, knownSkillNames);
     } catch (error) {
-      this.logger.warn(`OpenRouter call failed (${(error as Error).message}); falling back to rule-based parsing.`);
+      const reason = controller.signal.aborted ? `timed out after ${REQUEST_TIMEOUT_MS}ms` : (error as Error).message;
+      this.logger.warn(`OpenRouter call failed (${reason}); falling back to rule-based parsing.`);
       return this.ruleBasedParser.parse(question, knownSkillNames);
+    } finally {
+      clearTimeout(timeout);
     }
+  }
+
+  /** OPENROUTER_MODEL, if set, goes first — everything else is the
+   * built-in fallback chain. Lets an operator pin a specific model
+   * without losing the resilience of the rest of the list. */
+  private configuredModels(): string[] {
+    const pinned = process.env.OPENROUTER_MODEL;
+    if (!pinned) return FREE_MODEL_CANDIDATES;
+    return [pinned, ...FREE_MODEL_CANDIDATES.filter((m) => m !== pinned)];
+  }
+
+  /** Smaller free-tier models don't always honor "JSON only" —
+   * stripping a ```json ... ``` wrapper here means one common
+   * formatting slip doesn't throw away a perfectly good answer. */
+  private stripCodeFence(content: string): string {
+    const trimmed = content.trim();
+    const match = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+    return match ? match[1] : trimmed;
   }
 
   /** Never trust the model's JSON as-is — only known-safe fields, in-range values, survive. */

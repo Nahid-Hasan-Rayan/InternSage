@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ProfileService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PROFILE-SVC-001
- * File   : src/profile/profile.service.ts
  *
  * Security note: every method here takes the requesting user's id
  * from the authenticated JWT (never from a route param or request

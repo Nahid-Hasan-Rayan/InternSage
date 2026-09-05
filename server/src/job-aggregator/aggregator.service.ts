@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AggregatorService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-SVC-001
- * File   : src/job-aggregator/aggregator.service.ts
  *
  * A company row is resolved (or created, unverified) per listing
  * from `companyEmailDomain` — an aggregated posting's company

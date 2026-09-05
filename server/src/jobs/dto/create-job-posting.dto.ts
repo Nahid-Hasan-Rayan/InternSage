@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CreateJobPostingDto
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-DTO-001
- * File   : src/jobs/dto/create-job-posting.dto.ts
  *
  * `requiredSkillIds` is required and non-empty (not optional) —
  * MatchScore's matchedSkills/missingSkills come from a real set

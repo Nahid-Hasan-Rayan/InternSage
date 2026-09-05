@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Landing page
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-LANDING-002
- * File   : src/app/page.tsx
  *
  * Rebuilt from the fact-checked demo HTML (see internsage-landing-fixed.html)
  * — same verified copy and stats, ported into real React components using

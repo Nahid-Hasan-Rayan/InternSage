@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ApplicationsService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APPLICATIONS-SVC-001
- * File   : src/applications/applications.service.ts
  *
  * This is where the Blueprint's "no ghosting" guarantee becomes real
  * infrastructure rather than a UI promise (Master Blueprint §5,

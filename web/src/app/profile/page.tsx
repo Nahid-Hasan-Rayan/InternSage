@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Student profile + CV editor
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-PROFILE-001
- * File   : src/app/profile/page.tsx
  *
  * This is the piece that was missing: the backend's Profile and CV
  * modules had full APIs (see ProfileController/CvController) but no

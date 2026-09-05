@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ApplicationsController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APPLICATIONS-CTRL-001
- * File   : src/applications/applications.controller.ts
  */
 
 import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';

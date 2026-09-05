@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CopilotController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-CTRL-001
- * File   : src/copilot/copilot.controller.ts
  */
 
 import { Body, Controller, Post } from '@nestjs/common';

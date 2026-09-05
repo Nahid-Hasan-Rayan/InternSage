@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — University events
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-UNIV-EVENTS-001
- * File   : src/app/university/events/page.tsx
  */
 
 "use client";

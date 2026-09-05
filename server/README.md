@@ -1,6 +1,5 @@
 # InternSage — Backend (Phase 0 + Phase 1)
 
-**Author:** Nahid Hasan Rayan
 **Status:** Identity, Profile, and CV modules — complete and verified. See `docs/` for the full Master Blueprint and step-by-step Build Plan this code follows.
 
 ## What's implemented
@@ -8,8 +7,6 @@
 - **Auth** — registration and login with domain-based structural verification. Students can register even if their university isn't yet a partner (they stay `verified: false`); recruiters are hard-rejected if their company isn't a whitelisted tenant. See the comment block at the top of `src/auth/auth.service.ts` for the full reasoning.
 - **Profile** — the academic ⇄ professional switch, strictly ownership-scoped (a user can only ever read/write their own profile — see `src/profile/profile.service.ts`).
 - **CV** — field-aware skills, experience, education, and projects, same ownership-scoping discipline throughout.
-
-Every file carries an `Author: Nahid Hasan Rayan` / `Marker: NHR-...` header — the marker scheme is `NHR-<LAYER>-<MODULE>-<TYPE>-<NUM>`, e.g. `NHR-BE-AUTH-SVC-001` = backend, auth module, service, first file.
 
 ## Security posture (see `main.ts`, `app.module.ts` for the wiring)
 
@@ -45,7 +42,7 @@ cd infra && docker compose up -d
 | `npx tsc --noEmit` (full compiler, application code) | ✅ Zero errors |
 | `npx jest` — 8 unit tests on the domain-verification and credential logic | ✅ 8/8 passing |
 | `docker-compose.yml` syntax | ✅ Valid |
-| `npx prisma generate` | ⚠️ Blocked by this sandbox's network allowlist (`binaries.prisma.sh` isn't reachable here) — will succeed normally on your machine. See below. |
+| `npx prisma generate` | ⚠️ Needs network access to `binaries.prisma.sh` — will fail in an offline/restricted network without it. Succeeds normally with a standard internet connection. See below. |
 
 Run the tests yourself:
 

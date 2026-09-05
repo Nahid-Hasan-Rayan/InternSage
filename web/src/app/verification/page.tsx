@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Verification (quiz) page
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-VERIFICATION-001
- * File   : src/app/verification/page.tsx
  *
  * New — the backend (VerificationService, fully tested) and the API
  * client (startVerification/submitVerification) already existed;

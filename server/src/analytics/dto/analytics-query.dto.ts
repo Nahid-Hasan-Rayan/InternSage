@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Analytics query DTO
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-ANALYTICS-DTO-001
- * File   : src/analytics/dto/analytics-query.dto.ts
  */
 
 import { Type } from 'class-transformer';

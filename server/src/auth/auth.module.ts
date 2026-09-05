@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuthModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-MOD-001
- * File   : src/auth/auth.module.ts
  */
 
 import { Module } from '@nestjs/common';

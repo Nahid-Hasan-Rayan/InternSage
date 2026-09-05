@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Global JWT auth guard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-GUARD-001
- * File   : src/common/guards/jwt-auth.guard.ts
  *
  * Registered as the app-wide default guard (see AppModule), so
  * every route requires a valid JWT unless explicitly marked

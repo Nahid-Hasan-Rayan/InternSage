@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — SubmitVerificationDto
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-VERIFY-DTO-002
- * File   : src/verification/dto/submit-verification.dto.ts
  */
 import { ArrayMaxSize, ArrayMinSize, IsArray, IsInt, Min } from 'class-validator';
 export class SubmitVerificationDto {

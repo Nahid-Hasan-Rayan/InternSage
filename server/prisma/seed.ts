@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Development seed script
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-SEED-001
- * File   : prisma/seed.ts
  *
  * Run via `npx prisma db seed` (wired in package.json). Inserts
  * exactly enough reference data to exercise BOTH branches of the
@@ -17,8 +15,9 @@
  * duplicates.
  */
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SkillCategory } from '@prisma/client';
 import { createHash } from 'crypto';
+import { SKILL_CATALOG } from './skill-catalog';
 
 const prisma = new PrismaClient();
 
@@ -138,6 +137,22 @@ async function main(): Promise<void> {
     create: { name: 'PostgreSQL', category: 'SOFTWARE' },
   });
 
+  // Was software-only until now — SKILL_CATALOG (skill-catalog.ts)
+  // has the full spread across MJIIT's actual programs, including
+  // JavaScript/React/Node.js/PostgreSQL from above — this loop
+  // no-ops on those four and creates the rest. No question banks
+  // for the new ones yet either, same "add more later, not a
+  // blocker" note as React/Node/PostgreSQL already had above.
+  for (const s of SKILL_CATALOG) {
+    await prisma.skill.upsert({
+      where: { name: s.name },
+      update: {},
+      create: { name: s.name, category: s.category },
+    });
+  }
+  const sqlSkill = await prisma.skill.findUniqueOrThrow({ where: { name: 'SQL' } });
+  const pythonSkill = await prisma.skill.findUniqueOrThrow({ where: { name: 'Python' } });
+
   // One sample posting so /jobs isn't empty on a fresh deploy.
   const dedupHash = createHash('sha256')
     .update(`software engineering intern::${paduAnalytics.id}::`)
@@ -159,12 +174,116 @@ async function main(): Promise<void> {
     },
   });
 
+  // Real Malaysian internship/graduate programmes, researched and
+  // verified by hand — not from an automated source, since Adzuna
+  // doesn't cover Malaysia and Indeed/JobStreet actively block
+  // automated access (see the job-aggregator work earlier in this
+  // repo's history for the full reasoning on why that's not
+  // something to route around). These are companies that are
+  // genuinely, currently running the programmes described —
+  // externalUrl points to the real source so a student always ends
+  // up applying through the company's own actual channel, never
+  // through anything InternSage claims to control.
+  //
+  // Same synthetic-domain safety rule as the Arbeitnow adapter:
+  // Company.emailDomain is also what auto-verifies a RECRUITER at
+  // registration, so a real company's real domain never goes here —
+  // guessing it (and being right) would let an actual employee at
+  // that company walk into an auto-verified recruiter account for a
+  // listing they never created. `.curated.invalid` is the same
+  // IANA-reserved-TLD trick, applied to hand-curated data instead of
+  // aggregated data — the mechanism doesn't care which.
+  //
+  // These need periodic refreshing by hand — they're accurate as
+  // researched, not live-synced, and will go stale the way any
+  // manually-entered listing does.
+  const malaysianPostings: Array<{
+    company: string;
+    title: string;
+    description: string;
+    requirementsText: string;
+    location: string;
+    category: SkillCategory;
+    externalUrl: string;
+    skillIds: string[];
+  }> = [
+    {
+      company: 'Huawei Technologies (Malaysia)',
+      title: 'Fresh Graduate Programme — Software/Database',
+      description:
+        'Huawei Malaysia\'s Fresh Graduate Programme offers local talent a fixed-term contract track toward an accelerated career, with placements spanning database development and administration.',
+      requirementsText: 'Recent graduate or final-year student. Database development, SQL, and general software engineering fundamentals.',
+      location: 'Kuala Lumpur, Malaysia',
+      category: 'SOFTWARE',
+      externalUrl: 'https://my.jobstreet.com/internship-for-software-engineering-jobs',
+      skillIds: [sqlSkill.id],
+    },
+    {
+      company: 'Grab Malaysia',
+      title: 'Software Engineer Intern',
+      description:
+        'Grab\'s internship programme places interns on real product teams across the region\'s super-app, working alongside engineers on services used across Southeast Asia. Runs in cohorts through the year, typically 3-6 months.',
+      requirementsText: 'Personal projects, hackathons, or open-source contributions valued alongside coursework. Software engineering fundamentals expected.',
+      location: 'Kuala Lumpur / Petaling Jaya, Malaysia',
+      category: 'SOFTWARE',
+      externalUrl: 'https://www.grab.careers/en/my-internships/',
+      skillIds: [jsSkill.id, reactSkill.id],
+    },
+    {
+      company: 'PETRONAS',
+      title: 'Petronas Digital Graduate Programme',
+      description:
+        'PETRONAS\'s Digital Graduate Programme immerses degree holders in Computer Science, Data Science, or Engineering in the enterprise-scale digital transformation of one of Malaysia\'s largest companies. Hiring cycles run periodically — check PETRONAS\'s own careers portal for the current intake window.',
+      requirementsText: 'Degree in Computer Science, Data Science, or Engineering. Fresh graduates.',
+      location: 'Kuala Lumpur, Malaysia',
+      category: 'SOFTWARE',
+      externalUrl: 'https://www.petronas.com/careers',
+      skillIds: [pythonSkill.id],
+    },
+    {
+      company: 'Maxis Berhad',
+      title: 'Maxis Graduate Programme',
+      description:
+        'A two-year rotational programme across network engineering, digital product management, and data science, built around Malaysia\'s 5G and IoT rollout.',
+      requirementsText: 'Fresh graduate with leadership potential. Open to engineering, data, and digital product backgrounds.',
+      location: 'Kuala Lumpur, Malaysia',
+      category: 'SOFTWARE',
+      externalUrl: 'https://www.maxis.com.my/en/about-maxis/careers/',
+      skillIds: [],
+    },
+  ];
+
+  for (const posting of malaysianPostings) {
+    const domain = `${posting.company.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}.curated.invalid`;
+    const company = await prisma.company.upsert({
+      where: { emailDomain: domain },
+      update: {},
+      create: { name: posting.company, emailDomain: domain, verified: false },
+    });
+    const hash = createHash('sha256')
+      .update(`${posting.title.toLowerCase()}::${company.id}::${posting.externalUrl}`)
+      .digest('hex');
+    await prisma.jobPosting.upsert({
+      where: { dedupHash: hash },
+      update: {},
+      create: {
+        companyId: company.id,
+        title: posting.title,
+        description: posting.description,
+        requirementsText: posting.requirementsText,
+        location: posting.location,
+        category: posting.category,
+        source: 'MANUAL',
+        externalUrl: posting.externalUrl,
+        dedupHash: hash,
+        requiredSkills: { create: posting.skillIds.map((skillId) => ({ skillId })) },
+      },
+    });
+  }
+
   // ---------------------------------------------------------------
   // Decision Room — salary benchmarks
   // ------------------------------------------------------------
-  //  Author : Nahid Hasan Rayan
-  //  Marker : NHR-BE-SEED-002
-  //
   //  Sourced from Randstad Malaysia's 2025 Job Market Outlook &
   //  Salary Guide (the same report already cited as reference [3]
   //  in the URIIS paper) — junior/middle/senior monthly bands

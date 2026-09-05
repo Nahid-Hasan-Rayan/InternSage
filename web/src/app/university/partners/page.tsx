@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — University partners
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-UNIV-PARTNERS-001
- * File   : src/app/university/partners/page.tsx
  */
 
 "use client";

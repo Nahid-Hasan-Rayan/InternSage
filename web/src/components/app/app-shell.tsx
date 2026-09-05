@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AppShell
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-SHELL-002
- * File   : src/components/app/app-shell.tsx
  *
  * Rebuilt to match the demo HTML's actual structure — a persistent
  * 264px left sidebar with icon nav items, not a top bar. This was

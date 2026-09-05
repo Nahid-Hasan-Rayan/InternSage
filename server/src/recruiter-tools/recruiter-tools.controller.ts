@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RecruiterToolsController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-CTRL-001
- * File   : src/recruiter-tools/recruiter-tools.controller.ts
  */
 
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';

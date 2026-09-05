@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MetricsService (Prometheus)
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-METRICS-001
- * File   : src/metrics/metrics.service.ts
  *
  * Wraps a single `prom-client` Registry so every metric in the
  * process is defined in exactly one place. `RequestLoggingInterceptor`

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Dashboard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-DASH-001
- * File   : src/app/dashboard/page.tsx
  *
  * Resolves the session client-side via getSession() (backed by
  * GET /auth/me) rather than trusting anything cached — the httpOnly

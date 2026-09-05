@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 "use client";
 
 import { motion } from "motion/react";

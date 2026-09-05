@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MessagingService unit tests
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MSG-TEST-001
- * File   : src/messaging/messaging.service.spec.ts
  */
 
 jest.mock('@prisma/client', () => ({

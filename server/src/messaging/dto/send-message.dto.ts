@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — SendMessageDto
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MSG-DTO-001
- * File   : src/messaging/dto/send-message.dto.ts
  */
 
 import { IsString, MaxLength, MinLength } from 'class-validator';

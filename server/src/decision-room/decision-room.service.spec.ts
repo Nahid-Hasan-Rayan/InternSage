@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — DecisionRoomService unit tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DECISION-TEST-001
- * File   : src/decision-room/decision-room.service.spec.ts
  *
  * Covers the actual decision logic, matching this project's own
  * testing convention (ARCHITECTURE.md/Master Blueprint Phase 9):

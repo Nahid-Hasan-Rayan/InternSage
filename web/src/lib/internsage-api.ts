@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Phase 2/3 API client
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-API-002
- * File   : src/lib/internsage-api.ts
  *
  * Thin typed wrappers over authedFetch — one function per backend
  * endpoint, mirroring the DTOs in server/src/**\/dto exactly rather

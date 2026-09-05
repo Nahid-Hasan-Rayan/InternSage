@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CreateEventDto
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-ANALYTICS-DTO-002
- * File   : src/analytics/dto/create-event.dto.ts
  *
  * Deliberately a narrow *subset* of AnalyticsEventType — REQUEST is
  * written only by RequestLoggingInterceptor and must never be

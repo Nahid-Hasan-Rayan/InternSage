@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ProfileModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PROFILE-MOD-001
- * File   : src/profile/profile.module.ts
  */
 
 import { Module } from '@nestjs/common';

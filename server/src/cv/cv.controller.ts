@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CvController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CV-CTRL-001
- * File   : src/cv/cv.controller.ts
  */
 
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';

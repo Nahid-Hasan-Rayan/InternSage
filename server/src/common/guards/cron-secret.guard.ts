@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CronSecretGuard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-CRON-GUARD-001
- * File   : src/common/guards/cron-secret.guard.ts
  *
  * Vercel Cron Jobs (see vercel.json's "crons" array) call an
  * endpoint on a schedule with no end-user session — there is no JWT

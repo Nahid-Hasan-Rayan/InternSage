@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RuleBasedIntentParser
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-002
- * File   : src/copilot/intent-parser/rule-based-intent-parser.ts
  *
  * No network call, no API key required — this is the parser that
  * always runs, and OpenRouterIntentParser's actual fallback when

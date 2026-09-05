@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Interview kits page
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-KITS-001
- * File   : src/app/recruiter/interview-kits/page.tsx
  *
  * One kit per role, reused across every candidate for that role —
  * never per-application — so evaluation stays comparable. This

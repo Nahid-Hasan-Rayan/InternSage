@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — UniversityController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-UNI-CTRL-001
- * File   : src/university/university.controller.ts
  *
  * Every route is @Roles(Role.UNIVERSITY) — the university identity
  * itself is always resolved server-side from the caller's own

@@ -1,10 +1,8 @@
+-- © 2026 Nahid Hasan Rayan. All rights reserved.
+
 -- ============================================================
 --  InternSage — Full database schema for Supabase
 -- ------------------------------------------------------------
---  Author : Nahid Hasan Rayan
---  Marker : NHR-DB-SUPABASE-SQL-003
---  File   : server/supabase/schema.sql
---
 --  Regenerated to match the CURRENT prisma/schema.prisma — 25
 --  tables, 8 enums, through Phase 3 (Jobs, Matching, Verification,
 --  Applications, Recruiter Tools/Scorecards, Messaging, Audit Log).
@@ -172,7 +170,7 @@ CREATE INDEX IF NOT EXISTS "recruiter_profiles_companyId_idx" ON "recruiter_prof
 
 -- ------------------------------------------------------------
 -- University portal — mirrors recruiter_profiles -> companies
--- exactly (see prisma/schema.prisma's NHR-BE-SCHEMA-008 comment).
+-- exactly (see prisma/schema.prisma's comment on those models).
 -- ------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS "university_admin_profiles" (
@@ -313,9 +311,9 @@ CREATE INDEX IF NOT EXISTS "match_scores_studentProfileId_idx" ON "match_scores"
 -- Decision Room — see src/decision-room/decision-room.service.ts's
 -- header comment for why these two tables are populated so
 -- differently: snapshots are computed weekly from this platform's
--- OWN job_required_skills data (NHR-BE-DECISION-SVC-001's internal
--- cron route), benchmarks are curated/source-attributed and only
--- ever change by hand (see the seed insert below).
+-- OWN job_required_skills data (via the decision-room module's
+-- internal cron route), benchmarks are curated/source-attributed and
+-- only ever change by hand (see the seed insert below).
 -- ------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS "skill_demand_snapshots" (
@@ -628,16 +626,62 @@ INSERT INTO "companies" ("id", "name", "emailDomain", "verified", "trustScore", 
 VALUES (gen_random_uuid()::text, 'Padu Analytics', 'paduanalytics.com', true, 100, CURRENT_TIMESTAMP)
 ON CONFLICT ("emailDomain") DO NOTHING;
 
-INSERT INTO "skills" ("id", "name", "category")
-VALUES (gen_random_uuid()::text, 'JavaScript', 'SOFTWARE')
+INSERT INTO "skills" ("id", "name", "category") VALUES
+  (gen_random_uuid()::text, 'JavaScript', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'React', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'Node.js', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'PostgreSQL', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'Python', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'TypeScript', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'SQL', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'Docker', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'Git', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'AWS', 'SOFTWARE'),
+  (gen_random_uuid()::text, 'AutoCAD', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'SolidWorks', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'CATIA', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'ANSYS', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'Finite Element Analysis', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'Thermodynamics', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'CNC Machining', 'MECHANICAL'),
+  (gen_random_uuid()::text, 'Circuit Design', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'PCB Design', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'PLC Programming', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'MATLAB', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'Embedded Systems', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'Power Systems Analysis', 'ELECTRICAL'),
+  (gen_random_uuid()::text, 'Process Simulation', 'CHEMICAL'),
+  (gen_random_uuid()::text, 'Aspen HYSYS', 'CHEMICAL'),
+  (gen_random_uuid()::text, 'Reactor Design', 'CHEMICAL'),
+  (gen_random_uuid()::text, 'Mass Transfer', 'CHEMICAL'),
+  (gen_random_uuid()::text, 'HAZOP', 'CHEMICAL'),
+  (gen_random_uuid()::text, 'Project Management', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Digital Marketing', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Business Analysis', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Supply Chain Management', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Salesforce', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Excel', 'BUSINESS'),
+  (gen_random_uuid()::text, 'Financial Accounting', 'ACCOUNTING'),
+  (gen_random_uuid()::text, 'Auditing', 'ACCOUNTING'),
+  (gen_random_uuid()::text, 'Taxation', 'ACCOUNTING'),
+  (gen_random_uuid()::text, 'Financial Modeling', 'ACCOUNTING'),
+  (gen_random_uuid()::text, 'SAP', 'ACCOUNTING'),
+  (gen_random_uuid()::text, 'Econometrics', 'ECONOMICS'),
+  (gen_random_uuid()::text, 'Statistical Analysis', 'ECONOMICS'),
+  (gen_random_uuid()::text, 'R', 'ECONOMICS'),
+  (gen_random_uuid()::text, 'Stata', 'ECONOMICS'),
+  (gen_random_uuid()::text, 'Economic Forecasting', 'ECONOMICS'),
+  (gen_random_uuid()::text, 'Public Speaking', 'OTHER'),
+  (gen_random_uuid()::text, 'Technical Writing', 'OTHER'),
+  (gen_random_uuid()::text, 'Data Visualization', 'OTHER')
 ON CONFLICT ("name") DO NOTHING;
 
 -- Decision Room salary benchmarks — sourced from Randstad Malaysia's
 -- 2025 Job Market Outlook & Salary Guide (same report cited as
 -- reference [3] in the URIIS paper), junior/middle/senior monthly
 -- MYR bands re-used as p25/median/p75. See seed.ts's matching block
--- (NHR-BE-SEED-002) for the full sourcing note — never add a row
--- here without a real, dated, named source.
+-- for the full sourcing note — never add a row here without a
+-- real, dated, named source.
 INSERT INTO "salary_benchmarks" ("id", "role", "region", "p25", "median", "p75", "source", "asOf", "updatedAt") VALUES
   (gen_random_uuid()::text, 'Software Engineer',   'Malaysia', 3500, 10000, 17000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),
   (gen_random_uuid()::text, 'Data Analyst',         'Malaysia', 5000, 10000, 17000, 'Randstad Malaysia — 2025 Job Market Outlook & Salary Guide', '2024-12-19', CURRENT_TIMESTAMP),

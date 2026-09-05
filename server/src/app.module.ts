@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Root application module
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APP-001
- * File   : src/app.module.ts
  *
  * Two guards are registered globally, in this order:
  *   1. ThrottlerGuard  — rate limits every request before auth

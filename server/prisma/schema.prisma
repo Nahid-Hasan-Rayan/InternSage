@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 // ============================================================
 //  InternSage — Database schema (Phase 1: Identity, Profile, CV)
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-001
-//
 //  Design notes (see docs/InternSage_Master_Blueprint.md §5, §7):
 //   - Verification is structural: a User is only ever `verified`
 //     because their email domain matched a whitelisted
@@ -30,7 +29,7 @@ datasource db {
   // without pooling. Append `?pgbouncer=true&connection_limit=5` —
   // see README.md's Supabase setup section for the exact string.
   //
-  // NHR-BE-PERF-001 — do not "fix" this back down to
+  // Do not "fix" this back down to
   // connection_limit=1. That looked like the safe, minimal value
   // and was the documented setting for a while, but it silently
   // serializes every concurrent query *within a single request* —
@@ -194,9 +193,6 @@ model RecruiterProfile {
 // ---------------------------------------------------------------
 // University portal
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-008
-//
 //  UniversityAdminProfile mirrors RecruiterProfile -> Company
 //  exactly on purpose: same "one profile row scoped to exactly one
 //  tenant, resolved from the authenticated user, never a
@@ -254,9 +250,6 @@ model UniversityEvent {
 // ---------------------------------------------------------------
 // Observability — analytics events & error log
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-002
-//
 //  Design notes (see docs/MONITORING.md):
 //   - AnalyticsEvent is a single append-only table for both
 //     automatic request telemetry (type=REQUEST, written by the
@@ -323,9 +316,6 @@ model ErrorLog {
 // ---------------------------------------------------------------
 // Phase 2/3 — Job aggregation, matching, trust & verification
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-003
-//
 //  Design notes (see ARCHITECTURE.md's Phase 2 section and the
 //  Master Blueprint §5/§10):
 //   - JobPosting.dedupHash (sha256 of title+companyId+externalUrl,
@@ -520,9 +510,6 @@ model VerificationSession {
 // ---------------------------------------------------------------
 // Phase 3 — Recruiter tooling: structured interview kits & scorecards
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-004
-//
 //  Design notes (Master Blueprint §5, "Structured Interview Kits &
 //  Scorecards" — modeled on Greenhouse's bias-reduction thesis):
 //   - One InterviewKit per (company, role title) is reused across
@@ -660,17 +647,11 @@ model Project {
 // Audit trail — Sage Copilot queries (blocked or not), and any
 // future action that needs "what happened and why" reconstructable
 // after the fact, per the Blueprint's explainability requirement.
-// ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-005
 // ---------------------------------------------------------------
 
 // ---------------------------------------------------------------
 // Phase 3 — Messaging
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-006
-//
 //  REST + short client-side polling, not Socket.io: Vercel's
 //  serverless functions don't hold a persistent connection open
 //  the way a WebSocket gateway needs, so the Blueprint's Socket.io
@@ -719,9 +700,6 @@ model AuditLog {
 // ---------------------------------------------------------------
 // Decision Room — market-intelligence backing data
 // ------------------------------------------------------------
-//  Author : Nahid Hasan Rayan
-//  Marker : NHR-BE-SCHEMA-007
-//
 //  Design notes (mirrors the MatchScore precedent: never computed
 //  live on a page load):
 //   - SkillDemandSnapshot is 100% derived from InternSage's own

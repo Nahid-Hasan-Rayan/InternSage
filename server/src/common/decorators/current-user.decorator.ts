@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — @CurrentUser() decorator
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DEC-003
- * File   : src/common/decorators/current-user.decorator.ts
  *
  * The single, deliberate choke point through which handlers read
  * "who is making this request". Every controller should use this

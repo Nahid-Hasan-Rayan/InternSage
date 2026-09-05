@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Job detail page
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-JOBDETAIL-001
- * File   : src/app/jobs/[id]/page.tsx
  *
  * New — the demo has a dedicated job-detail view (`page-jobdetail`)
  * that the real app never had; jobs/page.tsx only ever showed an

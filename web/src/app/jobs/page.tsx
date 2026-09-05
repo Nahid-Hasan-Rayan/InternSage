@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Jobs page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-JOBS-001
- * File   : src/app/jobs/page.tsx
  */
 
 "use client";

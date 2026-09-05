@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RecruiterToolsModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-MOD-001
- * File   : src/recruiter-tools/recruiter-tools.module.ts
  */
 
 import { Module } from '@nestjs/common';

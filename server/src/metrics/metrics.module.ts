@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MetricsModule
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-METRICS-003
- * File   : src/metrics/metrics.module.ts
  *
  * Exported (not just declared) so RequestLoggingInterceptor and
  * AllExceptionsFilter — both registered globally in app.module.ts —

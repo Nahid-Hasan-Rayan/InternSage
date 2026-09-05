@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — VerificationService unit tests
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-VERIFY-TEST-001
- * File   : src/verification/verification.service.spec.ts
  *
  * Not part of the originally pasted code — added because ownership
  * scoping, server-side expiry, and score/threshold computation are

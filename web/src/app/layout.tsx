@@ -1,3 +1,5 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 import type { Metadata } from "next";
 import { Instrument_Serif, Onest, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";

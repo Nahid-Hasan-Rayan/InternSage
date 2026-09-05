@@ -1,6 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CSV export utility (client-side, real, no backend needed)
- * Author: Nahid Hasan Rayan
  */
 function escapeCsvCell(value: unknown): string {
   const str = String(value ?? "");

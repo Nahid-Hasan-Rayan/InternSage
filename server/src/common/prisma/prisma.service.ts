@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Prisma database service
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PRISMA-001
- * File   : src/common/prisma/prisma.service.ts
  *
  * Wraps PrismaClient as a Nest-managed singleton so every module
  * shares one connection pool instead of opening its own.

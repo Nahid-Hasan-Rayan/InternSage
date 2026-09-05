@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MessagingService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MSG-SVC-001
- * File   : src/messaging/messaging.service.ts
  *
  * REST + short client-side polling, not Socket.io — see the
  * Conversation/Message schema comment for why a persistent

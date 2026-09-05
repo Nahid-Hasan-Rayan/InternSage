@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CopilotService (Sage Copilot)
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-SVC-001
- * File   : src/copilot/copilot.service.ts
  *
  * Grounded, not freeform: a question never becomes a raw or
  * string-built query. It becomes a CopilotIntent (a fixed set of

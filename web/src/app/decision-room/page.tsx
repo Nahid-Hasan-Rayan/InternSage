@@ -1,7 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Decision Room
- * Author: Nahid Hasan Rayan
- * File: src/app/decision-room/page.tsx
  *
  * "Your progress" uses REAL data from existing endpoints (works
  * today, no backend change needed, exportable to CSV right now).

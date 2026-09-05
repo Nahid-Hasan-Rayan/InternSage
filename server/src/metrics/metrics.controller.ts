@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MetricsController
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-METRICS-002
- * File   : src/metrics/metrics.controller.ts
  *
  * Exposes Prometheus text-format metrics at GET /api/metrics.
  * Deliberately @Public() — a Prometheus scraper has no user JWT —

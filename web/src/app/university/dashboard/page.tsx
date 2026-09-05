@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — University dashboard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-UNIV-DASH-001
- * File   : src/app/university/dashboard/page.tsx
  *
  * See getUniversityDashboard()'s JSDoc in internsage-api.ts for the
  * exact expected endpoint contract.

@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Protected characteristic guard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-004
- * File   : src/copilot/protected-characteristic.guard.ts
  *
  * A keyword denylist, checked against the raw question before it
  * ever reaches an intent parser — this is defense-in-depth on top

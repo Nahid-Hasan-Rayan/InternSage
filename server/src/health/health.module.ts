@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — HealthModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-HEALTH-002
- * File   : src/health/health.module.ts
  */
 
 import { Module } from '@nestjs/common';

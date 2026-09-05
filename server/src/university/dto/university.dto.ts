@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — University portal DTOs
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-UNI-DTO-001
- * File   : src/university/dto/university.dto.ts
  */
 import { IsDateString, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 

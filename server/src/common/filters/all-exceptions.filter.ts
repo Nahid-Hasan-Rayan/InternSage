@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AllExceptionsFilter
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-FILTER-001
- * File   : src/common/filters/all-exceptions.filter.ts
  *
  * Registered globally (APP_FILTER in app.module.ts), catching
  * everything — both NestJS HttpExceptions (validation errors, 401s,

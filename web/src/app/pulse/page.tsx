@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Industry Pulse
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-PULSE-001
- * File   : src/app/pulse/page.tsx
  *
  * See getIndustryPulse()'s JSDoc in internsage-api.ts for the exact
  * expected endpoint contract. Renders real data the moment that

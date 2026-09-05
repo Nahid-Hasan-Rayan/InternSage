@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — CopilotModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-COPILOT-MOD-001
- * File   : src/copilot/copilot.module.ts
  */
 
 import { Module } from '@nestjs/common';

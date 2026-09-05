@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuthService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUTH-SVC-001
- * File   : src/auth/auth.service.ts
  *
  * This is where "verification is structural, not manual review"
  * (Master Blueprint §5, Module 1) actually gets implemented:

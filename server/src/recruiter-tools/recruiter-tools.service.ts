@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — RecruiterToolsService
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-RECTOOLS-SVC-002
- * File   : src/recruiter-tools/recruiter-tools.service.ts
  *
  * Two Blueprint features live here because they share the same
  * ownership boundary (a recruiter's own company, resolved from

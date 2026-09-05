@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AI Tutor
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-TUTOR-001
- * File   : src/app/tutor/page.tsx
  *
  * See sendTutorMessage()/getTutorHistory() JSDoc in internsage-api.ts
  * for the exact expected endpoint contract.

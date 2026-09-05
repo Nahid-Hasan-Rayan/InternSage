@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Application DTOs
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-APPLICATIONS-DTO-001
- * File   : src/applications/dto/application.dto.ts
  */
 
 import { IsEnum } from 'class-validator';

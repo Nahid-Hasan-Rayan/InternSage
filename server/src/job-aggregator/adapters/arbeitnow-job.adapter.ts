@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ArbeitnowJobAdapter
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AGG-004
- * File   : src/job-aggregator/adapters/arbeitnow-job.adapter.ts
  *
  * Arbeitnow (arbeitnow.com/blog/job-board-api) publishes a public,
  * no-auth, no-key JSON API the author explicitly built and
@@ -47,6 +45,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JobSource } from '@prisma/client';
 import { JobSourceAdapter, RawListing } from '../job-source-adapter.interface';
+import { stripHtml } from './strip-html.util';
 
 const API_BASE = 'https://www.arbeitnow.com/api/job-board-api';
 /** Hard cap so one aggregation run can never turn into an unbounded
@@ -69,17 +68,6 @@ interface ArbeitnowJob {
 interface ArbeitnowResponse {
   data: ArbeitnowJob[];
   links?: { next?: string | null };
-}
-
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&#x27;|&#39;/gi, "'")
-    .replace(/&quot;/gi, '"')
-    .replace(/\s+/g, ' ')
-    .trim();
 }
 
 const RELEVANCE_KEYWORDS = [
@@ -175,4 +163,4 @@ export class ArbeitnowJobAdapter implements JobSourceAdapter {
 
     return results;
   }
-}// Build fix - node-fetch removed
+}

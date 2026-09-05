@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Prisma module
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-PRISMA-002
- * File   : src/common/prisma/prisma.module.ts
  *
  * Marked @Global so every feature module can inject PrismaService
  * without re-importing this module everywhere — a deliberate,

@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MatchingController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MATCH-CTRL-001
- * File   : src/matching/matching.controller.ts
  */
 import { Controller, ForbiddenException, Get, Post, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';

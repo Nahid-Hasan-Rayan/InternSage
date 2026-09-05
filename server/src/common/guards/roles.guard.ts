@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Roles guard
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-GUARD-002
- * File   : src/common/guards/roles.guard.ts
  *
  * Runs after JwtAuthGuard (request.user is already populated by
  * then) and checks the authenticated user's role against any

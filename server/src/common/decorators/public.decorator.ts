@@ -1,9 +1,7 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — @Public() decorator
- *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-DEC-001
- * File   : src/common/decorators/public.decorator.ts
  *
  * The JwtAuthGuard is applied globally (see main app wiring) so
  * that a developer forgetting to protect a new route is a

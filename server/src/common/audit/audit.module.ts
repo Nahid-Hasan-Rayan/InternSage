@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — AuditModule
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-AUDIT-001
- * File   : src/common/audit/audit.module.ts
  */
 
 import { Global, Module } from '@nestjs/common';

@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — ListJobPostingsDto
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-JOBS-DTO-003
- * File   : src/jobs/dto/list-job-postings.dto.ts
  */
 
 import { Type } from 'class-transformer';

@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — Applications page
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-FE-APPS-001
- * File   : src/app/applications/page.tsx
  */
 
 "use client";

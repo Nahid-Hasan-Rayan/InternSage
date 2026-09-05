@@ -1,9 +1,8 @@
+// © 2026 Nahid Hasan Rayan. All rights reserved.
+
 /**
  * InternSage — MessagingController
  *
- * Author : Nahid Hasan Rayan
- * Marker : NHR-BE-MSG-CTRL-001
- * File   : src/messaging/messaging.controller.ts
  */
 
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
