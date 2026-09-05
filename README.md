@@ -10,7 +10,7 @@ A CV tells you what someone claims. InternSage shows what the evidence actually 
 ![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL%20%2B%20pgvector-4169E1?logo=postgresql&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict%20mode-3178C6?logo=typescript&logoColor=white)
 
-**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology — including "Sage Copilot" and "Career & Workforce Decision Room" — are original work submitted to MJIIX IRIC 2026 / URIIS 2026.
+**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology — including "Sage Copilot" and "Career & Workforce Decision Room" are original work submitted to MJIIX IRIC 2026 / URIIS 2026.
 
 ---
 
@@ -37,7 +37,7 @@ flowchart LR
     style E fill:#1a3a2e,stroke:#2d5a45,color:#fff
 ```
 
-A claimed skill becomes trustworthy through institutional identity, a timed skill assessment, and portfolio evidence. That evidence drives an explainable match score — deterministic, not a black box. Recruiters query the verified pool in plain language through Sage Copilot. Students and universities both get a Decision Room: career-path comparison at the individual level, cohort diagnostics at the institutional level. Every outcome — an application, an offer, a placement — feeds back into the loop instead of disappearing after one transaction.
+A claimed skill becomes trustworthy through institutional identity, a timed skill assessment, and portfolio evidence. That evidence drives an explainable match score — deterministic, not a black box. Recruiters query the verified pool in plain language through Sage Copilot. Students and universities both get a Decision Room: career-path comparison at the individual level, cohort diagnostics at the institutional level. Every outcome an application, an offer, a placement feeds back into the loop instead of disappearing after one transaction.
 
 ## Three sides, one evidence layer
 
@@ -124,9 +124,7 @@ cd web && cp .env.local.example .env.local
 npm install && npm run dev
 ```
 
-## Acknowledgments
 
-Built for the MJIIX International Research and Innovation Competition 2026 and the URIIS 2026 Student Innovation Challenge, MJIIT, Universiti Teknologi Malaysia. Thanks to Dr Siti Nur Khadijah Aishah Binti Ibrahim and the MJIIT faculty for their guidance throughout.
 
 ## License
 
