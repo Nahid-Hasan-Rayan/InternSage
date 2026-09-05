@@ -10,7 +10,7 @@ A CV tells you what someone claims. InternSage shows what the evidence actually 
 ![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL%20%2B%20pgvector-4169E1?logo=postgresql&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict%20mode-3178C6?logo=typescript&logoColor=white)
 
-**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology including "Sage Copilot" and "Career & Workforce Decision Room" are original work submitted to MJIIX IRIC 2026 / URIIS 2026.
+**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology including "Sage Copilot" and "Career & Workforce Decision Room" are original work submitted.
 
 ---
 
