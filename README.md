@@ -2,7 +2,7 @@
 
 **The evidence layer between education and employment.**
 
-A CV tells you what someone claims. InternSage shows what the evidence actually supports — and turns that into better decisions for students, recruiters, and university career centres, on one connected platform instead of three disconnected ones.
+A CV tells you what someone claims. InternSage shows what the evidence actually supports and turns that into better decisions for students, recruiters, and university career centres, on one connected platform instead of three disconnected ones.
 
 ![NestJS](https://img.shields.io/badge/backend-NestJS%2011-E0234E?logo=nestjs&logoColor=white)
 ![Next.js](https://img.shields.io/badge/frontend-Next.js%2016-000000?logo=nextdotjs&logoColor=white)
@@ -10,13 +10,13 @@ A CV tells you what someone claims. InternSage shows what the evidence actually 
 ![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL%20%2B%20pgvector-4169E1?logo=postgresql&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict%20mode-3178C6?logo=typescript&logoColor=white)
 
-**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology — including "Sage Copilot" and "Career & Workforce Decision Room" — are original work submitted to MJIIX IRIC 2026 / URIIS 2026.
+**© 2026 Nahid Hasan Rayan.** The InternSage concept, architecture, and terminology including "Sage Copilot" and "Career & Workforce Decision Room" are original work submitted.
 
 ---
 
 ## Why this exists
 
-In Q4 2025, 35.3% of tertiary-educated employed Malaysians were in skill-related underemployment — not unemployed, just in roles that don't use what they actually studied. Meanwhile, 56% of Malaysian employers report a shortage of candidates with the skills they need. That gap isn't really about job discovery. It's about three separate people — a student, a recruiter, and a university career centre — all working from incomplete, unverified information, with no shared evidence layer connecting what any of them actually knows.
+In Q4 2025, 35.3% of tertiary-educated employed Malaysians were in skill-related underemployment not unemployed, just in roles that don't use what they actually studied. Meanwhile, 56% of Malaysian employers report a shortage of candidates with the skills they need. That gap isn't really about job discovery. It's about three separate people a student, a recruiter, and a university career centre all working from incomplete, unverified information, with no shared evidence layer connecting what any of them actually knows.
 
 InternSage is that layer.
 
@@ -37,7 +37,7 @@ flowchart LR
     style E fill:#1a3a2e,stroke:#2d5a45,color:#fff
 ```
 
-A claimed skill becomes trustworthy through institutional identity, a timed skill assessment, and portfolio evidence. That evidence drives an explainable match score — deterministic, not a black box. Recruiters query the verified pool in plain language through Sage Copilot. Students and universities both get a Decision Room: career-path comparison at the individual level, cohort diagnostics at the institutional level. Every outcome — an application, an offer, a placement — feeds back into the loop instead of disappearing after one transaction.
+A claimed skill becomes trustworthy through institutional identity, a timed skill assessment, and portfolio evidence. That evidence drives an explainable match score deterministic, not a black box. Recruiters query the verified pool in plain language through Sage Copilot. Students and universities both get a Decision Room: career-path comparison at the individual level, cohort diagnostics at the institutional level. Every outcome an application, an offer, a placement feeds back into the loop instead of disappearing after one transaction.
 
 ## Three sides, one evidence layer
 
@@ -49,7 +49,7 @@ A claimed skill becomes trustworthy through institutional identity, a timed skil
 
 ## What's actually built
 
-This isn't a mockup. 18 backend modules, 57 API endpoints, 149 automated tests — all real, all currently passing, all deployed.
+This isn't a mockup. 18 backend modules, 57 API endpoints, 149 automated tests all real, all currently passing, all deployed.
 
 <details>
 <summary><strong>Full status by area</strong> (click to expand)</summary>
@@ -96,7 +96,7 @@ flowchart TB
     AGG --> PG
 ```
 
-A deliberate split runs through the whole backend: **decisions are computed deterministically, a language model is only ever used to interpret an ambiguous input into a constrained, whitelisted structure — never to generate a query freely, and never to narrate or fabricate an output.** Sage Copilot's LLM call extracts search filters (skill, university, year) from a recruiter's plain-language question; the actual database query is then built entirely from that fixed, whitelisted shape, never from freeform text the model produced. Match scores and Decision Room insights are separate, non-LLM code paths entirely — real arithmetic and deterministic templates, not generated language. If the LLM is unavailable, Sage Copilot falls back to a rule-based parser covering the same fixed set of filters — degraded, not broken.
+A deliberate split runs through the whole backend: **decisions are computed deterministically, a language model is only ever used to interpret an ambiguous input into a constrained, whitelisted structure never to generate a query freely, and never to narrate or fabricate an output.** Sage Copilot's LLM call extracts search filters (skill, university, year) from a recruiter's plain-language question; the actual database query is then built entirely from that fixed, whitelisted shape, never from freeform text the model produced. Match scores and Decision Room insights are separate, non-LLM code paths entirely real arithmetic and deterministic templates, not generated language. If the LLM is unavailable, Sage Copilot falls back to a rule-based parser covering the same fixed set of filters degraded, not broken.
 
 ## Repo structure
 
@@ -124,9 +124,7 @@ cd web && cp .env.local.example .env.local
 npm install && npm run dev
 ```
 
-## Acknowledgments
 
-Built for the MJIIX International Research and Innovation Competition 2026 and the URIIS 2026 Student Innovation Challenge, MJIIT, Universiti Teknologi Malaysia. Thanks to Dr Siti Nur Khadijah Aishah Binti Ibrahim and the MJIIT faculty for their guidance throughout.
 
 ## License
 
