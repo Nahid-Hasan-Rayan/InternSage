@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["sin1"],
   "crons": [
     { "path": "/api/internal/jobs/aggregate", "schedule": "0 2 * * *" },
     { "path": "/api/internal/matching/recompute", "schedule": "0 3 * * *" },
