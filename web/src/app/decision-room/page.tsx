@@ -12,22 +12,36 @@
 
 "use client";
 
+import { AppShell } from "@/components/app/app-shell";
+import { BackendPending } from "@/components/ui/backend-pending";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { getSession, type SessionUser } from "@/lib/api";
+import { downloadCsv } from "@/lib/csv-export";
+import {
+  getCv,
+  getDecisionRoomInsights,
+  getDecisionRoomTrends,
+  getMyApplications, getMyMatches,
+  requestVerifiedExport, type ApplicationItem,
+  type DecisionRoomInsight,
+  type DecisionRoomTrends,
+  type MatchScoreItem,
+} from "@/lib/internsage-api";
 import * as React from "react";
 import {
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  BarChart, Bar, PieChart, Pie, Cell,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis, YAxis,
 } from "recharts";
-import { AppShell } from "@/components/app/app-shell";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BackendPending } from "@/components/ui/backend-pending";
-import { getSession, type SessionUser } from "@/lib/api";
-import {
-  getMyApplications, getMyMatches, getCv, getDecisionRoomTrends, getDecisionRoomInsights,
-  requestVerifiedExport, type ApplicationItem, type MatchScoreItem,
-  type DecisionRoomTrends, type DecisionRoomInsight,
-} from "@/lib/internsage-api";
-import { downloadCsv } from "@/lib/csv-export";
 
 const STATUS_COLORS: Record<string, string> = {
   APPLIED: "#a8abb2", UNDER_REVIEW: "#2563eb", INTERVIEW: "#a6741f",
@@ -66,7 +80,9 @@ export default function DecisionRoomPage() {
         setVerifiedCount(cv.skills.filter((sk) => sk.verified).length);
       }
       getDecisionRoomTrends().then(setTrends).catch(() => setTrendsConnected(false));
-      getDecisionRoomInsights().then((r) => setInsights(r.items)).catch(() => setInsightsConnected(false));
+      getDecisionRoomInsights()
+        .then((r) => setInsights(Array.isArray(r) ? r : (r?.items ?? [])))
+        .catch(() => setInsightsConnected(false));
       setLoading(false);
     });
   }, []);
@@ -233,7 +249,7 @@ export default function DecisionRoomPage() {
 
       <h2 className="mono mb-3 text-xs font-medium uppercase tracking-[0.08em] text-slate-500">What this means for you</h2>
       <div className="mb-10">
-        {!insightsConnected || insights === null ? <BackendPending feature="AI insights" /> : insights.length === 0 ? (
+        {!insightsConnected || !insights ? <BackendPending feature="AI insights" /> : insights.length === 0 ? (
           <p className="text-sm text-slate-500">No insights yet — check back once you have more matches.</p>
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
