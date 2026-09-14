@@ -10,7 +10,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { FormField } from "@/components/auth/form-field";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { register } from "@/lib/api";
+import { register, landingRouteFor } from "@/lib/api";
 import { EASE } from "@/lib/motion";
 
 type Role = "STUDENT" | "RECRUITER";
@@ -30,7 +30,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const res = await register({ email, password, fullName, role });
-      router.push(res.user.role === "STUDENT" ? "/profile" : "/candidates");
+      router.push(landingRouteFor(res.user.role));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed.");
     } finally {

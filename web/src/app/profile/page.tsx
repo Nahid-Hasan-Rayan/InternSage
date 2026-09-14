@@ -1,36 +1,19 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — Student profile + CV editor
- *
- * This is the piece that was missing: the backend's Profile and CV
- * modules had full APIs (see ProfileController/CvController) but no
- * frontend ever called them. This page is the first one that does.
- *
- * Data model note: `GET /cv` already returns the professional
- * profile alongside skills/experiences/educations/projects (see
- * CvService.getFullCv), so this page only needs TWO reads —
- * `/profile/academic` and `/cv` — not three. Editing the
- * professional profile's own fields (headline, visibility) still
- * goes through `PATCH /profile/professional`, per ProfileController.
- *
- * Known backend gap (see server/ARCHITECTURE.md's pattern — worth
- * fixing before this ships): CvController only has POST for
- * experiences/educations/projects, no PATCH/DELETE yet. So this
- * page can add entries but not edit or remove them — that's a
- * backend limitation, not something to fake client-side.
- */
-
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { EvidencePassport } from "@/components/ui/evidence-passport";
 import { FormField } from "@/components/auth/form-field";
-import { authedFetch } from "@/lib/api";
+import { authedFetch, getSession, type SessionUser } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
 
 // ---- Types (mirror the backend's actual response shapes) --------
@@ -51,6 +34,9 @@ interface ProfessionalProfile {
 interface Skill {
   skillId: string;
   skill: { id: string; name: string; category: string };
+  verified: boolean;
+  authenticityScore: number | null;
+  authenticityUpdatedAt: string | null;
 }
 
 interface Experience {
@@ -93,6 +79,7 @@ const selectClass = textareaClass + " h-10";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [user, setUser] = React.useState<SessionUser | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
   const [academic, setAcademic] = React.useState<AcademicProfile | null>(null);
@@ -118,11 +105,18 @@ export default function ProfilePage() {
   }, []);
 
   React.useEffect(() => {
-    void loadAll();
-  }, [loadAll]);
+    getSession().then((session) => {
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+      setUser(session);
+      void loadAll();
+    });
+  }, [loadAll, router]);
 
-  if (loading) {
-    return <main className="p-8 text-sm text-slate-500">Loading your profile…</main>;
+  if (loading || !user) {
+    return <div className="p-8 text-sm text-slate-500">Loading your profile…</div>;
   }
 
   if (loadError || !academic || !cv) {
@@ -134,22 +128,57 @@ export default function ProfilePage() {
     );
   }
 
-  return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-8 p-8 text-ink-900">
-      <div>
-        <h1 className="text-xl font-semibold">Your profile</h1>
-        <p className="text-sm text-slate-500">
-          This is what recruiters see, depending on your visibility setting below.
-        </p>
-      </div>
+  // A profile counts as "complete enough" once there's a headline and
+  // at least one skill — this drives the CTA copy below, it doesn't
+  // gate navigation. Nobody should ever be stuck here with no way out.
+  const isComplete = Boolean(cv.profile.headline) && cv.skills.length > 0;
 
-      <AcademicSection academic={academic} onSaved={loadAll} />
-      <ProfessionalSection profile={cv.profile} onSaved={loadAll} />
-      <SkillsSection skills={cv.skills} onSaved={loadAll} />
-      <ExperienceSection experiences={cv.experiences} onSaved={loadAll} />
-      <EducationSection educations={cv.educations} onSaved={loadAll} />
-      <ProjectSection projects={cv.projects} onSaved={loadAll} />
-    </main>
+  return (
+    <AppShell user={user}>
+      <div className="mx-auto flex max-w-3xl flex-col gap-8 pb-16">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="font-display text-2xl text-ink-900">Your profile</h1>
+            <p className="text-sm text-slate-500">
+              This is what recruiters see, depending on your visibility setting below.
+            </p>
+          </div>
+          <Button onClick={() => router.push("/dashboard")} className="gap-2">
+            Continue to dashboard
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {isComplete && (
+          <div className="flex items-center gap-2 rounded-[4px] border border-signal-600/30 bg-signal-600/5 px-4 py-3 text-sm text-signal-700">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            Looking good — this profile is ready to be matched against jobs.
+            <Link href="/matches" className="ml-auto font-medium hover:underline">
+              See your matches →
+            </Link>
+          </div>
+        )}
+
+        <EvidencePassport name={cv.profile.headline ?? ""} skills={cv.skills} />
+
+        <AcademicSection academic={academic} onSaved={loadAll} />
+        <ProfessionalSection profile={cv.profile} onSaved={loadAll} />
+        <SkillsSection skills={cv.skills} onSaved={loadAll} />
+        <ExperienceSection experiences={cv.experiences} onSaved={loadAll} />
+        <EducationSection educations={cv.educations} onSaved={loadAll} />
+        <ProjectSection projects={cv.projects} onSaved={loadAll} />
+
+        <div className="flex items-center justify-between border-t border-hairline/40 pt-6">
+          <p className="text-xs text-slate-500">
+            Changes save per-section as you go — nothing here is lost by moving on.
+          </p>
+          <Button onClick={() => router.push("/dashboard")} className="gap-2">
+            Done — go to dashboard
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </AppShell>
   );
 }
 
@@ -357,9 +386,18 @@ function SkillsSection({ skills, onSaved }: { skills: Skill[]; onSaved: () => Pr
         {skills.map((s) => (
           <span
             key={s.skillId}
-            className="flex items-center gap-2 rounded-[4px] border border-hairline bg-paper-100 px-3 py-1 text-sm"
+            className={
+              "flex items-center gap-2 rounded-[4px] border px-3 py-1 text-sm " +
+              (s.verified
+                ? "border-signal-600/40 bg-signal-100 text-signal-700"
+                : "border-hairline bg-paper-100 text-ink-900")
+            }
           >
+            {s.verified && <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />}
             {s.skill.name}
+            {s.verified && s.authenticityScore != null && (
+              <span className="mono text-[10px] text-signal-600/80">{s.authenticityScore}%</span>
+            )}
             <button
               type="button"
               onClick={() => remove(s.skillId)}
@@ -372,6 +410,14 @@ function SkillsSection({ skills, onSaved }: { skills: Skill[]; onSaved: () => Pr
           </span>
         ))}
       </div>
+      {skills.some((s) => !s.verified) && (
+        <p className="mb-4 text-xs text-slate-500">
+          Unverified skills are self-reported.{" "}
+          <Link href="/verification" className="text-signal-700 hover:underline">
+            Take a short quiz to verify one →
+          </Link>
+        </p>
+      )}
       <form onSubmit={add} className="flex gap-2">
         <Input
           value={name}

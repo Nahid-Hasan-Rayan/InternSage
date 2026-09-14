@@ -1,30 +1,11 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — AppShell
- *
- * Rebuilt to match the demo HTML's actual structure — a persistent
- * 264px left sidebar with icon nav items, not a top bar. This was
- * the real gap behind "layout still looks old": the color migration
- * had recolored the old top-bar shell without ever changing its
- * structure. This version matches the demo's `.sidebar`/`.nav-item`
- * layout directly.
- *
- * `{children}` is wrapped in AnimatePresence keyed by pathname so
- * every route change gets a real transition instead of a hard cut —
- * this lives here (not per-page) so every current and future page
- * gets it automatically.
- *
- * Every authenticated page resolves its own session via getSession()
- * and redirects to /login if it comes back null — this component
- * just renders the nav once a page already has a SessionUser.
- */
-
 "use client";
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import * as React from "react";
 import {
   LayoutGrid,
   Briefcase,
@@ -44,11 +25,13 @@ import {
   GraduationCap,
   Building2,
   CalendarDays,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoMark } from "@/components/effects/logo-mark";
 import { logout, type SessionUser } from "@/lib/api";
 import { DURATION, EASE } from "@/lib/motion";
+import { CommandPalette } from "@/components/app/command-palette";
 
 const STUDENT_LINKS = [
   { href: "/dashboard", label: "Home", icon: LayoutGrid },
@@ -84,6 +67,7 @@ const UNIVERSITY_LINKS = [
 export function AppShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [paletteOpen, setPaletteOpen] = React.useState(false);
   const links =
     user.role === "RECRUITER"
       ? RECRUITER_LINKS
@@ -92,6 +76,17 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
         : user.role === "UNIVERSITY"
           ? UNIVERSITY_LINKS
           : STUDENT_LINKS;
+
+  React.useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   async function handleLogout() {
     await logout().catch(() => {});
@@ -148,13 +143,21 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center border-b border-hairline px-8 py-3">
+        <div className="flex items-center gap-4 border-b border-hairline px-8 py-3">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-ink-900"
+            className="flex shrink-0 items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-ink-900"
           >
             <ArrowLeft size={14} />
             Back
+          </button>
+          <button
+            onClick={() => setPaletteOpen(true)}
+            className="flex h-8 max-w-xs flex-1 items-center gap-2 rounded-full border border-hairline bg-paper-50 px-3 text-xs text-slate-500 transition-colors hover:border-signal-600 hover:text-signal-600"
+          >
+            <Search size={13} className="shrink-0" />
+            <span className="flex-1 text-left">Search or jump to…</span>
+            <kbd className="mono rounded bg-paper-100 px-1.5 py-0.5 text-[10px] text-slate-500">⌘K</kbd>
           </button>
         </div>
         <AnimatePresence initial={false}>
@@ -169,6 +172,12 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
           </motion.main>
         </AnimatePresence>
       </div>
+
+      <CommandPalette
+        items={links.map((l) => ({ ...l, group: "Navigate" }))}
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+      />
     </div>
   );
 }

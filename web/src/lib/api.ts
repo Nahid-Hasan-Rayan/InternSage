@@ -14,6 +14,28 @@ export interface SessionUser {
   verified: boolean;
 }
 
+/**
+ * Where a freshly logged-in/registered user should land, by role.
+ * Single source of truth — login and register both call this so the
+ * destination can never drift out of sync between the two flows.
+ * STUDENT goes to /profile deliberately (a one-time nudge to fill it
+ * in before the rest of the app leans on that data); every other
+ * role goes to a real dashboard, not a route that doesn't exist.
+ */
+export function landingRouteFor(role: SessionUser["role"]): string {
+  switch (role) {
+    case "STUDENT":
+      return "/profile";
+    case "ADMIN":
+      return "/admin/analytics";
+    case "UNIVERSITY":
+      return "/university/dashboard";
+    case "RECRUITER":
+    default:
+      return "/dashboard";
+  }
+}
+
 export interface ApiError {
   message: string | string[];
   statusCode: number;
@@ -45,7 +67,9 @@ export async function login(email: string, password: string) {
     credentials: "include",
     body: JSON.stringify({ email, password }),
   });
-  return handle<{ user: SessionUser }>(res);
+  const result = await handle<{ user: SessionUser }>(res);
+  cacheSession(result.user);
+  return result;
 }
 
 export async function register(input: {
@@ -60,7 +84,9 @@ export async function register(input: {
     credentials: "include",
     body: JSON.stringify(input),
   });
-  return handle<{ user: SessionUser }>(res);
+  const result = await handle<{ user: SessionUser }>(res);
+  cacheSession(result.user);
+  return result;
 }
 
 export async function logout() {
@@ -68,19 +94,52 @@ export async function logout() {
     method: "POST",
     credentials: "include",
   });
-  return handle<{ loggedOut: boolean }>(res);
+  const result = await handle<{ loggedOut: boolean }>(res);
+  sessionCache = null;
+  return result;
 }
 
-/** Resolves the current session from the httpOnly cookie — returns null (not a thrown error) when logged out, so pages can redirect quietly. */
+/**
+ * Every page on the site resolves its own session by calling this on
+ * mount by design, so no page ever trusts
+ * stale client state over the httpOnly cookie. The cost of that was
+ * a real one: every single navigation re-hit GET /auth/me and sat in
+ * a "Loading…" state with no sidebar until it came back, so the
+ * whole shell visibly flashed on every click. That network call is
+ * genuinely redundant within one browser session — the cookie can't
+ * change without a login/logout, both of which already run through
+ * this file — so the fix lives here, once, rather than adding a
+ * SessionProvider context that every one of ~19 pages would need to
+ * be rewired to consume. First call still does the real fetch;
+ * every call after that resolves from cache, instantly, so the shell
+ * stops disappearing between pages. login/register/logout above all
+ * keep this in sync so no one is ever a stale user for even one
+ * navigation.
+ */
+let sessionCache: Promise<SessionUser | null> | null = null;
+
+function cacheSession(user: SessionUser) {
+  sessionCache = Promise.resolve(user);
+}
+
+/** Resolves the current session from the httpOnly cookie — returns null (not a thrown error) when logged out, so pages can redirect quietly. Cached per browser session; see the note above cacheSession. */
 export async function getSession(): Promise<SessionUser | null> {
-  try {
-    const res = await fetch(`${API_BASE}/auth/me`, { credentials: "include" });
-    if (!res.ok) return null;
-    const body = await res.json();
-    return body.user as SessionUser;
-  } catch {
-    return null;
-  }
+  if (sessionCache) return sessionCache;
+  sessionCache = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, { credentials: "include" });
+      if (!res.ok) {
+        sessionCache = null;
+        return null;
+      }
+      const body = await res.json();
+      return body.user as SessionUser;
+    } catch {
+      sessionCache = null;
+      return null;
+    }
+  })();
+  return sessionCache;
 }
 
 /** Use for any authenticated call — attaches the session cookie automatically. */

@@ -1,24 +1,12 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — Admin analytics dashboard
- *
- * Reads from the backend's ADMIN-only endpoints (see
- * AnalyticsController on the backend — @Roles(Role.ADMIN)). The
- * backend, not this page, is what actually enforces that a
- * non-admin can't see this data: a STUDENT or RECRUITER session
- * hitting these endpoints gets a 403 regardless of whether they
- * somehow load this route, so there's no separate client-side gate
- * to keep in sync here. See docs/MONITORING.md for how to create
- * an admin account (there's no self-service admin signup, by
- * design — see the Master Blueprint's trust model).
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
-import { authedFetch } from "@/lib/api";
+import { authedFetch, getSession, landingRouteFor, type SessionUser } from "@/lib/api";
 
 interface Summary {
   windowDays: number;
@@ -65,6 +53,8 @@ interface RecentErrorRow {
 const WINDOW_DAYS = 7;
 
 export default function AdminAnalyticsPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<SessionUser | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [routes, setRoutes] = useState<RouteRow[]>([]);
   const [traffic, setTraffic] = useState<TrafficRow[]>([]);
@@ -74,43 +64,54 @@ export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = `?days=${WINDOW_DAYS}`;
-    Promise.all([
-      authedFetch<Summary>(`/analytics/admin/summary${q}`),
-      authedFetch<RouteRow[]>(`/analytics/admin/routes${q}`),
-      authedFetch<TrafficRow[]>(`/analytics/admin/traffic${q}`),
-      authedFetch<TopErrorRow[]>(`/analytics/admin/errors/top${q}`),
-      authedFetch<RecentErrorRow[]>(`/analytics/admin/errors/recent${q}&limit=20`),
-    ])
-      .then(([s, r, t, te, re]) => {
-        setSummary(s);
-        setRoutes(r);
-        setTraffic(t);
-        setTopErrors(te);
-        setRecentErrors(re);
-      })
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+    getSession().then((session) => {
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+      if (session.role !== "ADMIN") {
+        router.push(landingRouteFor(session.role));
+        return;
+      }
+      setUser(session);
 
-  if (loading) {
-    return <main className="p-8 text-slate-500 text-sm">Loading analytics…</main>;
+      const q = `?days=${WINDOW_DAYS}`;
+      Promise.all([
+        authedFetch<Summary>(`/analytics/admin/summary${q}`),
+        authedFetch<RouteRow[]>(`/analytics/admin/routes${q}`),
+        authedFetch<TrafficRow[]>(`/analytics/admin/traffic${q}`),
+        authedFetch<TopErrorRow[]>(`/analytics/admin/errors/top${q}`),
+        authedFetch<RecentErrorRow[]>(`/analytics/admin/errors/recent${q}&limit=20`),
+      ])
+        .then(([s, r, t, te, re]) => {
+          setSummary(s);
+          setRoutes(r);
+          setTraffic(t);
+          setTopErrors(te);
+          setRecentErrors(re);
+        })
+        .catch((err: Error) => setError(err.message))
+        .finally(() => setLoading(false));
+    });
+  }, [router]);
+
+  if (loading || !user) {
+    return <div className="p-8 text-sm text-slate-500">Loading analytics…</div>;
   }
 
   if (error) {
     return (
-      <main className="p-8 text-sm text-red-400">
-        Couldn&apos;t load analytics: {error}
-        <br />
-        This page requires an ADMIN account — see docs/MONITORING.md.
-      </main>
+      <AppShell user={user}>
+        <p className="text-sm text-alert-600">Couldn&apos;t load analytics: {error}</p>
+      </AppShell>
     );
   }
 
   return (
-    <main className="flex flex-col gap-8 p-8 text-ink-900">
+    <AppShell user={user}>
+      <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-xl font-semibold">Platform analytics</h1>
+        <h1 className="font-display text-2xl text-ink-900">Platform analytics</h1>
         <p className="text-sm text-slate-500">Last {WINDOW_DAYS} days</p>
       </div>
 
@@ -245,7 +246,8 @@ export default function AdminAnalyticsPage() {
           )}
         </Card>
       </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }
 

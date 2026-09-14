@@ -1,10 +1,5 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — Sage Copilot page
- *
- */
-
 "use client";
 
 import * as React from "react";
@@ -13,6 +8,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SiriWave } from "@/components/ui/siri-wave";
 import { getSession, type SessionUser } from "@/lib/api";
 import { queryCopilot, type CopilotResult } from "@/lib/internsage-api";
 
@@ -44,7 +40,10 @@ export default function CopilotPage() {
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-2 font-display text-xl text-ink-900">Sage Copilot</h1>
+      <div className="mb-2 flex items-center gap-3">
+        <SiriWave variant="wave" size={44} active={busy} />
+        <h1 className="font-display text-xl text-ink-900">Sage Copilot</h1>
+      </div>
       <p className="mb-6 text-sm text-slate-500">
         Ask a question about your applicant pool — e.g. "who knows React and is verified".
       </p>

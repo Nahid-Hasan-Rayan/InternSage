@@ -1,12 +1,5 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — AI Tutor
- *
- * See sendTutorMessage()/getTutorHistory() JSDoc in internsage-api.ts
- * for the exact expected endpoint contract.
- */
-
 "use client";
 
 import * as React from "react";
@@ -14,6 +7,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SiriWave } from "@/components/ui/siri-wave";
 import { getSession, type SessionUser } from "@/lib/api";
 import { getTutorHistory, sendTutorMessage, type TutorMessage, type TutorPersona } from "@/lib/internsage-api";
 
@@ -89,7 +83,15 @@ export default function TutorPage() {
 
   return (
     <AppShell user={user}>
-      <h1 className="mb-4 font-display text-2xl text-ink-900">AI Tutor</h1>
+      <div className="mb-4 flex items-center gap-3">
+        <SiriWave variant="fluid-dots" size={44} active={sending} />
+        <div>
+          <h1 className="font-display text-2xl text-ink-900">AI Tutor</h1>
+          <p className="text-xs text-slate-500">
+            {sending ? `${persona} is thinking…` : `${persona} is ready when you are.`}
+          </p>
+        </div>
+      </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
         {PERSONAS.map((p) => (

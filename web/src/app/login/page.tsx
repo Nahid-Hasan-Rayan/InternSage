@@ -9,7 +9,7 @@ import { motion } from "motion/react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { FormField } from "@/components/auth/form-field";
 import { Button } from "@/components/ui/button";
-import { login } from "@/lib/api";
+import { login, landingRouteFor } from "@/lib/api";
 import { EASE } from "@/lib/motion";
 
 export default function LoginPage() {
@@ -25,7 +25,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login(email, password);
-      router.push(res.user.role === "STUDENT" ? "/profile" : "/candidates");
+      router.push(landingRouteFor(res.user.role));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
     } finally {

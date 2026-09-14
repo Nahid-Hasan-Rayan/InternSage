@@ -1,15 +1,5 @@
 // © 2026 Nahid Hasan Rayan. All rights reserved.
 
-/**
- * InternSage — Landing page
- *
- * Rebuilt from the fact-checked demo HTML (see internsage-landing-fixed.html)
- * — same verified copy and stats, ported into real React components using
- * the app's actual design system and routes, not a static mockup. Every
- * statistic here was independently web-searched and corrected before this
- * page was written; see that file's header comment for sourcing.
- */
-
 "use client";
 
 import Link from "next/link";
@@ -89,7 +79,11 @@ export default function Home() {
 
       <section className="relative w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <Strands />
+          {/* Bumped from the original 0.4/0.55 defaults — on the
+              paper-50 background those read as almost invisible.
+              This keeps it as an accent, not a loud backdrop, but
+              one you can actually see behind the headline. */}
+          <Strands intensity={0.7} opacity={0.9} count={4} thickness={0.75} glow={2.3} amplitude={0.95} />
         </div>
         <motion.div
           initial="hidden"
