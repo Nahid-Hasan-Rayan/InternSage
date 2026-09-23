@@ -732,14 +732,6 @@ img{ max-width:100%; display:block; }
 .mobile-role-bar{ display:none; }
 
 @media (max-width:767px){
-  /* Header */
-  .nav-top{ gap:8px; }
-  .nav-brand{ font-size:1.15rem; }
-  .nav-brand span:not(.mark){ display:none; }
-  .nav-tabs{ margin-left:8px; gap:4px; }
-  .nav-tab{ padding:7px 12px; font-size:0.8125rem; }
-  .btn-sm{ padding:0 12px; font-size:0.8125rem; }
-
   /* Shell */
   .wrap{ padding:0 20px; }
   .section{ padding:64px 0; }
@@ -793,9 +785,8 @@ img{ max-width:100%; display:block; }
   /* Mobile role switcher bar */
   .mobile-role-bar{
     display:flex;
-    position:sticky; top:68px; z-index:290;
-    background:rgba(255,255,255,0.97);
-    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    position:static;
+    background:#fff;
     border-bottom:1px solid var(--hairline);
     padding:8px 20px;
     gap:4px; margin:0 -20px 16px;
