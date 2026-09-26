@@ -43,6 +43,7 @@ const STUDENT_LINKS = [
   { href: "/decision-room", label: "Decision Room", icon: LineChart },
   { href: "/pulse", label: "Industry Pulse", icon: Radio },
   { href: "/tutor", label: "AI Tutor", icon: GraduationCap },
+  { href: "/copilot", label: "Sage Copilot", icon: Sparkles },
   { href: "/profile", label: "Profile", icon: UserCircle },
 ];
 
@@ -51,7 +52,7 @@ const RECRUITER_LINKS = [
   { href: "/jobs", label: "Postings", icon: Briefcase },
   { href: "/applications", label: "Applicants", icon: Users },
   { href: "/recruiter/interview-kits", label: "Interview Kits", icon: FileCheck2 },
-  { href: "/recruiter/copilot", label: "Sage Copilot", icon: Sparkles },
+  { href: "/copilot", label: "Sage Copilot", icon: Sparkles },
   { href: "/recruiter/weights", label: "Scoring Rubric", icon: Settings2 },
 ];
 
@@ -62,6 +63,7 @@ const UNIVERSITY_LINKS = [
   { href: "/university/partners", label: "Partners", icon: Building2 },
   { href: "/university/events", label: "Events", icon: CalendarDays },
   { href: "/university/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/copilot", label: "Sage Copilot", icon: Sparkles },
 ];
 
 export function AppShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {

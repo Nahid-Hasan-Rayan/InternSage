@@ -62,7 +62,7 @@ This isn't a mockup. 18 backend modules, 57 API endpoints, 149 automated tests a
 | Matching engine | ✅ Live — deterministic skill-intersection is real; the semantic-similarity component is an honestly-documented placeholder today, with `pgvector` already provisioned for the real embedding upgrade |
 | Verification (timed skill assessment) | ✅ Live |
 | Applications & recruiter workflow | ✅ Live |
-| Sage Copilot (recruiter search assistant) | ✅ Live — closed-vocabulary query extraction, never freeform LLM-generated queries, with protected characteristics excluded at the query layer itself, not just by prompt instruction |
+| Sage Copilot (conversational copilot for students, recruiters & universities) | ✅ Live — closed-vocabulary query extraction (never freeform LLM-generated queries), a separate reply-generation step that narrates only what was already computed (never fabricates a fact), persistent per-user conversation memory, and protected characteristics excluded at the query layer itself, not just by prompt instruction |
 | Decision Room (student + market trends) | ✅ Live |
 | University portal (dashboard, analytics, partners, events) | ✅ Live |
 | Messaging | ✅ Live |
@@ -96,7 +96,7 @@ flowchart TB
     AGG --> PG
 ```
 
-A deliberate split runs through the whole backend: **decisions are computed deterministically, a language model is only ever used to interpret an ambiguous input into a constrained, whitelisted structure never to generate a query freely, and never to narrate or fabricate an output.** Sage Copilot's LLM call extracts search filters (skill, university, year) from a recruiter's plain-language question; the actual database query is then built entirely from that fixed, whitelisted shape, never from freeform text the model produced. Match scores and Decision Room insights are separate, non-LLM code paths entirely real arithmetic and deterministic templates, not generated language. If the LLM is unavailable, Sage Copilot falls back to a rule-based parser covering the same fixed set of filters degraded, not broken.
+A deliberate split runs through the whole backend: **decisions are computed deterministically; a language model is only ever used either to interpret an ambiguous input into a constrained, whitelisted structure, or to narrate a result that was already computed — never to generate a query freely, and never to state a fact it wasn't handed.** Sage Copilot's intent-extraction LLM call turns a plain-language question into search filters (skill, university, year); the actual database query is then built entirely from that fixed, whitelisted shape, never from freeform text the model produced. A second, separate LLM call — Sage's reply generator — turns the *result* of that query (plus a student's own applications/matches, or a university's own dashboard numbers) into the sentence Sage actually says back; it receives that pre-computed data as its only ground truth and is instructed to never claim anything outside it, so a hallucinated candidate or number is structurally impossible, not just discouraged by a prompt. Match scores and Decision Room insights remain separate, non-LLM code paths — entirely real arithmetic and deterministic templates, not generated language. If the LLM is unavailable, both the intent parser and the reply generator fall back to deterministic, rule-based/template implementations covering the same ground — degraded, not broken, and never silent.
 
 ## Repo structure
 
@@ -123,6 +123,14 @@ npm install && npx prisma db seed && npm run start:dev
 cd web && cp .env.local.example .env.local
 npm install && npm run dev
 ```
+
+`npx prisma db seed` also creates three ready-to-log-in demo accounts (student, recruiter, university), each with a full cohort of applications, computed match scores, and a live Sage Copilot conversation already in it — the login page has one-click buttons for all three, or log in directly:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Student | `demo.student@graduate.utm.my` | `InternSageDemo!2026` |
+| Recruiter | `demo.recruiter@paduanalytics.com` | `InternSageDemo!2026` |
+| University | `demo.admin@graduate.utm.my` | `InternSageDemo!2026` |
 
 
 

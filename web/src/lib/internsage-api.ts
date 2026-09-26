@@ -303,16 +303,43 @@ export async function updateMyWeights(weights: Omit<RecruiterWeights, "companyId
 // ---- Sage Copilot -----------------------------------------------------
 
 export interface CopilotResult {
+  conversationId: string;
   blocked: boolean;
+  message: string;
   appliedFilters: Record<string, unknown>;
-  results: Array<{ userId: string; major: string | null; year: number | null; universityName?: string }>;
+  data: Record<string, unknown>;
 }
 
-export async function queryCopilot(question: string) {
+export interface CopilotConversationSummary {
+  id: string;
+  title: string | null;
+  updatedAt: string;
+}
+
+export interface CopilotMessage {
+  id: string;
+  sender: "USER" | "SAGE";
+  content: string;
+  createdAt: string;
+}
+
+export interface CopilotConversationDetail extends CopilotConversationSummary {
+  messages: CopilotMessage[];
+}
+
+export async function queryCopilot(question: string, conversationId?: string) {
   return authedFetch<CopilotResult>("/copilot/query", {
     method: "POST",
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, conversationId }),
   });
+}
+
+export async function listCopilotConversations() {
+  return authedFetch<CopilotConversationSummary[]>("/copilot/conversations");
+}
+
+export async function getCopilotConversation(id: string) {
+  return authedFetch<CopilotConversationDetail>(`/copilot/conversations/${id}`);
 }
 
 // ---- Interview kits & scorecards -------------------------------------

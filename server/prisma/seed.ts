@@ -13,11 +13,18 @@
  *
  * `upsert` throughout so this is safe to re-run without creating
  * duplicates.
+ *
+ * Ends by calling seedDemoAccounts() (prisma/seed-demo.ts), which
+ * layers three ready-to-log-in demo accounts — student, recruiter,
+ * university — with a full cohort, applications, computed match
+ * scores, and a Sage Copilot conversation already in progress, on
+ * top of the reference data seeded above.
  */
 
 import { PrismaClient, SkillCategory } from '@prisma/client';
 import { createHash } from 'crypto';
 import { SKILL_CATALOG } from './skill-catalog';
+import { seedDemoAccounts } from './seed-demo';
 
 const prisma = new PrismaClient();
 
@@ -335,6 +342,8 @@ async function main(): Promise<void> {
   console.log('  RECRUITER hr@paduanalytics.com    -> should come back verified: true');
   // eslint-disable-next-line no-console
   console.log('  RECRUITER hr@some-random-co.com   -> should be REJECTED with a 400');
+
+  await seedDemoAccounts(prisma);
 }
 
 main()

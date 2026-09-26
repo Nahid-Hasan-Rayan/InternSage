@@ -98,6 +98,7 @@ model User {
   professionalProfile  ProfessionalProfile?
   recruiterProfile     RecruiterProfile?
   universityAdminProfile UniversityAdminProfile?
+  copilotConversations CopilotConversation[]
 
   @@map("users")
 }
@@ -681,6 +682,59 @@ model Message {
 
   @@index([conversationId, createdAt])
   @@map("messages")
+}
+
+// ---------------------------------------------------------------
+// Sage Copilot — persistent conversation memory
+// ------------------------------------------------------------
+//  One CopilotConversation per open "thread" for a user (any role,
+//  not just RECRUITER — see CopilotModule's header comment for why
+//  the old recruiter-only gate was removed). CopilotMessage stores
+//  both sides of the exchange so CopilotService can hand the reply
+//  generator real prior turns instead of treating every question as
+//  the first one — the actual mechanism behind "Sage remembers this
+//  conversation". Scoped by userId (never a client-supplied id) the
+//  same way every other per-user table in this schema is scoped.
+//  onDelete: Cascade on both User and the conversation itself so a
+//  deleted account or thread never leaves orphaned message rows.
+// ---------------------------------------------------------------
+
+enum CopilotSender {
+  USER
+  SAGE
+}
+
+model CopilotConversation {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Short label derived from the first question, purely for a
+  /// conversation-list UI — never re-derived from an LLM call.
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages CopilotMessage[]
+
+  @@index([userId, updatedAt])
+  @@map("copilot_conversations")
+}
+
+model CopilotMessage {
+  id             String              @id @default(uuid())
+  conversationId String
+  conversation   CopilotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         CopilotSender
+  content        String
+  /// Structured payload alongside the message text — e.g. the
+  /// candidate list a recruiter's question resolved to, or the
+  /// appliedFilters CopilotIntent — kept so a conversation can be
+  /// replayed with its underlying data, not just its prose.
+  metadata       Json?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("copilot_messages")
 }
 
 model AuditLog {
