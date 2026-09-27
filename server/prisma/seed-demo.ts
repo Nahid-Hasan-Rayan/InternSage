@@ -10,7 +10,7 @@
  * accounts — one per role, including a platform ADMIN — with enough realistic depth (a real
  * cohort, real applications across every status, real computed
  * match scores, a real interview thread, a real Sage Copilot
- * conversation already in progress) that opening any of the three
+ * conversation already in progress) that opening any of the four
  * immediately shows what the platform actually does, instead of an
  * empty state.
  *
@@ -24,7 +24,13 @@
  * holds itself to (see ways-of-working).
  *
  * Idempotent throughout (upsert / find-or-create), same as seed.ts —
- * safe to re-run against an already-seeded database.
+ * safe to re-run against an already-seeded database. Writes run with
+ * bounded concurrency (mapWithConcurrency, defined below) rather than
+ * one-at-a-time — against a real pooled Supabase connection this was
+ * the difference between a multi-minute seed and a much shorter one.
+ * Status/score assignment is still computed deterministically before
+ * any concurrent writes fire, so re-running this produces the same
+ * results regardless of network timing.
  */
 
 import { PrismaClient, ApplicationStatus, AnalyticsEventType } from '@prisma/client';
@@ -39,6 +45,29 @@ const BCRYPT_SALT_ROUNDS = 12;
  * account's credential, so a single simple string is the right
  * choice, not a security smell. */
 export const DEMO_PASSWORD = 'InternSageDemo!2026';
+
+/** Bounded-concurrency map — the seed's ~300 Prisma round trips were taking 3-5 minutes
+ * run fully sequentially (confirmed against a real Supabase Tokyo pooler). Independent
+ * writes (different students, different skills on the same student, etc.) don't need to
+ * wait on each other; this caps how many run at once so a small connection pool
+ * (`connection_limit=1`, common in local `.env` setups) still doesn't get overwhelmed. */
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  fn: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let cursor = 0;
+  async function worker(): Promise<void> {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      results[index] = await fn(items[index], index);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, () => worker()));
+  return results;
+}
 
 interface DemoStudentSpec {
   email: string;
@@ -397,14 +426,16 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
   // ---------------------------------------------------------------
   // Demo students — the cohort
   // ---------------------------------------------------------------
-  const studentUserIds: string[] = [];
-  for (const spec of DEMO_STUDENTS) {
+  // Fetch every skill's id once instead of one findUnique per skill per student — with an
+  // average of ~4 skills across 20 students, that alone was ~80 round trips down to 1.
+  const skillIdByName = new Map((await prisma.skill.findMany({ select: { id: true, name: true } })).map((s) => [s.name, s.id]));
+
+  const studentUserIds = await mapWithConcurrency(DEMO_STUDENTS, 5, async (spec) => {
     const user = await prisma.user.upsert({
       where: { email: spec.email },
       update: {},
       create: { email: spec.email, fullName: spec.fullName, passwordHash, role: 'STUDENT', verified: true },
     });
-    studentUserIds.push(user.id);
 
     await prisma.studentProfile.upsert({
       where: { userId: user.id },
@@ -418,69 +449,76 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
       create: { userId: user.id, headline: spec.headline },
     });
 
-    for (const skillSpec of spec.skills) {
-      const skill = await prisma.skill.findUnique({ where: { name: skillSpec.name } });
-      if (!skill) continue;
-      await prisma.userSkill.upsert({
-        where: { professionalProfileId_skillId: { professionalProfileId: professionalProfile.id, skillId: skill.id } },
-        update: {},
-        create: {
-          professionalProfileId: professionalProfile.id,
-          skillId: skill.id,
-          verified: skillSpec.verified,
-          authenticityScore: skillSpec.authenticityScore,
-          authenticityUpdatedAt: skillSpec.verified ? new Date() : null,
-        },
-      });
-    }
-
-    const existingEducation = await prisma.education.findFirst({ where: { professionalProfileId: professionalProfile.id } });
-    if (!existingEducation) {
-      await prisma.education.create({
-        data: {
-          professionalProfileId: professionalProfile.id,
-          institution: 'Universiti Teknologi Malaysia (MJIIT)',
-          degree: `B.${spec.major}`,
-          startYear: new Date().getFullYear() - spec.year,
-          verified: true,
-        },
-      });
-    }
-
-    if (spec.experience) {
-      const existingExperience = await prisma.experience.findFirst({
-        where: { professionalProfileId: professionalProfile.id, title: spec.experience.title },
-      });
-      if (!existingExperience) {
-        await prisma.experience.create({
-          data: {
+    // Skills, education, experience, and project all depend only on professionalProfile.id,
+    // not on each other — safe to fire together instead of one-at-a-time.
+    await Promise.all([
+      ...spec.skills.map(async (skillSpec) => {
+        const skillId = skillIdByName.get(skillSpec.name);
+        if (!skillId) return;
+        await prisma.userSkill.upsert({
+          where: { professionalProfileId_skillId: { professionalProfileId: professionalProfile.id, skillId } },
+          update: {},
+          create: {
             professionalProfileId: professionalProfile.id,
-            title: spec.experience.title,
-            organization: spec.experience.organization,
-            startDate: new Date(now - spec.experience.startMonthsAgo * 30 * DAY),
-            endDate: spec.experience.endMonthsAgo ? new Date(now - spec.experience.endMonthsAgo * 30 * DAY) : null,
-            description: spec.experience.description,
+            skillId,
+            verified: skillSpec.verified,
+            authenticityScore: skillSpec.authenticityScore,
+            authenticityUpdatedAt: skillSpec.verified ? new Date() : null,
           },
         });
-      }
-    }
-
-    if (spec.project) {
-      const existingProject = await prisma.project.findFirst({
-        where: { professionalProfileId: professionalProfile.id, title: spec.project.title },
-      });
-      if (!existingProject) {
-        await prisma.project.create({
-          data: {
-            professionalProfileId: professionalProfile.id,
-            title: spec.project.title,
-            description: spec.project.description,
-            portfolioUrl: spec.project.portfolioUrl,
-          },
+      }),
+      (async () => {
+        const existingEducation = await prisma.education.findFirst({ where: { professionalProfileId: professionalProfile.id } });
+        if (!existingEducation) {
+          await prisma.education.create({
+            data: {
+              professionalProfileId: professionalProfile.id,
+              institution: 'Universiti Teknologi Malaysia (MJIIT)',
+              degree: `B.${spec.major}`,
+              startYear: new Date().getFullYear() - spec.year,
+              verified: true,
+            },
+          });
+        }
+      })(),
+      (async () => {
+        if (!spec.experience) return;
+        const existingExperience = await prisma.experience.findFirst({
+          where: { professionalProfileId: professionalProfile.id, title: spec.experience.title },
         });
-      }
-    }
-  }
+        if (!existingExperience) {
+          await prisma.experience.create({
+            data: {
+              professionalProfileId: professionalProfile.id,
+              title: spec.experience.title,
+              organization: spec.experience.organization,
+              startDate: new Date(now - spec.experience.startMonthsAgo * 30 * DAY),
+              endDate: spec.experience.endMonthsAgo ? new Date(now - spec.experience.endMonthsAgo * 30 * DAY) : null,
+              description: spec.experience.description,
+            },
+          });
+        }
+      })(),
+      (async () => {
+        if (!spec.project) return;
+        const existingProject = await prisma.project.findFirst({
+          where: { professionalProfileId: professionalProfile.id, title: spec.project.title },
+        });
+        if (!existingProject) {
+          await prisma.project.create({
+            data: {
+              professionalProfileId: professionalProfile.id,
+              title: spec.project.title,
+              description: spec.project.description,
+              portfolioUrl: spec.project.portfolioUrl,
+            },
+          });
+        }
+      })(),
+    ]);
+
+    return user.id;
+  });
 
   // ---------------------------------------------------------------
   // Applications — most of the cohort applies to 1-3 Padu Analytics
@@ -502,27 +540,39 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
   ];
 
   let cycleIndex = 0;
-  const applicationsByStudent = new Map<string, Array<{ id: string; jobPostingId: string; status: ApplicationStatus }>>();
+  const applicationPlans: Array<{ userId: string; jobPostingId: string; status: ApplicationStatus }> = [];
+  const applyingUserIds: string[] = [];
 
+  // Status-cycle assignment is pure computation (no DB calls) so it stays fully
+  // deterministic regardless of write order below — only the writes themselves parallelize.
   for (let i = 0; i < studentUserIds.length; i += 1) {
     // Every 4th student skips applying — an honest "hasn't started yet" slice of the cohort,
     // same reasoning as the rest of this file's "never fabricate a uniform 100%" stance.
     if (i % 4 === 3) continue;
     const userId = studentUserIds[i];
+    applyingUserIds.push(userId);
     const postingCount = (i % 3) + 1; // 1-3 postings per applying student
-    const applied: Array<{ id: string; jobPostingId: string; status: ApplicationStatus }> = [];
     for (let p = 0; p < postingCount && p < allPaduPostings.length; p += 1) {
       const posting = allPaduPostings[(i + p) % allPaduPostings.length];
       const status = STATUS_CYCLE[cycleIndex % STATUS_CYCLE.length];
       cycleIndex += 1;
-      const application = await prisma.application.upsert({
-        where: { userId_jobPostingId: { userId, jobPostingId: posting.id } },
-        update: { status },
-        create: { userId, jobPostingId: posting.id, status },
-      });
-      applied.push({ id: application.id, jobPostingId: posting.id, status: application.status });
+      applicationPlans.push({ userId, jobPostingId: posting.id, status });
     }
-    applicationsByStudent.set(userId, applied);
+  }
+
+  const writtenApplications = await mapWithConcurrency(applicationPlans, 8, async (plan) => {
+    const application = await prisma.application.upsert({
+      where: { userId_jobPostingId: { userId: plan.userId, jobPostingId: plan.jobPostingId } },
+      update: { status: plan.status },
+      create: plan,
+    });
+    return { userId: plan.userId, id: application.id, jobPostingId: plan.jobPostingId, status: application.status };
+  });
+
+  const applicationsByStudent = new Map<string, Array<{ id: string; jobPostingId: string; status: ApplicationStatus }>>();
+  for (const userId of applyingUserIds) applicationsByStudent.set(userId, []);
+  for (const written of writtenApplications) {
+    applicationsByStudent.get(written.userId)?.push({ id: written.id, jobPostingId: written.jobPostingId, status: written.status });
   }
 
   // ---------------------------------------------------------------
@@ -530,12 +580,22 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
   // one per applying student against every Padu Analytics posting so
   // Sage's student-mode answers and /matches both have real rows.
   // ---------------------------------------------------------------
-  for (const userId of applicationsByStudent.keys()) {
-    const studentProfile = await prisma.studentProfile.findUnique({ where: { userId } });
-    const professionalProfile = await prisma.professionalProfile.findUnique({
-      where: { userId },
+  // Bulk-fetch both profile tables in two queries instead of two findUnique calls PER
+  // applying student — with ~15 applicants that was ~30 round trips down to 2.
+  const [applyingStudentProfiles, applyingProfessionalProfiles] = await Promise.all([
+    prisma.studentProfile.findMany({ where: { userId: { in: applyingUserIds } } }),
+    prisma.professionalProfile.findMany({
+      where: { userId: { in: applyingUserIds } },
       include: { skills: { include: { skill: true } }, experiences: true, projects: true },
-    });
+    }),
+  ]);
+  const studentProfileByUserId = new Map(applyingStudentProfiles.map((sp) => [sp.userId, sp]));
+  const professionalProfileByUserId = new Map(applyingProfessionalProfiles.map((pp) => [pp.userId, pp]));
+
+  const matchScorePlans: Array<{ studentProfileId: string; jobPostingId: string; score: number; matchedSkills: string[]; missingSkills: string[] }> = [];
+  for (const userId of applicationsByStudent.keys()) {
+    const studentProfile = studentProfileByUserId.get(userId);
+    const professionalProfile = professionalProfileByUserId.get(userId);
     if (!studentProfile || !professionalProfile) continue;
 
     const skillNameSet = new Set(professionalProfile.skills.map((s) => s.skill.name.toLowerCase()));
@@ -559,13 +619,17 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
         { title: posting.title, requirementsText: posting.requirementsText, requiredSkillNames: posting.requiredSkills.map((r) => r.skill.name) },
         weightsResolved,
       );
-      await prisma.matchScore.upsert({
-        where: { studentProfileId_jobPostingId: { studentProfileId: studentProfile.id, jobPostingId: posting.id } },
-        update: { score, matchedSkills, missingSkills, computedAt: new Date() },
-        create: { studentProfileId: studentProfile.id, jobPostingId: posting.id, score, matchedSkills, missingSkills },
-      });
+      matchScorePlans.push({ studentProfileId: studentProfile.id, jobPostingId: posting.id, score, matchedSkills, missingSkills });
     }
   }
+
+  await mapWithConcurrency(matchScorePlans, 8, (plan) =>
+    prisma.matchScore.upsert({
+      where: { studentProfileId_jobPostingId: { studentProfileId: plan.studentProfileId, jobPostingId: plan.jobPostingId } },
+      update: { score: plan.score, matchedSkills: plan.matchedSkills, missingSkills: plan.missingSkills, computedAt: new Date() },
+      create: plan,
+    }),
+  );
 
   // ---------------------------------------------------------------
   // Interview kit + scorecard + a real message thread, on the flagship

@@ -75,7 +75,7 @@ export class TemplateReplyGenerator implements ReplyGenerator {
     }>;
     const unverifiedSkills = (context.data.unverifiedSkills ?? []) as string[];
 
-    if (applications.length === 0 && matches.length === 0) {
+    if (applications.length === 0 && matches.length === 0 && unverifiedSkills.length === 0) {
       return "You haven't applied anywhere yet and I don't have any computed matches for you. Fill in your CV and run a match recompute — that's what I'll ground answers in from there.";
     }
 
