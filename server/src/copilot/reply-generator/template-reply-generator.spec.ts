@@ -41,6 +41,38 @@ describe('TemplateReplyGenerator', () => {
       expect(reply).toContain('Software Engineering');
     });
 
+    it('names the candidate by fullName, not their raw userId', async () => {
+      // Regression test: candidates used to carry no fullName at all, so a "who are your
+      // top candidates?" question got hex user IDs back instead of names.
+      const reply = await generator.generate(
+        context(Role.RECRUITER, {
+          poolSize: 1,
+          candidates: [
+            {
+              userId: 'e289330a-91d1-4e2a-9c1a-000000000000',
+              fullName: 'Aisyah Rahman',
+              major: 'Software Engineering',
+              year: 3,
+              universityName: 'UTM',
+              skills: ['React'],
+            },
+          ],
+        }),
+      );
+      expect(reply).toContain('Aisyah Rahman');
+      expect(reply).not.toContain('e289330a');
+    });
+
+    it('falls back to "Unnamed candidate" rather than a raw id when fullName is missing', async () => {
+      const reply = await generator.generate(
+        context(Role.RECRUITER, {
+          poolSize: 1,
+          candidates: [{ major: 'Data Science', year: 2, universityName: 'UTM', skills: [] }],
+        }),
+      );
+      expect(reply).toContain('Unnamed candidate');
+    });
+
     it('never invents a skill that was not in the data', async () => {
       const reply = await generator.generate(
         context(Role.RECRUITER, {

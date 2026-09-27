@@ -36,6 +36,7 @@ export class TemplateReplyGenerator implements ReplyGenerator {
 
   private recruiterReply(opener: string, context: CopilotContext): string {
     const candidates = (context.data.candidates ?? []) as Array<{
+      fullName?: string | null;
       major: string | null;
       year: number | null;
       universityName?: string;
@@ -54,7 +55,7 @@ export class TemplateReplyGenerator implements ReplyGenerator {
       .slice(0, 5)
       .map((c) => {
         const skillPart = c.skills && c.skills.length > 0 ? ` — ${c.skills.slice(0, 4).join(', ')}` : '';
-        return `- ${c.major ?? 'Undeclared major'}, Year ${c.year ?? '?'}${c.universityName ? ` · ${c.universityName}` : ''}${skillPart}`;
+        return `- ${c.fullName ?? 'Unnamed candidate'} · ${c.major ?? 'Undeclared major'}, Year ${c.year ?? '?'}${c.universityName ? ` · ${c.universityName}` : ''}${skillPart}`;
       })
       .join('\n');
     const more = candidates.length > 5 ? `\n…and ${candidates.length - 5} more.` : '';

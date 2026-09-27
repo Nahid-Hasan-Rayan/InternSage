@@ -262,6 +262,10 @@ export interface ApplicationItem {
   status: string;
   createdAt: string;
   jobPosting?: { id: string; title: string; company?: { name: string } };
+  // Only present on the recruiter listing (GET /applications/recruiter) — a student's own
+  // listing (GET /applications/mine) has no reason to return the student's own identity
+  // back to them, so this is legitimately absent there, not a bug.
+  user?: { id: string; fullName: string; email: string };
 }
 
 export async function applyToJob(jobPostingId: string) {

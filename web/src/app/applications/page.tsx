@@ -58,9 +58,15 @@ export default function ApplicationsPage() {
           <Card key={app.id} className="flex items-center justify-between p-5">
             <div>
               <h3 className="font-display text-sm font-semibold text-ink-900">
-                {app.jobPosting?.title ?? "Job posting"}
+                {user.role === "RECRUITER"
+                  ? (app.user?.fullName ?? "Applicant")
+                  : (app.jobPosting?.title ?? "Job posting")}
               </h3>
-              <p className="text-xs text-slate-500">{app.jobPosting?.company?.name ?? "Company"}</p>
+              <p className="text-xs text-slate-500">
+                {user.role === "RECRUITER"
+                  ? (app.jobPosting?.title ?? "Job posting")
+                  : (app.jobPosting?.company?.name ?? "Company")}
+              </p>
               <div className="mt-2 flex gap-3 text-xs">
                 <Link href={`/applications/${app.id}/messages`} className="text-signal-700 hover:underline">
                   Messages

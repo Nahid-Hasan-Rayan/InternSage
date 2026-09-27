@@ -53,7 +53,7 @@ describe('CopilotService', () => {
           // call order — override with .mockResolvedValueOnce / reassign per test as needed.
           if (args?.select?.headline !== undefined) {
             const ids = args.where?.userId?.in ?? [];
-            return ids.map((userId: string) => ({ userId, headline: null, skills: [] }));
+            return ids.map((userId: string) => ({ userId, headline: null, user: { fullName: null }, skills: [] }));
           }
           return [];
         }),
@@ -149,13 +149,15 @@ describe('CopilotService', () => {
       {
         userId: 'student-a',
         headline: 'Backend-leaning SE student',
+        user: { fullName: 'Aisyah Rahman' },
         skills: [{ skill: { name: 'Python' }, verified: true }, { skill: { name: 'Docker' }, verified: false }],
       },
     ]);
 
     const result = await service.query('user-1', Role.RECRUITER, 'who has Python');
 
-    const candidates = result.data.candidates as Array<{ skills: string[]; verifiedSkills: string[] }>;
+    const candidates = result.data.candidates as Array<{ fullName: string | null; skills: string[]; verifiedSkills: string[] }>;
+    expect(candidates[0].fullName).toBe('Aisyah Rahman');
     expect(candidates[0].skills).toEqual(['Python', 'Docker']);
     expect(candidates[0].verifiedSkills).toEqual(['Python']);
   });

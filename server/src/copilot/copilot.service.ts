@@ -287,19 +287,26 @@ export class CopilotService {
       candidateUserIds = candidateUserIds.filter((id: string) => allowed.has(id));
     }
 
-    // Every candidate's skills — not just major/year/university — are handed to the reply
-    // generator. Without this, Sage had the data to FILTER by skill (Step 3 above) but
-    // nothing to actually NAME when asked "who has Python?": the reply generator only ever
-    // sees what's in this object, and a candidate list with no skills field on it makes "who
-    // has X" structurally unanswerable no matter how good the prompt is.
+    // Every candidate's name AND skills — not just major/year/university — are handed to
+    // the reply generator. Without fullName here, Sage had nothing to call a candidate but
+    // their raw userId (a judge asking "name the candidates" got hex strings back); without
+    // skills, "who has Python?" was structurally unanswerable. Both are select-time gaps in
+    // this one query, not a Sage prompting problem — the reply generator can only ever talk
+    // about what's actually in the object it's handed.
     const candidateProfiles = await this.prisma.professionalProfile.findMany({
       where: { userId: { in: candidateUserIds } },
-      select: { userId: true, headline: true, skills: { select: { skill: { select: { name: true } }, verified: true } } },
+      select: {
+        userId: true,
+        headline: true,
+        user: { select: { fullName: true } },
+        skills: { select: { skill: { select: { name: true } }, verified: true } },
+      },
     });
     const skillsByUserId = new Map(
       candidateProfiles.map((p) => [
         p.userId,
         {
+          fullName: p.user.fullName,
           headline: p.headline,
           skills: p.skills.map((s) => s.skill.name),
           verifiedSkills: p.skills.filter((s) => s.verified).map((s) => s.skill.name),
@@ -311,6 +318,7 @@ export class CopilotService {
       .filter((s) => candidateUserIds.includes(s.userId))
       .map((s) => ({
         userId: s.userId,
+        fullName: skillsByUserId.get(s.userId)?.fullName ?? null,
         major: s.major,
         year: s.year,
         universityName: s.university?.name,

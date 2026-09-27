@@ -23,6 +23,13 @@
  *     not something a recruiter does on their behalf.
  * REJECTED and WITHDRAWN are terminal — no further transition is
  * allowed out of either, by anyone.
+ *
+ * NOTE: `Application.userId` is a plain column, not a Prisma relation.
+ * See schema.sql's note on audit-record integrity (a deleted user
+ * must never cascade-delete or block an application). Anywhere the
+ * caller needs the applicant's name, join users manually — do NOT
+ * add `include: { user: ... }` to a Prisma query; there is no such
+ * relation, and TypeScript will reject it.
  */
 
 import {
@@ -51,7 +58,7 @@ export class ApplicationsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly events: EventEmitter2,
-  ) {}
+  ) { }
 
   async apply(userId: string, jobPostingId: string) {
     const jobPosting = await this.prisma.jobPosting.findUnique({ where: { id: jobPostingId } });
@@ -96,11 +103,30 @@ export class ApplicationsService {
     if (!recruiterProfile) {
       throw new NotFoundException('No recruiter profile found for this account.');
     }
-    return this.prisma.application.findMany({
+
+    const applications = await this.prisma.application.findMany({
       where: { jobPosting: { companyId: recruiterProfile.companyId } },
-      include: { jobPosting: { select: { title: true } } },
+      include: {
+        // Applicant name is manually joined below — Application has no `user`
+        // relation (see schema.sql's audit-integrity note at the top of this file).
+        jobPosting: { include: { company: { select: { name: true } } } },
+      },
       orderBy: { createdAt: 'desc' },
     });
+
+    // Manual join: Application.userId is a plain column, so there's no Prisma
+    // relation to `include`. One extra query, then merged in memory.
+    const userIds = [...new Set(applications.map((a) => a.userId))];
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, fullName: true, email: true },
+    });
+    const usersById = new Map(users.map((u) => [u.id, u]));
+
+    return applications.map((a) => ({
+      ...a,
+      user: usersById.get(a.userId) ?? null,
+    }));
   }
 
   async updateStatus(
