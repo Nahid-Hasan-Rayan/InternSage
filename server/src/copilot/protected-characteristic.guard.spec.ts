@@ -27,4 +27,29 @@ describe('containsProtectedCharacteristic', () => {
   it('allows a plain final-year query through', () => {
     expect(containsProtectedCharacteristic('final-year students majoring in computer science')).toBe(false);
   });
+
+  // Regression coverage: naive substring matching on 'man'/'age' previously blocked these
+  // outright — "man" is a substring of "many", "age" is a substring of dozens of ordinary
+  // words. See the guard's own header comment for the word-boundary fix.
+  it('allows "how many people applied" through — "many" is not "man"', () => {
+    expect(containsProtectedCharacteristic('how many people applied?')).toBe(false);
+  });
+
+  it('allows "how many applications came in" through', () => {
+    expect(containsProtectedCharacteristic('how many applications came in this week')).toBe(false);
+  });
+
+  it('allows ordinary words containing "age" as a substring through', () => {
+    expect(containsProtectedCharacteristic('what is the average match score')).toBe(false);
+    expect(containsProtectedCharacteristic('can you manage my applications')).toBe(false);
+    expect(containsProtectedCharacteristic('summarize this message')).toBe(false);
+  });
+
+  it('still blocks the standalone word "age"', () => {
+    expect(containsProtectedCharacteristic('what age are most of my candidates')).toBe(true);
+  });
+
+  it('still blocks the standalone word "man"/"woman"', () => {
+    expect(containsProtectedCharacteristic('only show me the woman candidates')).toBe(true);
+  });
 });

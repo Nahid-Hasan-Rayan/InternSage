@@ -6,7 +6,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { GraduationCap, Briefcase, Building2 } from "lucide-react";
+import { GraduationCap, Briefcase, Building2, ShieldCheck } from "lucide-react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { FormField } from "@/components/auth/form-field";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,8 @@ const DEMO_PASSWORD = "InternSageDemo!2026";
 const DEMO_ACCOUNTS = [
   { label: "Student", email: "demo.student@graduate.utm.my", icon: GraduationCap },
   { label: "Recruiter", email: "demo.recruiter@paduanalytics.com", icon: Briefcase },
-  { label: "University", email: "demo.admin@graduate.utm.my", icon: Building2 },
+  { label: "University", email: "demo.university@graduate.utm.my", icon: Building2 },
+  { label: "Admin", email: "demo.admin@internsage.app", icon: ShieldCheck },
 ] as const;
 
 export default function LoginPage() {
@@ -113,7 +114,7 @@ export default function LoginPage() {
           <div className="h-px flex-1 bg-hairline" />
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {DEMO_ACCOUNTS.map(({ label, email: demoEmail, icon: Icon }) => (
             <Button
               key={demoEmail}

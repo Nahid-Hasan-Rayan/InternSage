@@ -240,7 +240,11 @@ export interface MatchScoreItem {
   score: number;
   matchedSkills: string[];
   missingSkills: string[];
-  jobPosting: { id: string; title: string; company: { name: string } };
+  // company (and, defensively, jobPosting itself) can come back missing — a job posting
+  // whose company relation didn't load, or was removed after the match/application was
+  // created. Optional here so the type doesn't lie to callers the way it did before the
+  // /applications crash (TypeError: Cannot read properties of undefined (reading 'name')).
+  jobPosting?: { id: string; title: string; company?: { name: string } };
 }
 
 export async function getMyMatches() {
@@ -257,7 +261,7 @@ export interface ApplicationItem {
   id: string;
   status: string;
   createdAt: string;
-  jobPosting?: { id: string; title: string; company: { name: string } };
+  jobPosting?: { id: string; title: string; company?: { name: string } };
 }
 
 export async function applyToJob(jobPostingId: string) {

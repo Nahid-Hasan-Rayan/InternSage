@@ -55,8 +55,8 @@ export default function MatchesPage() {
           <Card key={m.id} className="p-5">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="font-display text-sm font-semibold text-ink-900">{m.jobPosting.title}</h3>
-                <p className="text-xs text-slate-500">{m.jobPosting.company.name}</p>
+                <h3 className="font-display text-sm font-semibold text-ink-900">{m.jobPosting?.title ?? "Job posting"}</h3>
+                <p className="text-xs text-slate-500">{m.jobPosting?.company?.name ?? "Company"}</p>
               </div>
               <MatchGauge value={m.score} size={64} warnBelow={50} />
             </div>

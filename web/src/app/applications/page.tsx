@@ -60,7 +60,7 @@ export default function ApplicationsPage() {
               <h3 className="font-display text-sm font-semibold text-ink-900">
                 {app.jobPosting?.title ?? "Job posting"}
               </h3>
-              <p className="text-xs text-slate-500">{app.jobPosting?.company.name}</p>
+              <p className="text-xs text-slate-500">{app.jobPosting?.company?.name ?? "Company"}</p>
               <div className="mt-2 flex gap-3 text-xs">
                 <Link href={`/applications/${app.id}/messages`} className="text-signal-700 hover:underline">
                   Messages

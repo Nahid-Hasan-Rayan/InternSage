@@ -33,7 +33,7 @@ const FREE_MODEL_CANDIDATES = [
 ];
 
 const REQUEST_TIMEOUT_MS = 10_000;
-const MAX_REPLY_CHARS = 2_000;
+const MAX_REPLY_CHARS = 6_000;
 
 @Injectable()
 export class OpenRouterReplyGenerator implements ReplyGenerator {
@@ -64,7 +64,11 @@ export class OpenRouterReplyGenerator implements ReplyGenerator {
         body: JSON.stringify({
           models: this.configuredModels(),
           temperature: 0.4,
-          max_tokens: 500,
+          // 500 tokens was cutting a markdown-table briefing off mid-sentence for
+          // UNIVERSITY-role questions especially ("give me a detailed briefing"
+          // genuinely needs the room) — 1,500 covers that while still keeping a
+          // runaway reply bounded.
+          max_tokens: 1_500,
           messages: [
             { role: 'system', content: buildSystemPrompt(context.role) },
             {

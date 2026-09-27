@@ -44,7 +44,21 @@ describe('CopilotService', () => {
       studentProfile: { findUnique: jest.fn(), findMany: jest.fn() },
       skill: { findMany: jest.fn().mockResolvedValue([{ name: 'React' }, { name: 'Node' }]) },
       application: { findMany: jest.fn() },
-      professionalProfile: { findMany: jest.fn(), findUnique: jest.fn() },
+      professionalProfile: {
+        findMany: jest.fn(async (args: { select?: { headline?: boolean }; where?: { userId?: { in?: string[] } } }) => {
+          // buildRecruiterContext calls this twice with two different shapes: the Step-3
+          // skill/authenticity narrowing query (select: { userId: true }) and the
+          // candidate-enrichment query (select includes headline/skills). Branch on that
+          // shape so both calls get sensible defaults without the tests needing to know
+          // call order — override with .mockResolvedValueOnce / reassign per test as needed.
+          if (args?.select?.headline !== undefined) {
+            const ids = args.where?.userId?.in ?? [];
+            return ids.map((userId: string) => ({ userId, headline: null, skills: [] }));
+          }
+          return [];
+        }),
+        findUnique: jest.fn(),
+      },
       matchScore: { findMany: jest.fn().mockResolvedValue([]) },
     };
     stubConversation(prisma);
@@ -112,13 +126,38 @@ describe('CopilotService', () => {
       { userId: 'student-a', major: 'CS', year: 3, university: { name: 'UTM' } },
       { userId: 'student-b', major: 'CS', year: 2, university: { name: 'UTM' } },
     ]);
-    prisma.professionalProfile.findMany.mockResolvedValue([{ userId: 'student-a' }]);
+    prisma.professionalProfile.findMany.mockImplementationOnce(async () => [{ userId: 'student-a' }]);
 
     const result = await service.query('user-1', Role.RECRUITER, 'who knows React with authenticity of 70');
 
     const candidates = result.data.candidates as Array<{ userId: string }>;
     expect(candidates).toHaveLength(1);
     expect(candidates[0].userId).toBe('student-a');
+  });
+
+  it('attaches each candidate\'s skills to the data Sage actually sees — not just major/year/university', async () => {
+    // Regression test: buildRecruiterContext used to hand the reply generator candidates
+    // with no skills field at all, so a "who has Python?" question was structurally
+    // unanswerable even though the underlying filter query worked correctly.
+    prisma.recruiterProfile.findUnique.mockResolvedValue({ companyId: 'company-1' });
+    intentParser.parse.mockResolvedValue({});
+    prisma.application.findMany.mockResolvedValue([{ userId: 'student-a' }]);
+    prisma.studentProfile.findMany.mockResolvedValue([
+      { userId: 'student-a', major: 'CS', year: 3, university: { name: 'UTM' } },
+    ]);
+    prisma.professionalProfile.findMany.mockImplementationOnce(async () => [
+      {
+        userId: 'student-a',
+        headline: 'Backend-leaning SE student',
+        skills: [{ skill: { name: 'Python' }, verified: true }, { skill: { name: 'Docker' }, verified: false }],
+      },
+    ]);
+
+    const result = await service.query('user-1', Role.RECRUITER, 'who has Python');
+
+    const candidates = result.data.candidates as Array<{ skills: string[]; verifiedSkills: string[] }>;
+    expect(candidates[0].skills).toEqual(['Python', 'Docker']);
+    expect(candidates[0].verifiedSkills).toEqual(['Python']);
   });
 
   it('grounds a STUDENT question in their own applications and matches, not the applicant-pool path', async () => {

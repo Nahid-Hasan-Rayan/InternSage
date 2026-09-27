@@ -287,9 +287,37 @@ export class CopilotService {
       candidateUserIds = candidateUserIds.filter((id: string) => allowed.has(id));
     }
 
+    // Every candidate's skills — not just major/year/university — are handed to the reply
+    // generator. Without this, Sage had the data to FILTER by skill (Step 3 above) but
+    // nothing to actually NAME when asked "who has Python?": the reply generator only ever
+    // sees what's in this object, and a candidate list with no skills field on it makes "who
+    // has X" structurally unanswerable no matter how good the prompt is.
+    const candidateProfiles = await this.prisma.professionalProfile.findMany({
+      where: { userId: { in: candidateUserIds } },
+      select: { userId: true, headline: true, skills: { select: { skill: { select: { name: true } }, verified: true } } },
+    });
+    const skillsByUserId = new Map(
+      candidateProfiles.map((p) => [
+        p.userId,
+        {
+          headline: p.headline,
+          skills: p.skills.map((s) => s.skill.name),
+          verifiedSkills: p.skills.filter((s) => s.verified).map((s) => s.skill.name),
+        },
+      ]),
+    );
+
     const candidates = students
       .filter((s) => candidateUserIds.includes(s.userId))
-      .map((s) => ({ userId: s.userId, major: s.major, year: s.year, universityName: s.university?.name }));
+      .map((s) => ({
+        userId: s.userId,
+        major: s.major,
+        year: s.year,
+        universityName: s.university?.name,
+        headline: skillsByUserId.get(s.userId)?.headline ?? null,
+        skills: skillsByUserId.get(s.userId)?.skills ?? [],
+        verifiedSkills: skillsByUserId.get(s.userId)?.verifiedSkills ?? [],
+      }));
 
     return { appliedFilters: intent, data: { candidates, poolSize } };
   }

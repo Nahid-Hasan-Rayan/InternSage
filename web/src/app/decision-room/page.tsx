@@ -94,7 +94,7 @@ export default function DecisionRoomPage() {
   }, [applications]);
 
   const matchTrend = React.useMemo(
-    () => matches.slice().reverse().map((m, i) => ({ index: i + 1, score: m.score, title: m.jobPosting.title })),
+    () => matches.slice().reverse().map((m, i) => ({ index: i + 1, score: m.score, title: m.jobPosting?.title ?? "Job posting" })),
     [matches],
   );
 

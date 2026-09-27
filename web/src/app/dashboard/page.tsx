@@ -78,8 +78,8 @@ export default function DashboardPage() {
               <Card key={m.id} className="flex items-center gap-4 p-4">
                 <MatchGauge value={m.score} size={52} warnBelow={50} />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-ink-900">{m.jobPosting.title}</p>
-                  <p className="truncate text-xs text-slate-500">{m.jobPosting.company.name}</p>
+                  <p className="truncate text-sm font-medium text-ink-900">{m.jobPosting?.title ?? "Job posting"}</p>
+                  <p className="truncate text-xs text-slate-500">{m.jobPosting?.company?.name ?? "Company"}</p>
                 </div>
               </Card>
             ))}

@@ -24,7 +24,16 @@ const PROTECTED_KEYWORDS = [
   'sexual orientation', 'lgbt',
 ];
 
+// Whole-word match, not substring — a naive `.includes()` here blocked completely
+// innocuous questions: "how many people applied?" contains the substring "man" (inside
+// "many"), and "age" alone matches inside "average", "manage", "package", "engage",
+// "message", "language", "usage" — none of which have anything to do with a protected
+// characteristic. \b on both sides means "man" only fires for the standalone word "man",
+// not as a substring of a longer one.
+const PROTECTED_PATTERNS = PROTECTED_KEYWORDS.map(
+  (keyword) => new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'),
+);
+
 export function containsProtectedCharacteristic(question: string): boolean {
-  const lower = question.toLowerCase();
-  return PROTECTED_KEYWORDS.some((keyword) => lower.includes(keyword));
+  return PROTECTED_PATTERNS.some((pattern) => pattern.test(question));
 }

@@ -130,7 +130,7 @@ npm install && npm run dev
 | --- | --- | --- |
 | Student | `demo.student@graduate.utm.my` | `InternSageDemo!2026` |
 | Recruiter | `demo.recruiter@paduanalytics.com` | `InternSageDemo!2026` |
-| University | `demo.admin@graduate.utm.my` | `InternSageDemo!2026` |
+| University | `demo.university@graduate.utm.my` | `InternSageDemo!2026` |
 
 
 

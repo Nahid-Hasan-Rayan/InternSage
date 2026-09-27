@@ -39,6 +39,8 @@ export class TemplateReplyGenerator implements ReplyGenerator {
       major: string | null;
       year: number | null;
       universityName?: string;
+      skills?: string[];
+      verifiedSkills?: string[];
     }>;
     const poolSize = (context.data.poolSize as number) ?? 0;
 
@@ -50,7 +52,10 @@ export class TemplateReplyGenerator implements ReplyGenerator {
     }
     const lines = candidates
       .slice(0, 5)
-      .map((c) => `- ${c.major ?? 'Undeclared major'}, Year ${c.year ?? '?'}${c.universityName ? ` · ${c.universityName}` : ''}`)
+      .map((c) => {
+        const skillPart = c.skills && c.skills.length > 0 ? ` — ${c.skills.slice(0, 4).join(', ')}` : '';
+        return `- ${c.major ?? 'Undeclared major'}, Year ${c.year ?? '?'}${c.universityName ? ` · ${c.universityName}` : ''}${skillPart}`;
+      })
       .join('\n');
     const more = candidates.length > 5 ? `\n…and ${candidates.length - 5} more.` : '';
     return `${opener} ${candidates.length} of your ${poolSize} applicant${poolSize === 1 ? '' : 's'} match that.\n${lines}${more}`;

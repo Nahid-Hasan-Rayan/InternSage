@@ -6,8 +6,8 @@
  * Separate from seed.ts's reference data on purpose: seed.ts seeds
  * what every environment needs to boot at all (universities,
  * companies, skills, the domain-verification test cases documented
- * in its own header). This file seeds three READY-TO-LOG-IN demo
- * accounts — one per role — with enough realistic depth (a real
+ * in its own header). This file seeds four READY-TO-LOG-IN demo
+ * accounts — one per role, including a platform ADMIN — with enough realistic depth (a real
  * cohort, real applications across every status, real computed
  * match scores, a real interview thread, a real Sage Copilot
  * conversation already in progress) that opening any of the three
@@ -27,10 +27,10 @@
  * safe to re-run against an already-seeded database.
  */
 
-import { ApplicationStatus, PrismaClient } from '@prisma/client';
+import { PrismaClient, ApplicationStatus, AnalyticsEventType } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
-import { cosineSimilarity, embedText } from '../src/common/embeddings/embedding.util';
+import { embedText, cosineSimilarity } from '../src/common/embeddings/embedding.util';
 
 const BCRYPT_SALT_ROUNDS = 12;
 
@@ -85,169 +85,131 @@ const DEMO_STUDENTS: DemoStudentSpec[] = [
       portfolioUrl: 'https://github.com/example/campus-eats',
     },
   },
-  {
-    email: 'chan.weijie@graduate.utm.my', fullName: 'Chan Wei Jie', major: 'Software Engineering', year: 4,
+  { email: 'chan.weijie@graduate.utm.my', fullName: 'Chan Wei Jie', major: 'Software Engineering', year: 4,
     headline: 'Final-year SE student, full-stack leaning frontend', bio: 'Building a portfolio around React and design systems.',
     skills: [
       { name: 'JavaScript', verified: true, authenticityScore: 91 },
       { name: 'React', verified: true, authenticityScore: 89 },
       { name: 'TypeScript', verified: true, authenticityScore: 84 },
       { name: 'Git', verified: true, authenticityScore: 92 },
-    ]
-  },
-  {
-    email: 'nur.izzati@graduate.utm.my', fullName: 'Nur Izzati Hassan', major: 'Software Engineering', year: 2,
+    ] },
+  { email: 'nur.izzati@graduate.utm.my', fullName: 'Nur Izzati Hassan', major: 'Software Engineering', year: 2,
     headline: 'Second-year SE student learning backend fundamentals', bio: 'New to internships, strong coursework record.',
     skills: [
       { name: 'Python', verified: false, authenticityScore: null },
       { name: 'SQL', verified: false, authenticityScore: null },
       { name: 'Git', verified: true, authenticityScore: 76 },
-    ]
-  },
-  {
-    email: 'muhd.hafiz@graduate.utm.my', fullName: 'Muhammad Hafiz Zulkifli', major: 'Software Engineering', year: 3,
+    ] },
+  { email: 'muhd.hafiz@graduate.utm.my', fullName: 'Muhammad Hafiz Zulkifli', major: 'Software Engineering', year: 3,
     headline: 'Cloud-curious SE student', bio: 'Self-taught AWS, applying it to coursework projects.',
     skills: [
       { name: 'AWS', verified: true, authenticityScore: 79 },
       { name: 'Docker', verified: true, authenticityScore: 81 },
       { name: 'Node.js', verified: false, authenticityScore: null },
       { name: 'PostgreSQL', verified: true, authenticityScore: 85 },
-    ]
-  },
-  {
-    email: 'lim.sze.wei@graduate.utm.my', fullName: 'Lim Sze Wei', major: 'Data Science', year: 3,
+    ] },
+  { email: 'lim.sze.wei@graduate.utm.my', fullName: 'Lim Sze Wei', major: 'Data Science', year: 3,
     headline: 'Data Science student, ML-leaning', bio: 'Kaggle competitor, into applied statistics.',
     skills: [
       { name: 'Python', verified: true, authenticityScore: 93 },
       { name: 'SQL', verified: true, authenticityScore: 87 },
       { name: 'Statistical Analysis', verified: true, authenticityScore: 90 },
       { name: 'R', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'farah.aina@graduate.utm.my', fullName: 'Farah Aina Zulkarnain', major: 'Data Science', year: 4,
+    ] },
+  { email: 'farah.aina@graduate.utm.my', fullName: 'Farah Aina Zulkarnain', major: 'Data Science', year: 4,
     headline: 'Final-year Data Science student', bio: 'Thesis on demand forecasting; open to data analyst roles.',
     skills: [
       { name: 'Python', verified: true, authenticityScore: 88 },
       { name: 'Data Visualization', verified: true, authenticityScore: 80 },
       { name: 'Econometrics', verified: false, authenticityScore: null },
       { name: 'SQL', verified: true, authenticityScore: 84 },
-    ]
-  },
-  {
-    email: 'tan.jun.hao@graduate.utm.my', fullName: 'Tan Jun Hao', major: 'Data Science', year: 2,
+    ] },
+  { email: 'tan.jun.hao@graduate.utm.my', fullName: 'Tan Jun Hao', major: 'Data Science', year: 2,
     headline: 'Second-year Data Science student', bio: 'Strong in R, exploring Python.',
     skills: [
       { name: 'R', verified: true, authenticityScore: 77 },
       { name: 'Statistical Analysis', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'siti.khadijah@graduate.utm.my', fullName: 'Siti Khadijah Yusof', major: 'Mechanical Engineering', year: 3,
+    ] },
+  { email: 'siti.khadijah@graduate.utm.my', fullName: 'Siti Khadijah Yusof', major: 'Mechanical Engineering', year: 3,
     headline: 'Mechanical Engineering student, design-focused', bio: 'CAD-heavy coursework, into automotive design.',
     skills: [
       { name: 'AutoCAD', verified: true, authenticityScore: 86 },
       { name: 'SolidWorks', verified: true, authenticityScore: 83 },
       { name: 'Finite Element Analysis', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'amir.haziq@graduate.utm.my', fullName: 'Amir Haziq Rosli', major: 'Mechanical Engineering', year: 4,
+    ] },
+  { email: 'amir.haziq@graduate.utm.my', fullName: 'Amir Haziq Rosli', major: 'Mechanical Engineering', year: 4,
     headline: 'Final-year Mechanical Engineering student', bio: 'FYP on thermal systems; applying to manufacturing programmes.',
     skills: [
       { name: 'ANSYS', verified: true, authenticityScore: 81 },
       { name: 'Thermodynamics', verified: true, authenticityScore: 89 },
       { name: 'CNC Machining', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'nurul.ain@graduate.utm.my', fullName: 'Nurul Ain Baharudin', major: 'Mechanical Engineering', year: 2,
+    ] },
+  { email: 'nurul.ain@graduate.utm.my', fullName: 'Nurul Ain Baharudin', major: 'Mechanical Engineering', year: 2,
     headline: 'Second-year Mechanical Engineering student', bio: 'Early-stage, exploring specialisations.',
-    skills: [{ name: 'AutoCAD', verified: false, authenticityScore: null }]
-  },
-  {
-    email: 'goh.jia.xin@graduate.utm.my', fullName: 'Goh Jia Xin', major: 'Electrical Engineering', year: 3,
+    skills: [{ name: 'AutoCAD', verified: false, authenticityScore: null }] },
+  { email: 'goh.jia.xin@graduate.utm.my', fullName: 'Goh Jia Xin', major: 'Electrical Engineering', year: 3,
     headline: 'Electrical Engineering student, embedded systems focus', bio: 'Building small embedded projects on the side.',
     skills: [
       { name: 'Embedded Systems', verified: true, authenticityScore: 85 },
       { name: 'PCB Design', verified: true, authenticityScore: 78 },
       { name: 'MATLAB', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'faris.iskandar@graduate.utm.my', fullName: 'Faris Iskandar Rahim', major: 'Electrical Engineering', year: 4,
+    ] },
+  { email: 'faris.iskandar@graduate.utm.my', fullName: 'Faris Iskandar Rahim', major: 'Electrical Engineering', year: 4,
     headline: 'Final-year Electrical Engineering student', bio: 'FYP on power systems reliability.',
     skills: [
       { name: 'Power Systems Analysis', verified: true, authenticityScore: 88 },
       { name: 'Circuit Design', verified: true, authenticityScore: 82 },
-    ]
-  },
-  {
-    email: 'wong.mei.ling@graduate.utm.my', fullName: 'Wong Mei Ling', major: 'Business Analytics', year: 3,
+    ] },
+  { email: 'wong.mei.ling@graduate.utm.my', fullName: 'Wong Mei Ling', major: 'Business Analytics', year: 3,
     headline: 'Business Analytics student', bio: 'Case-competition regular, into digital marketing analytics.',
     skills: [
       { name: 'Excel', verified: true, authenticityScore: 84 },
       { name: 'Business Analysis', verified: true, authenticityScore: 79 },
       { name: 'Digital Marketing', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'rania.zahra@graduate.utm.my', fullName: 'Rania Zahra Malik', major: 'Business Analytics', year: 2,
+    ] },
+  { email: 'rania.zahra@graduate.utm.my', fullName: 'Rania Zahra Malik', major: 'Business Analytics', year: 2,
     headline: 'Second-year Business Analytics student', bio: 'Learning SQL alongside coursework.',
     skills: [
       { name: 'Excel', verified: false, authenticityScore: null },
       { name: 'SQL', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'daniel.tan@graduate.utm.my', fullName: 'Daniel Tan Kok Wei', major: 'Business Analytics', year: 4,
+    ] },
+  { email: 'daniel.tan@graduate.utm.my', fullName: 'Daniel Tan Kok Wei', major: 'Business Analytics', year: 4,
     headline: 'Final-year Business Analytics student', bio: 'Supply chain FYP, applying to operations analyst roles.',
     skills: [
       { name: 'Supply Chain Management', verified: true, authenticityScore: 80 },
       { name: 'Project Management', verified: true, authenticityScore: 83 },
       { name: 'Excel', verified: true, authenticityScore: 87 },
-    ]
-  },
-  {
-    email: 'nabila.hasyimi@graduate.utm.my', fullName: 'Nabila Hasyimi Roslan', major: 'Software Engineering', year: 4,
+    ] },
+  { email: 'nabila.hasyimi@graduate.utm.my', fullName: 'Nabila Hasyimi Roslan', major: 'Software Engineering', year: 4,
     headline: 'Final-year SE student, backend + databases', bio: 'Interested in platform and infra roles.',
     skills: [
       { name: 'Node.js', verified: true, authenticityScore: 86 },
       { name: 'PostgreSQL', verified: true, authenticityScore: 88 },
       { name: 'Docker', verified: true, authenticityScore: 75 },
       { name: 'AWS', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'aiman.syafiq@graduate.utm.my', fullName: 'Aiman Syafiq Kamal', major: 'Software Engineering', year: 1,
+    ] },
+  { email: 'aiman.syafiq@graduate.utm.my', fullName: 'Aiman Syafiq Kamal', major: 'Software Engineering', year: 1,
     headline: 'First-year SE student', bio: 'Just started, keen on frontend work.',
-    skills: [{ name: 'JavaScript', verified: false, authenticityScore: null }]
-  },
-  {
-    email: 'priya.subramaniam@graduate.utm.my', fullName: 'Priya Subramaniam', major: 'Data Science', year: 3,
+    skills: [{ name: 'JavaScript', verified: false, authenticityScore: null }] },
+  { email: 'priya.subramaniam@graduate.utm.my', fullName: 'Priya Subramaniam', major: 'Data Science', year: 3,
     headline: 'Data Science student, visualization-focused', bio: 'Enjoys turning messy data into clear dashboards.',
     skills: [
       { name: 'Python', verified: true, authenticityScore: 85 },
       { name: 'Data Visualization', verified: true, authenticityScore: 91 },
       { name: 'SQL', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'yusof.rahim@graduate.utm.my', fullName: 'Yusof Rahim Adnan', major: 'Mechanical Engineering', year: 3,
+    ] },
+  { email: 'yusof.rahim@graduate.utm.my', fullName: 'Yusof Rahim Adnan', major: 'Mechanical Engineering', year: 3,
     headline: 'Mechanical Engineering student, process-leaning', bio: 'Exploring chemical process crossover projects.',
     skills: [
       { name: 'SolidWorks', verified: false, authenticityScore: null },
       { name: 'Process Simulation', verified: false, authenticityScore: null },
-    ]
-  },
-  {
-    email: 'huda.mariam@graduate.utm.my', fullName: 'Huda Mariam Aziz', major: 'Business Analytics', year: 3,
+    ] },
+  { email: 'huda.mariam@graduate.utm.my', fullName: 'Huda Mariam Aziz', major: 'Business Analytics', year: 3,
     headline: 'Business Analytics student', bio: 'Interested in HR analytics and people operations.',
     skills: [
       { name: 'Excel', verified: true, authenticityScore: 82 },
       { name: 'Statistical Analysis', verified: false, authenticityScore: null },
-    ]
-  },
+    ] },
 ];
 
 interface DemoPostingSpec {
@@ -385,10 +347,10 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
   // Demo university admin — UTM
   // ---------------------------------------------------------------
   const universityAdminUser = await prisma.user.upsert({
-    where: { email: 'demo.admin@graduate.utm.my' },
+    where: { email: 'demo.university@graduate.utm.my' },
     update: {},
     create: {
-      email: 'demo.admin@graduate.utm.my',
+      email: 'demo.university@graduate.utm.my',
       fullName: 'Dr. Farhana Ismail (Career Centre Director, UTM)',
       passwordHash,
       role: 'UNIVERSITY',
@@ -700,33 +662,144 @@ export async function seedDemoAccounts(prisma: PrismaClient): Promise<void> {
     }
   }
 
+  // ---------------------------------------------------------------
+  // Demo platform admin — the only role that can never self-register
+  // (see RegisterDto — ADMIN is deliberately excluded from the
+  // allowed-roles enum), so this seed is the only way one exists.
+  // ---------------------------------------------------------------
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'demo.admin@internsage.app' },
+    update: {},
+    create: {
+      email: 'demo.admin@internsage.app',
+      fullName: 'Reza Aliff (Platform Operations, InternSage)',
+      passwordHash,
+      role: 'ADMIN',
+      verified: true,
+    },
+  });
+
+  // AnalyticsEvent/ErrorLog rows only come from real HTTP traffic
+  // (RequestLoggingInterceptor / AllExceptionsFilter) — nothing else
+  // in this file writes to either table. Without at least a sample
+  // batch, the admin demo account's whole reason for existing (the
+  // /admin/analytics dashboard) opens to an empty state. Guarded on
+  // an empty table so this never fires against a database that
+  // already has real telemetry — an environment with actual traffic
+  // should never have synthetic rows mixed into it.
+  const existingTelemetry = await prisma.analyticsEvent.count();
+  if (existingTelemetry === 0) {
+    const telemetryActors = [
+      recruiterUser.id,
+      universityAdminUser.id,
+      adminUser.id,
+      ...studentUserIds.slice(0, 6),
+    ];
+    const routes: Array<{ path: string; method: string; statusRange: [number, number]; durationRange: [number, number] }> = [
+      { path: '/health', method: 'GET', statusRange: [200, 200], durationRange: [20, 60] },
+      { path: '/jobs', method: 'GET', statusRange: [200, 200], durationRange: [400, 1400] },
+      { path: '/jobs/:id', method: 'GET', statusRange: [200, 200], durationRange: [300, 1100] },
+      { path: '/matches', method: 'GET', statusRange: [200, 200], durationRange: [500, 1800] },
+      { path: '/applications', method: 'GET', statusRange: [200, 200], durationRange: [300, 900] },
+      { path: '/cv', method: 'GET', statusRange: [200, 200], durationRange: [400, 1200] },
+      { path: '/copilot/query', method: 'POST', statusRange: [200, 200], durationRange: [1200, 9000] },
+      { path: '/copilot/conversations', method: 'GET', statusRange: [200, 200], durationRange: [200, 600] },
+      { path: '/university/dashboard', method: 'GET', statusRange: [200, 200], durationRange: [400, 1000] },
+      { path: '/recruiter/weights', method: 'GET', statusRange: [200, 200], durationRange: [150, 400] },
+      { path: '/verification/internal/decay', method: 'GET', statusRange: [200, 200], durationRange: [200, 900] },
+    ];
+    const eventRows: Array<{
+      type: AnalyticsEventType;
+      userId?: string;
+      path?: string;
+      method?: string;
+      statusCode?: number;
+      durationMs?: number;
+      createdAt: Date;
+    }> = [];
+
+    // Deterministic pseudo-spread, not Math.random — reproducible across re-runs of an
+    // already-empty table, same reasoning as everything else in this file.
+    let seedCursor = 0;
+    const next = (mod: number) => {
+      seedCursor = (seedCursor * 1103515245 + 12345) & 0x7fffffff;
+      return seedCursor % mod;
+    };
+
+    for (let day = 13; day >= 0; day -= 1) {
+      const requestsToday = 15 + next(40);
+      for (let i = 0; i < requestsToday; i += 1) {
+        const route = routes[next(routes.length)];
+        const actor = telemetryActors[next(telemetryActors.length)];
+        const [minDur, maxDur] = route.durationRange;
+        eventRows.push({
+          type: 'REQUEST',
+          userId: actor,
+          path: route.path,
+          method: route.method,
+          statusCode: route.statusRange[0],
+          durationMs: minDur + next(maxDur - minDur + 1),
+          createdAt: new Date(now - day * DAY - next(20) * 60 * 60 * 1000),
+        });
+      }
+    }
+
+    for (const actorId of telemetryActors) {
+      eventRows.push({ type: 'AUTH_REGISTER', userId: actorId, createdAt: new Date(now - 13 * DAY) });
+      eventRows.push({ type: 'AUTH_LOGIN', userId: actorId, createdAt: new Date(now - next(13) * DAY) });
+    }
+    eventRows.push({ type: 'AUTH_LOGIN_FAILED', createdAt: new Date(now - 2 * DAY) });
+
+    await prisma.analyticsEvent.createMany({ data: eventRows });
+
+    await prisma.errorLog.createMany({
+      data: [
+        {
+          message: 'ValidationError: question must be longer than or equal to 3 characters',
+          path: '/copilot/query',
+          method: 'POST',
+          statusCode: 400,
+          requestId: 'demo-seed-req-1',
+          userId: studentUserIds[0],
+          createdAt: new Date(now - 4 * DAY),
+        },
+        {
+          message: 'OpenRouter request timed out after 10000ms',
+          path: '/copilot/query',
+          method: 'POST',
+          statusCode: 502,
+          requestId: 'demo-seed-req-2',
+          userId: recruiterUser.id,
+          createdAt: new Date(now - 1 * DAY),
+        },
+      ],
+    });
+  }
+
   // eslint-disable-next-line no-console
-  console.log('\nDemo accounts seeded (password for all three: ' + DEMO_PASSWORD + '):');
+  console.log('\nDemo accounts seeded (password for all four: ' + DEMO_PASSWORD + '):');
   // eslint-disable-next-line no-console
   console.log('  STUDENT    demo.student@graduate.utm.my');
   // eslint-disable-next-line no-console
   console.log('  RECRUITER  demo.recruiter@paduanalytics.com');
   // eslint-disable-next-line no-console
-  console.log('  UNIVERSITY demo.admin@graduate.utm.my');
+  console.log('  UNIVERSITY demo.university@graduate.utm.my');
+  // eslint-disable-next-line no-console
+  console.log('  ADMIN      demo.admin@internsage.app');
   // eslint-disable-next-line no-console
   console.log(`  Cohort: ${DEMO_STUDENTS.length} students, ${allPaduPostings.length} Padu Analytics postings, ${applicationsByStudent.size} applicants.`);
 }
 
-// Allow `ts-node prisma/seed-demo.ts` standalone, in addition to being
-// imported from seed.ts. Note: `require.main === module` is unreliable
-// under ts-node in some setups, so we check process.argv[1] instead.
-const invokedFile = (process.argv[1] ?? '').replace(/\\/g, '/');
-const isDirectlyInvoked =
-  invokedFile.endsWith('prisma/seed-demo.ts') || invokedFile.endsWith('prisma/seed-demo');
-if (isDirectlyInvoked) {
+// Allow `ts-node prisma/seed-demo.ts` standalone, in addition to being imported from seed.ts.
+if (require.main === module) {
   const prisma = new PrismaClient();
   seedDemoAccounts(prisma)
-    .then(() => prisma.$disconnect())
-    .then(() => process.exit(0))
-    .catch(async (error) => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.error(error);
-      await prisma.$disconnect();
       process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
     });
 }

@@ -50,7 +50,7 @@ export default function JobDetailPage() {
         if (session.role === "STUDENT") {
           try {
             const matches = await getMyMatches();
-            setMatch(matches.find((m) => m.jobPosting.id === params.id) ?? null);
+            setMatch(matches.find((m) => m.jobPosting?.id === params.id) ?? null);
           } catch {
             setMatch(null);
           }
