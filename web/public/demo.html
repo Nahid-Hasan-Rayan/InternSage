@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>InternSage — The line between education and employment</title>
 <meta name="description" content="InternSage verifies what a student can actually do, matches them to real jobs with the reasoning shown, and gives them a plan to close the gap. Built for Malaysia and ASEAN.">
+<meta name="theme-color" content="#27443A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Crect width='24' height='24' rx='6' fill='%2327443A'/%3E%3Cpath d='M12 5.5L4 9.5l8 4 8-4-8-4z'/%3E%3Cpath d='M4 15.5l8 4 8-4'/%3E%3Cpath d='M4 12.5l8 4 8-4'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="InternSage — The line between education and employment">
+<meta property="og:description" content="InternSage verifies what a student can actually do, matches them to real jobs with the reasoning shown, and gives them a plan to close the gap. Built for Malaysia and ASEAN.">
+<meta property="og:site_name" content="InternSage">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="InternSage — The line between education and employment">
+<meta name="twitter:description" content="InternSage verifies what a student can actually do, matches them to real jobs with the reasoning shown, and gives them a plan to close the gap.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Onest:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -400,6 +409,59 @@ img{ max-width:100%; display:block; }
 .wr-stat-chip .lbl{font-size:10px;color:#7f9689;text-transform:uppercase;letter-spacing:.05em;}
 .wr-stat-chip .val{font-family:var(--font-mono);font-size:1.3rem;color:#eef1ee;margin-top:2px;}
 
+/* ============================================================
+   CAREER DIGITAL TWIN BAR (shared: Roadmap + Decision Room)
+   ============================================================ */
+.dtwin-bar{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);margin:16px 0;overflow:hidden;}
+.warroom-dark .dtwin-bar{background:#0f1712;border-color:rgba(255,255,255,0.09);}
+.dtwin-metric{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--hairline);position:relative;}
+.warroom-dark .dtwin-metric{border-right-color:rgba(255,255,255,0.09);}
+.dtwin-metric:last-child{border-right:none;}
+.dtwin-metric .dt-lbl{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-500);}
+.warroom-dark .dtwin-metric .dt-lbl{color:#7f9689;}
+.dtwin-metric .dt-val{font-family:var(--font-mono);font-size:1.4rem;color:var(--ink-900);margin-top:3px;}
+.warroom-dark .dtwin-metric .dt-val{color:#eef1ee;}
+.dtwin-metric .dt-val small{font-size:0.65rem;color:var(--slate-500);font-family:var(--font-ui);}
+.dtwin-metric .dt-sub{font-size:11px;color:var(--slate-500);margin-top:2px;}
+.warroom-dark .dtwin-metric .dt-sub{color:#7f9689;}
+.dt-tag{display:inline-block;font-family:var(--font-mono);font-size:9.5px;border-radius:999px;padding:1px 8px;margin-top:5px;}
+.dt-tag.hot{background:rgba(127,217,160,0.15);color:#3f8a5f;}
+.warroom-dark .dt-tag.hot{color:#7fd9a0;}
+.dt-tag.steady{background:rgba(166,116,31,0.12);color:var(--warn-600);}
+.dt-tag.cooling{background:rgba(179,64,47,0.1);color:var(--alert-600);}
+
+/* Live market signals feed */
+.wr-signals{background:#0f1712;border:1px solid rgba(255,255,255,0.09);border-radius:var(--radius-card);padding:18px 20px;margin-top:16px;}
+.wr-signals-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.wr-signal-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid rgba(255,255,255,0.07);font-size:12.5px;color:#a9c4b3;}
+.wr-signal-row:first-of-type{border-top:none;}
+.wr-signal-val{font-family:var(--font-mono);color:#eef1ee;font-size:13.5px;display:inline-flex;align-items:center;gap:6px;transition:color 200ms;}
+.wr-signal-val.flash{color:#7fd9a0;}
+.wr-signal-delta{font-size:10.5px;font-family:var(--font-mono);}
+.wr-signal-delta.up{color:#7fd9a0;}
+.wr-signal-delta.down{color:#e06a6a;}
+.wr-spark{vertical-align:middle;margin-left:6px;}
+
+/* Risk radar */
+.wr-radar-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.wr-radar-legend{display:flex;flex-direction:column;gap:8px;font-size:12px;flex:1;min-width:160px;}
+.wr-radar-legend-row{display:flex;align-items:center;gap:8px;color:#a9c4b3;}
+.wr-radar-legend-row i{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* Skill dependency network graph */
+.rm-view-toggle{display:inline-flex;gap:4px;background:var(--paper-100);border-radius:999px;padding:3px;margin:12px 0 4px;}
+.rm-view-toggle button{padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--slate-500);transition:all 150ms;touch-action:manipulation;}
+.rm-view-toggle button.active{background:var(--signal-600);color:#fff;}
+.rm-network-canvas{border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--paper-0);padding:16px;margin-top:8px;overflow-x:auto;}
+.rm-net-node{cursor:pointer;}
+.rm-net-node:hover circle.rm-net-ring,.rm-net-node:focus circle.rm-net-ring{stroke-width:3;}
+.rm-net-node text{font-family:var(--font-ui);pointer-events:none;}
+.rm-net-tooltip{position:absolute;background:var(--ink-900);color:#fff;font-size:11.5px;padding:10px 12px;border-radius:8px;max-width:220px;pointer-events:none;z-index:50;box-shadow:var(--shadow-lg);line-height:1.5;display:none;}
+.rm-net-tooltip strong{display:block;margin-bottom:3px;font-size:12.5px;}
+.rm-net-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--slate-500);}
+.rm-net-legend span{display:inline-flex;align-items:center;gap:5px;}
+.rm-net-legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
 /* Placement intelligence */
 .hbar-row{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:10px;padding:7px 0;font-size:13px;}
 .hbar-label{color:var(--ink-700);}
@@ -572,6 +634,11 @@ img{ max-width:100%; display:block; }
 .msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:14px;}
 .msg-bot{background:var(--paper-50);align-self:flex-start;}
 .msg-user{background:var(--signal-600);color:#fff;align-self:flex-end;}
+.msg-typing{display:inline-flex;gap:4px;padding:2px 0;}
+.msg-typing span{width:6px;height:6px;border-radius:50%;background:var(--slate-500);animation:typingDot 1.1s ease-in-out infinite;}
+.msg-typing span:nth-child(2){animation-delay:0.15s;}
+.msg-typing span:nth-child(3){animation-delay:0.3s;}
+@keyframes typingDot{ 0%,60%,100%{ opacity:0.25; transform:translateY(0); } 30%{ opacity:1; transform:translateY(-3px); } }
 .chat-window{border:1px solid var(--hairline);border-radius:var(--radius-card);height:420px;display:flex;flex-direction:column;}
 .chat-context{padding:12px 16px;border-bottom:1px solid var(--hairline);font-size:12.5px;color:var(--slate-500);background:var(--paper-50);border-radius:12px 12px 0 0;}
 .chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
@@ -700,6 +767,22 @@ img{ max-width:100%; display:block; }
 .university-events .event-card .event-meta{font-size:13px;color:var(--slate-500);}
 .university-partners{display:flex;flex-wrap:wrap;gap:8px;}
 .university-partners .partner-tag{padding:4px 12px;border-radius:var(--radius-full);border:1px solid var(--hairline);font-size:13px;background:var(--paper-0);}
+.partner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.partner-card{border:1px solid var(--hairline);border-radius:var(--radius-card);padding:14px 16px;background:var(--paper-0);transition:border-color 200ms;}
+.partner-card:hover{border-color:rgba(20,21,26,0.2);}
+.partner-card .pc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.partner-card .pc-name{font-weight:600;font-size:14.5px;}
+.partner-card .pc-industry{font-size:11.5px;color:var(--slate-500);margin-top:1px;}
+.pc-health{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.pc-health.active{background:var(--signal-600);box-shadow:0 0 0 3px rgba(39,68,58,0.12);}
+.pc-health.quiet{background:var(--warn-600);box-shadow:0 0 0 3px rgba(166,116,31,0.12);}
+.pc-health.risk{background:var(--alert-600);box-shadow:0 0 0 3px rgba(179,64,47,0.12);}
+.partner-card .pc-stats{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--slate-500);}
+.partner-card .pc-stats b{color:var(--ink-900);font-family:var(--font-mono);font-weight:600;}
+.pc-status-lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:8px;display:inline-block;}
+.pc-status-lbl.active{color:var(--signal-700);}
+.pc-status-lbl.quiet{color:var(--warn-600);}
+.pc-status-lbl.risk{color:var(--alert-600);}
 
 /* ============================================================
    RESPONSIVE — TABLET + DESKTOP COLLAPSE
@@ -785,8 +868,9 @@ img{ max-width:100%; display:block; }
   /* Mobile role switcher bar */
   .mobile-role-bar{
     display:flex;
-    position:static;
-    background:#fff;
+    position:sticky; top:68px; z-index:290;
+    background:rgba(255,255,255,0.97);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
     border-bottom:1px solid var(--hairline);
     padding:8px 20px;
     gap:4px; margin:0 -20px 16px;
@@ -903,33 +987,45 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 .cmdk-item, .job-card, .job-row, .persona-tab, .partner-tag{
   touch-action:manipulation;
 }
+
+/* ============================================================
+   SKIP LINK (keyboard accessibility)
+   ============================================================ */
+.skip-link{
+  position:fixed; top:-60px; left:12px; z-index:1000;
+  background:var(--signal-700); color:#fff; padding:12px 20px;
+  border-radius:8px; font-weight:600; font-size:0.9375rem;
+  transition:top 150ms ease-out;
+}
+.skip-link:focus{ top:12px; }
 </style>
 </head>
 <body>
+<a href="#landing-wrap" class="skip-link">Skip to main content</a>
 
 <!-- ============================================================
      PULSE TICKER
      ============================================================ -->
-<div class="pulse-bar">
+<div class="pulse-bar" aria-hidden="true">
   <div class="pulse-track">
-    <span><span class="highlight">⚡ MIDA:</span> Manufacturing automation investment rising in Johor as new plants come online</span>
-    <span><span class="highlight">📈</span> HRD Corp: Certified technical-skills training subsidy expanded for engineering graduates</span>
-    <span><span class="highlight">🏭</span> MITI: NIMP 2030 sectors attracted RM29.2 billion in investment in H1 2025 – E&E leads</span>
-    <span><span class="highlight">🌏</span> Nikkei Asia: SEA EV supply chain investments surge 22% – Malaysia captures 40% share</span>
-    <span><span class="highlight">🎓</span> MOHE: University-industry internship matching initiatives continue to expand</span>
-    <span><span class="highlight">🔍</span> JobStreet: Tech internship postings up 30% – demand for AI/ML skills triples</span>
-    <span><span class="highlight">💼</span> Hiring trend: remote and hybrid roles increasingly offered to Malaysian graduates</span>
-    <span><span class="highlight">📊</span> TalentCorp: Graduate employability initiatives continue to expand in STEM fields</span>
-    <span><span class="highlight">🚀</span> MDEC: Digital economy contribution to GDP hits 25.5% – 100,000 new digital jobs targeted</span>
-    <span><span class="highlight">⚡ MIDA:</span> Manufacturing automation investment rising in Johor as new plants come online</span>
-    <span><span class="highlight">📈</span> HRD Corp: Certified technical-skills training subsidy expanded for engineering graduates</span>
-    <span><span class="highlight">🏭</span> MITI: NIMP 2030 sectors attracted RM29.2 billion in investment in H1 2025 – E&E leads</span>
-    <span><span class="highlight">🌏</span> Nikkei Asia: SEA EV supply chain investments surge 22% – Malaysia captures 40% share</span>
-    <span><span class="highlight">🎓</span> MOHE: University-industry internship matching initiatives continue to expand</span>
-    <span><span class="highlight">🔍</span> JobStreet: Tech internship postings up 30% – demand for AI/ML skills triples</span>
-    <span><span class="highlight">💼</span> Hiring trend: remote and hybrid roles increasingly offered to Malaysian graduates</span>
-    <span><span class="highlight">📊</span> TalentCorp: Graduate employability initiatives continue to expand in STEM fields</span>
-    <span><span class="highlight">🚀</span> MDEC: Digital economy contribution to GDP hits 25.5% – 100,000 new digital jobs targeted</span>
+    <span><span class="highlight">⚠ CNBC, Sept 2026:</span> 51% of employers say AI is changing how they hire — 1 in 5 have already cut entry-level recruitment</span>
+    <span><span class="highlight">🇲🇾 DOSM:</span> Sabah graduate unemployment hits 7.1% in 2024 — the highest of any Malaysian state</span>
+    <span><span class="highlight">⚡ YTL–Nvidia:</span> Malaysia's first sovereign AI data centre goes live in Johor, a $2.36B GB200 buildout</span>
+    <span><span class="highlight">💰 Budget 2026:</span> RM7.9 billion committed to TVET, the largest allocation in Malaysian history</span>
+    <span><span class="highlight">📊 DOSM, Q1 2026:</span> National unemployment steady at 2.9% — but skill-related underemployment still ~35%</span>
+    <span><span class="highlight">🚀 Asia Society:</span> Malaysia's AI sector projected to create 30,900 jobs a year by 2030</span>
+    <span><span class="highlight">🌏</span> Nvidia, Microsoft, Google, AWS and ByteDance's combined AI-infrastructure pledges to Malaysia top $15B</span>
+    <span><span class="highlight">🎓 NACE:</span> Class of 2026 hiring demand up 5.6% — employers increasingly screen for verified skills, not just a degree</span>
+    <span><span class="highlight">🔍 DOSM:</span> 1.72 million Malaysian graduates now in skill-related underemployment, up 2.4% year-on-year</span>
+    <span><span class="highlight">⚠ CNBC, Sept 2026:</span> 51% of employers say AI is changing how they hire — 1 in 5 have already cut entry-level recruitment</span>
+    <span><span class="highlight">🇲🇾 DOSM:</span> Sabah graduate unemployment hits 7.1% in 2024 — the highest of any Malaysian state</span>
+    <span><span class="highlight">⚡ YTL–Nvidia:</span> Malaysia's first sovereign AI data centre goes live in Johor, a $2.36B GB200 buildout</span>
+    <span><span class="highlight">💰 Budget 2026:</span> RM7.9 billion committed to TVET, the largest allocation in Malaysian history</span>
+    <span><span class="highlight">📊 DOSM, Q1 2026:</span> National unemployment steady at 2.9% — but skill-related underemployment still ~35%</span>
+    <span><span class="highlight">🚀 Asia Society:</span> Malaysia's AI sector projected to create 30,900 jobs a year by 2030</span>
+    <span><span class="highlight">🌏</span> Nvidia, Microsoft, Google, AWS and ByteDance's combined AI-infrastructure pledges to Malaysia top $15B</span>
+    <span><span class="highlight">🎓 NACE:</span> Class of 2026 hiring demand up 5.6% — employers increasingly screen for verified skills, not just a degree</span>
+    <span><span class="highlight">🔍 DOSM:</span> 1.72 million Malaysian graduates now in skill-related underemployment, up 2.4% year-on-year</span>
   </div>
 </div>
 
@@ -939,12 +1035,12 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 <nav id="main-nav">
   <div class="wrap nav-top">
     <a href="#" class="nav-brand" aria-label="InternSage home">
-      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
       InternSage
     </a>
-    <div class="nav-tabs">
-      <button class="nav-tab active" data-view="landing">About</button>
-      <button class="nav-tab" data-view="demo">Demo</button>
+    <div class="nav-tabs" role="tablist" aria-label="Site sections">
+      <button class="nav-tab active" data-view="landing" role="tab" aria-selected="true">About</button>
+      <button class="nav-tab" data-view="demo" role="tab" aria-selected="false">Demo</button>
     </div>
     <div class="nav-spacer"></div>
     <a href="https://internsage.netlify.app/register" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Sign up</a>
@@ -954,7 +1050,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 <!-- ============================================================
      LANDING
      ============================================================ -->
-<div id="landing-wrap" class="landing-wrap">
+<div id="landing-wrap" class="landing-wrap" role="main" aria-label="InternSage overview" tabindex="-1">
   <header class="hero">
     <div class="wrap hero-inner">
       <p class="eyebrow">Build <span class="mono">#</span> Malaysia's talent bridge</p>
@@ -1006,6 +1102,15 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div class="problem-card" style="--i:1;"><div class="tag">Recruiters</div><h3>Volume without verification</h3><p>Smaller companies are flooded with generic CVs and have no fast way to confirm a claimed skill is real.</p></div>
         <div class="problem-card" style="--i:2;"><div class="tag">Career Centers</div><h3>Spreadsheets, not strategy</h3><p>Universities answer to MOHE for outcomes, yet most still track placement through spreadsheets.</p></div>
       </div>
+      <div class="card" style="margin-top:20px;background:var(--paper-50);">
+        <div style="font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--signal-700);margin-bottom:8px;">Why this matters right now</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+          <div><div style="font-family:var(--font-mono);font-size:1.6rem;font-weight:600;">51%</div><p style="font-size:12.5px;color:var(--ink-700);margin-top:2px;">of employers say AI has already changed how they hire — 1 in 5 have cut entry-level recruitment. <a href="https://www.cnbc.com/2026/09/23/ai-workplace-graduate-entry-level-junior-hiring.html" target="_blank" rel="noopener" style="color:var(--slate-500);">CNBC, Sept 2026</a></p></div>
+          <div><div style="font-family:var(--font-mono);font-size:1.6rem;font-weight:600;">2.9% <span style="font-size:0.9rem;color:var(--slate-500);">vs</span> 35%</div><p style="font-size:12.5px;color:var(--ink-700);margin-top:2px;">Malaysia's unemployment rate is near a decade-low, yet ~35% of graduates work below their qualification level. <a href="https://www.dosm.gov.my/portal-main/release-content/labour-force-survey-report-first-q12026" target="_blank" rel="noopener" style="color:var(--slate-500);">DOSM, Q1 2026</a></p></div>
+          <div><div style="font-family:var(--font-mono);font-size:1.6rem;font-weight:600;">RM7.9B</div><p style="font-size:12.5px;color:var(--ink-700);margin-top:2px;">committed to TVET in Budget 2026 — the largest allocation in Malaysian history, aimed squarely at closing this gap. <a href="https://www.bernama.com/en/region/news.php?id=2479854" target="_blank" rel="noopener" style="color:var(--slate-500);">Bernama, 2025</a></p></div>
+        </div>
+        <p style="font-size:12px;color:var(--slate-500);margin-top:12px;">The jobs and the funding both exist. What's missing is a fast, trustworthy way to prove a graduate can actually do the work — which is the gap InternSage is built to close.</p>
+      </div>
     </div>
   </section>
 
@@ -1013,13 +1118,13 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     <div class="wrap">
       <div class="section-head reveal"><p class="eyebrow">What makes it work</p><h2>Seven connected modules</h2><p>One platform, not separate tools. Every piece shares the same verified identity, explainable matching, and audit trail.</p></div>
       <div class="feature-grid stagger reveal">
-        <div class="feature-card" style="--i:0;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><h3>Unified job feed</h3><p>Pulls listings from LinkedIn, Indeed, JobStreet, and MyFutureJobs into one feed.</p></div>
-        <div class="feature-card" style="--i:1;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3>Verified identity</h3><p>University email + skill quizzes + GitHub connection – real evidence behind every claim.</p></div>
-        <div class="feature-card" style="--i:2;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Explainable matching</h3><p>Embedding-based similarity with pgvector. Every result names the matched and missing skills.</p></div>
-        <div class="feature-card" style="--i:3;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Real roadmap</h3><p>Compares your profile to a target role and names the exact skill or certification that closes the gap.</p></div>
-        <div class="feature-card" style="--i:4;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><h3>AI tutor + interview training</h3><p>Subject-matter tutors and structured interview practice – the same prep a well-connected student gets.</p></div>
-        <div class="feature-card" style="--i:5;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Sage Copilot</h3><p>Recruiters search, compare, and act in plain language – hard-blocking protected characteristics before parsing.</p></div>
-        <div class="feature-card" style="--i:6;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg></div><h3>University Portal</h3><p>Career centers get live placement dashboards, skills-gap intelligence, and a self-serve intervention simulator.</p></div>
+        <div class="feature-card" style="--i:0;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><h3>Unified job feed</h3><p>Pulls listings from LinkedIn, Indeed, JobStreet, and MyFutureJobs into one feed.</p></div>
+        <div class="feature-card" style="--i:1;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3>Verified identity</h3><p>University email + skill quizzes + GitHub connection – real evidence behind every claim.</p></div>
+        <div class="feature-card" style="--i:2;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Explainable matching</h3><p>Embedding-based similarity with pgvector. Every result names the matched and missing skills.</p></div>
+        <div class="feature-card" style="--i:3;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Real roadmap</h3><p>Compares your profile to a target role and names the exact skill or certification that closes the gap.</p></div>
+        <div class="feature-card" style="--i:4;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><h3>AI tutor + interview training</h3><p>Subject-matter tutors and structured interview practice – the same prep a well-connected student gets.</p></div>
+        <div class="feature-card" style="--i:5;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Sage Copilot</h3><p>Recruiters search, compare, and act in plain language – hard-blocking protected characteristics before parsing.</p></div>
+        <div class="feature-card" style="--i:6;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg></div><h3>University Portal</h3><p>Career centers get live placement dashboards, skills-gap intelligence, and a self-serve intervention simulator.</p></div>
       </div>
     </div>
   </section>
@@ -1067,7 +1172,18 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">For</h4><a href="https://internsage.netlify.app" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Students</a><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Recruiters</a></div>
         <div class="foot-col"><h4 style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:14px;">Connect</h4><a href="https://github.com/Nahid-Hasan-Rayan/InternSage" target="_blank" rel="noopener" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">GitHub</a><a href="#" style="display:block;font-size:0.9375rem;color:var(--ink-700);margin-bottom:10px;">Email</a></div>
       </div>
-      <div class="foot-bottom" style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--hairline);font-size:0.8125rem;color:var(--slate-500);flex-wrap:wrap;gap:12px;">
+      <div style="padding-top:20px;border-top:1px solid var(--hairline);">
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate-500);margin-bottom:10px;">Industry Pulse sources</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:0.8125rem;">
+          <a href="https://www.cnbc.com/2026/09/23/ai-workplace-graduate-entry-level-junior-hiring.html" target="_blank" rel="noopener" style="color:var(--ink-700);">CNBC — AI &amp; entry-level hiring (Sept 2026)</a>
+          <a href="https://www.dosm.gov.my/portal-main/release-content/labour-force-survey-report-first-q12026" target="_blank" rel="noopener" style="color:var(--ink-700);">DOSM — Labour Force Survey, Q1 2026</a>
+          <a href="https://introl.com/blog/malaysia-thailand-emerging-ai-data-center-hubs-southeast-asia" target="_blank" rel="noopener" style="color:var(--ink-700);">YTL–Nvidia sovereign AI data centre</a>
+          <a href="https://www.bernama.com/en/region/news.php?id=2479854" target="_blank" rel="noopener" style="color:var(--ink-700);">Bernama — Budget 2026 TVET allocation</a>
+          <a href="https://asiasociety.org/policy-institute/malaysias-gamble-turning-data-centres-industrial-power" target="_blank" rel="noopener" style="color:var(--ink-700);">Asia Society — Malaysia AI jobs forecast</a>
+          <a href="https://www.forbes.com/sites/courtney-connley-hampton/2026/05/14/ai-is-shrinking-entry-level-jobs-heres-how-recent-grads-can-stand-out/" target="_blank" rel="noopener" style="color:var(--ink-700);">Forbes / NACE — Class of 2026 hiring</a>
+        </div>
+      </div>
+      <div class="foot-bottom" style="display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--hairline);font-size:0.8125rem;color:var(--slate-500);flex-wrap:wrap;gap:12px;">
         <span>© 2026 InternSage. All rights reserved.</span>
         <span style="display:flex;gap:16px;"><a href="#">Privacy</a><a href="#">Terms</a></span>
       </div>
@@ -1078,15 +1194,15 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 <!-- ============================================================
      DEMO
      ============================================================ -->
-<div id="demo-wrap" class="demo-wrap">
+<div id="demo-wrap" class="demo-wrap" role="main" aria-label="InternSage interactive demo" tabindex="-1">
   <div class="cmdk-overlay" id="cmdkOverlay" onclick="if(event.target===this)closeCmdK()">
-    <div class="cmdk-modal">
+    <div class="cmdk-modal" role="dialog" aria-modal="true" aria-label="Command menu">
       <div class="cmdk-input-row">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="cmdkInput" placeholder="Jump to a page, or ask Sage something…" oninput="cmdkFilter()" onkeydown="cmdkKeydown(event)" autocomplete="off">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="cmdkInput" placeholder="Jump to a page, or ask Sage something…" oninput="cmdkFilter()" onkeydown="cmdkKeydown(event)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="cmdkResults" aria-label="Search pages">
         <span class="cmdk-kbd">ESC</span>
       </div>
-      <div class="cmdk-results" id="cmdkResults"></div>
+      <div class="cmdk-results" id="cmdkResults" role="listbox" aria-label="Pages"></div>
     </div>
   </div>
   <div class="app">
@@ -1101,95 +1217,95 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
           <button class="rt-btn" data-role="university" onclick="setRole('university')">University</button>
         </div>
         <button class="cmdk-trigger" onclick="openCmdK()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <span>Quick jump…</span>
           <span class="cmdk-kbd">⌘K</span>
         </button>
       </div>
-      <nav class="nav-demo" id="navDemo">
+      <nav class="nav-demo" id="navDemo" aria-label="Primary">
         <div class="nav-indicator" id="navIndicator"></div>
-        <div class="nav-item active" data-page="dashboard" onclick="goDemo('dashboard', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
+        <div class="nav-item active" data-page="dashboard" onclick="goDemo('dashboard', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
           <span class="label-text">Home</span>
         </div>
-        <div class="nav-item" data-page="jobs" onclick="goDemo('jobs', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <div class="nav-item" data-page="jobs" onclick="goDemo('jobs', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           <span class="label-text">Jobs</span>
         </div>
-        <div class="nav-item" data-page="search" onclick="goDemo('search', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <div class="nav-item" data-page="search" onclick="goDemo('search', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <span class="label-text">Search</span>
         </div>
-        <div class="nav-item" data-page="roadmap" onclick="goDemo('roadmap', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19c4-8 8 6 16-14"/><circle cx="4" cy="19" r="1.4"/><circle cx="20" cy="5" r="1.4"/></svg>
+        <div class="nav-item" data-page="roadmap" onclick="goDemo('roadmap', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19c4-8 8 6 16-14"/><circle cx="4" cy="19" r="1.4"/><circle cx="20" cy="5" r="1.4"/></svg>
           <span class="label-text">Roadmap</span>
         </div>
-        <div class="nav-item" data-page="decision" onclick="goDemo('decision', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/><rect x="14" y="16" width="7" height="5" rx="1"/></svg>
+        <div class="nav-item" data-page="decision" onclick="goDemo('decision', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/><rect x="14" y="16" width="7" height="5" rx="1"/></svg>
           <span class="label-text">Decision</span>
         </div>
-        <div class="nav-item" data-page="applications" onclick="goDemo('applications', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
+        <div class="nav-item" data-page="applications" onclick="goDemo('applications', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
           <span class="label-text">Apps</span>
         </div>
-        <div class="nav-item" data-page="tutor" onclick="goDemo('tutor', this)" data-role="student">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v11H8l-4 4V4Z"/></svg>
+        <div class="nav-item" data-page="tutor" onclick="goDemo('tutor', this)" data-role="student" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4h16v11H8l-4 4V4Z"/></svg>
           <span class="label-text">Tutor</span>
         </div>
-        <div class="nav-item" data-page="profile" onclick="goDemo('profile', this)" data-role="student,recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>
+        <div class="nav-item" data-page="profile" onclick="goDemo('profile', this)" data-role="student,recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>
           <span class="label-text">Profile</span>
         </div>
-        <div class="nav-item" data-page="pulse" onclick="goDemo('pulse', this)" data-role="student,recruiter,university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
+        <div class="nav-item" data-page="pulse" onclick="goDemo('pulse', this)" data-role="student,recruiter,university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
           <span class="label-text">Pulse</span>
         </div>
-        <div class="nav-item" data-page="messages" onclick="goDemo('messages', this)" data-role="student,recruiter,university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg>
+        <div class="nav-item" data-page="messages" onclick="goDemo('messages', this)" data-role="student,recruiter,university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 7 8-7"/></svg>
           <span class="label-text">Messages</span>
         </div>
-        <div class="nav-item" data-page="r-dashboard" onclick="goDemo('r-dashboard', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <div class="nav-item" data-page="r-dashboard" onclick="goDemo('r-dashboard', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           <span class="label-text">Dashboard</span>
         </div>
-        <div class="nav-item" data-page="r-postings" onclick="goDemo('r-postings', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <div class="nav-item" data-page="r-postings" onclick="goDemo('r-postings', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           <span class="label-text">Postings</span>
         </div>
-        <div class="nav-item" data-page="r-applicants" onclick="goDemo('r-applicants', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="nav-item" data-page="r-applicants" onclick="goDemo('r-applicants', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span class="label-text">Applicants</span>
         </div>
-        <div class="nav-item" data-page="r-analytics" onclick="goDemo('r-analytics', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div class="nav-item" data-page="r-analytics" onclick="goDemo('r-analytics', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span class="label-text">Analytics</span>
         </div>
-        <div class="nav-item" data-page="r-copilot" onclick="goDemo('r-copilot', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <div class="nav-item" data-page="r-copilot" onclick="goDemo('r-copilot', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <span class="label-text">Sage</span>
         </div>
-        <div class="nav-item" data-page="r-interview" onclick="goDemo('r-interview', this)" data-role="recruiter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
+        <div class="nav-item" data-page="r-interview" onclick="goDemo('r-interview', this)" data-role="recruiter" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18"/></svg>
           <span class="label-text">Kits</span>
         </div>
-        <div class="nav-item" data-page="u-dashboard" onclick="goDemo('u-dashboard', this)" data-role="university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <div class="nav-item" data-page="u-dashboard" onclick="goDemo('u-dashboard', this)" data-role="university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           <span class="label-text">Uni</span>
         </div>
-        <div class="nav-item" data-page="u-partners" onclick="goDemo('u-partners', this)" data-role="university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="nav-item" data-page="u-partners" onclick="goDemo('u-partners', this)" data-role="university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span class="label-text">Partners</span>
         </div>
-        <div class="nav-item" data-page="u-events" onclick="goDemo('u-events', this)" data-role="university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div class="nav-item" data-page="u-events" onclick="goDemo('u-events', this)" data-role="university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span class="label-text">Events</span>
         </div>
-        <div class="nav-item" data-page="u-decision" onclick="goDemo('u-decision', this)" data-role="university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/><rect x="14" y="16" width="7" height="5" rx="1"/></svg>
+        <div class="nav-item" data-page="u-decision" onclick="goDemo('u-decision', this)" data-role="university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/><rect x="14" y="16" width="7" height="5" rx="1"/></svg>
           <span class="label-text">Decision</span>
         </div>
-        <div class="nav-item" data-page="u-analytics" onclick="goDemo('u-analytics', this)" data-role="university">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div class="nav-item" data-page="u-analytics" onclick="goDemo('u-analytics', this)" data-role="university" role="link" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span class="label-text">Outcomes</span>
         </div>
       </nav>
@@ -1261,7 +1377,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
             <span style="font-size:12px;color:var(--slate-500);display:flex;align-items:center;">Updated today</span>
           </div>
         </div>
-        <div style="margin-top:10px;"><span class="provenance-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Every listing is a verified employer</span></div>
+        <div style="margin-top:10px;"><span class="provenance-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Every listing is a verified employer</span></div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 24px;">
           <input class="input" style="flex:1;min-width:200px;" placeholder="Search jobs, skills, companies…" id="jobSearch" oninput="filterJobs()">
           <select class="input select-input" style="width:auto;min-width:140px;" id="jobSourceFilter" onchange="filterJobs()">
@@ -1331,8 +1447,8 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         </div>
 
         <div class="rm-progress-bar">
-          <div class="rm-progress-track"><div class="rm-progress-fill" style="width:37.5%;"></div></div>
-          <div class="rm-progress-label"><strong>37% done</strong> — 3 of 8 nodes verified</div>
+          <div class="rm-progress-track"><div class="rm-progress-fill" id="rmProgressFill" style="width:0%;"></div></div>
+          <div class="rm-progress-label" id="rmProgressLabel"></div>
           <div class="rm-legend">
             <span><i class="rm-dot rm-done"></i>Verified</span>
             <span><i class="rm-dot rm-progress-dot"></i>In progress</span>
@@ -1342,13 +1458,33 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         </div>
 
         <div class="rm-readiness" id="rmReadiness"></div>
+        <div class="wr-signals" id="rmMarketPulse" style="margin-top:4px;">
+          <div class="wr-signals-head">
+            <div class="wr-eyebrow" style="margin:0;"><span class="wr-dot"></span>SKILL MARKET PULSE</div>
+            <span style="font-size:10.5px;color:var(--slate-500);font-family:var(--font-mono);">from the network view data</span>
+          </div>
+          <div id="rmPulseRows"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div class="rm-view-toggle" role="tablist" aria-label="Roadmap view">
+            <button class="active" role="tab" aria-selected="true" onclick="setRoadmapView('tree', this)">Tree view</button>
+            <button role="tab" aria-selected="false" onclick="setRoadmapView('network', this)">Digital twin network</button>
+          </div>
+          <span style="font-size:11.5px;color:var(--slate-500);" class="mono">Network view shows live demand + predicted time-to-verified per skill</span>
+        </div>
         <div class="rm-canvas" id="rmCanvas"></div>
+        <div class="rm-network-canvas" id="rmNetwork" style="display:none;position:relative;"></div>
         <div class="skilltree-detail" id="skilltreeDetail" style="margin-top:16px;"></div>
 
         <div class="section-label" style="margin-top:28px;">How to close your next gap — ANSYS</div>
         <div class="archetype-cards">
-          <div class="card card-hover"><div class="card-title">Path A — Certification-first</div><p style="font-size:13.5px;color:var(--ink-700);">Complete the verified ANSYS module, then apply. Faster to a verified badge.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Taken by 40% of students who reached this role</div></div>
-          <div class="card card-hover"><div class="card-title">Path B — Project-first</div><p style="font-size:13.5px;color:var(--ink-700);">Apply ANSYS to your final year project first, then verify. Slower, stronger portfolio.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Taken by 60% of students who reached this role</div></div>
+          <div class="card card-hover"><div class="card-title">Certification-first</div><p style="font-size:13.5px;color:var(--ink-700);">Complete the verified ANSYS module (3–7 days at your current pace), then apply. Faster to a verified badge.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Rising demand skill — verifying now catches the trend early</div></div>
+          <div class="card card-hover"><div class="card-title">Project-first</div><p style="font-size:13.5px;color:var(--ink-700);">Apply ANSYS to your final year project first, then verify. Slower, stronger portfolio.</p><div style="font-size:12px;color:var(--slate-500);margin-top:10px;">Better evidence quality, longer time-to-verified</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--hairline);">
+          <p style="font-size:12.5px;color:var(--slate-500);margin:0;max-width:520px;">This is about sequencing — <em>how</em> to close the gap. To compare whether Mechanical Design Intern is even the right role to chase right now, see it modelled against your other options.</p>
+          <button class="btn btn-secondary btn-sm" onclick="goToSub('decision','roadmap')">Compare roles in the Decision Room →</button>
         </div>
       </section>
 
@@ -1360,14 +1496,17 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
             <h1 class="page-h1 serif">Career & Workforce Decision Room</h1>
             <p class="page-sub">Model any path, role, or "what if." Compared against your verified evidence and real cohort outcomes — not gut feel.</p>
           </div>
-          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
+          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
         </div>
 
-        <div class="wr-stat-row">
-          <div class="wr-stat-chip"><div class="lbl">Scenarios modelled</div><div class="val" id="wrScenarioCount">3</div></div>
-          <div class="wr-stat-chip"><div class="lbl">Evidence-confidence</div><div class="val">87/100</div></div>
-          <div class="wr-stat-chip"><div class="lbl">Cohort data window</div><div class="val" style="font-size:1rem;">3 semesters</div></div>
-          <div class="wr-stat-chip"><div class="lbl">Verified skills on file</div><div class="val">3</div></div>
+        <div class="dtwin-bar" id="dtwinBarDecision"></div>
+
+        <div class="wr-signals" id="wrSignals">
+          <div class="wr-signals-head">
+            <div class="wr-eyebrow" style="margin:0;"><span class="wr-dot"></span>LIVE MARKET SIGNALS</div>
+            <span style="font-size:10.5px;color:#5f7268;font-family:var(--font-mono);">auto-refreshing</span>
+          </div>
+          <div id="wrSignalRows"></div>
         </div>
 
         <div class="section-label" style="margin-top:24px;">Scenarios on the table</div>
@@ -1411,6 +1550,14 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
           </div>
         </div>
 
+        <div class="section-label" style="margin-top:28px;">Multi-dimensional risk comparison — all scenarios</div>
+        <div class="warroom-panel">
+          <div class="wr-radar-wrap">
+            <div id="riskRadar"></div>
+            <div class="wr-radar-legend" id="riskRadarLegend"></div>
+          </div>
+        </div>
+
         <div class="sim-panel" id="simPanel">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
             <div class="card-title" style="margin:0;">Simulate this decision</div>
@@ -1451,7 +1598,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 
       <!-- QUIZ -->
       <section class="page-demo" id="page-quiz">
-        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
         <h1 class="page-h1 serif">Verify: ANSYS</h1>
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
           <div class="quiz-dots" id="quizDots"></div>
@@ -1478,7 +1625,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         </div>
         <div class="chat-window">
           <div class="chat-context">Based on your Mechanical Engineering profile and your ANSYS gap on the Proton match.</div>
-          <div class="chat-body" id="chatBody">
+          <div class="chat-body" id="chatBody" aria-live="polite" aria-relevant="additions">
             <div class="msg msg-bot">Hi Aisyah. Want to start with modal analysis, since that's the concept behind the question you'll see in your ANSYS verification quiz?</div>
           </div>
           <div class="chat-input-row">
@@ -1500,7 +1647,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
           <div style="text-align:center;"><div style="font-family:var(--font-mono);font-size:2.1rem;color:var(--signal-600);">87</div><div style="font-size:11px;color:var(--slate-500);">Evidence-confidence score</div></div>
           <div style="flex:1;min-width:220px;font-size:13px;color:var(--ink-700);line-height:1.6;">Combines university-domain identity, 4 verified skill quizzes, and connected GitHub activity into one score — a claimed skill carries supporting evidence, not just a CV line.</div>
-          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
+          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
         </div>
         <div class="profile-grid">
           <div>
@@ -1657,7 +1804,10 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
           <div>
             <div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:12px;">Recent applicants</div><div id="rRecentApplicants"></div></div>
             <div class="card">
-              <div class="card-title" style="margin-bottom:4px;">This week's funnel</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                <div class="card-title" style="margin-bottom:4px;">This week's funnel — quick glance</div>
+                <a href="javascript:void(0)" onclick="goDemo('r-analytics')" style="font-size:11.5px;color:var(--signal-700);font-weight:600;white-space:nowrap;">Trends & drop-off →</a>
+              </div>
               <div class="mini-funnel">
                 <div class="mf-step"><div class="mf-bar" style="width:100%;"></div><div class="mf-num">148</div><div class="mf-lbl">Applied</div></div>
                 <span class="mf-arrow">→</span>
@@ -1683,8 +1833,22 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
       <!-- RECRUITER POSTINGS -->
       <section class="page-demo" id="page-r-postings">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-          <div><h1 class="page-h1 serif">My Postings</h1><p class="page-sub" style="margin:0;">Manage your active, draft, and closed listings.</p></div>
-          <button class="btn btn-primary btn-sm" onclick="toastDemo('New posting form opened')">+ New Posting</button>
+          <div><h1 class="page-h1 serif">My Postings</h1><p class="page-sub" style="margin:0;">Manage your active, draft, and closed listings — with live performance per posting.</p></div>
+          <button class="btn btn-primary btn-sm" onclick="toggleNewPostingForm()" id="rNewPostingToggle">+ New Posting</button>
+        </div>
+        <div class="card" id="newPostingForm" style="display:none;background:var(--paper-50);margin-top:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div><label style="display:block;font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Role title</label><input class="input" id="rpTitle" placeholder='e.g. &quot;Embedded Systems Intern&quot;'></div>
+            <div><label style="display:block;font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Location</label><input class="input" id="rpLoc" placeholder='e.g. &quot;Penang&quot;' value="KL"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div><label style="display:block;font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Duration</label><input class="input" id="rpDur" value="3 months"></div>
+            <div><label style="display:block;font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Status</label><select class="input select-input" id="rpStatus"><option value="draft" selected>Save as draft</option><option value="active">Publish now</option></select></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="addPosting()">Create posting</button>
+            <button class="btn btn-sm" style="background:transparent;border:1px solid var(--hairline);" onclick="toggleNewPostingForm()">Cancel</button>
+          </div>
         </div>
         <div id="rPostingsList" style="margin-top:20px;"></div>
       </section>
@@ -1718,18 +1882,22 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <h1 class="page-h1 serif">Hiring Analytics</h1>
         <p class="page-sub">Your recruitment funnel and performance metrics.</p>
         <div class="card" style="margin-bottom:20px;">
-          <div class="card-title" style="margin-bottom:12px;">Applicant funnel</div>
-          <div class="funnel">
-            <div class="fstep"><div class="num">148</div><div class="lbl">Applied</div><div class="bar"><div class="fill" style="width:100%;"></div></div></div>
-            <div class="farrow">→<div class="farrow-pct">70%</div></div>
-            <div class="fstep"><div class="num">104</div><div class="lbl">Reviewed</div><div class="bar"><div class="fill" style="width:70%;"></div></div></div>
-            <div class="farrow">→<div class="farrow-pct">36%</div></div>
-            <div class="fstep"><div class="num">37</div><div class="lbl">Shortlisted</div><div class="bar"><div class="fill" style="width:25%;"></div></div></div>
-            <div class="farrow">→<div class="farrow-pct">49%</div></div>
-            <div class="fstep"><div class="num">18</div><div class="lbl">Interviewed</div><div class="bar"><div class="fill" style="width:12%;background:var(--warn-600);"></div></div></div>
-            <div class="farrow">→<div class="farrow-pct">44%</div></div>
-            <div class="fstep"><div class="num">8</div><div class="lbl">Offers</div><div class="bar"><div class="fill" style="width:5%;background:var(--signal-600);"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+            <div class="card-title" style="margin:0;">Applicant funnel — with week-over-week movement</div>
+            <span style="font-size:11px;color:var(--slate-500);" class="mono">vs. same stage last week</span>
           </div>
+          <div class="funnel">
+            <div class="fstep"><div class="num">148<span style="font-size:11px;color:var(--signal-700);font-weight:600;margin-left:4px;">▲12</span></div><div class="lbl">Applied</div><div class="bar"><div class="fill" style="width:100%;"></div></div></div>
+            <div class="farrow">→<div class="farrow-pct">70%</div></div>
+            <div class="fstep"><div class="num">104<span style="font-size:11px;color:var(--signal-700);font-weight:600;margin-left:4px;">▲9</span></div><div class="lbl">Reviewed</div><div class="bar"><div class="fill" style="width:70%;"></div></div></div>
+            <div class="farrow">→<div class="farrow-pct">36%</div></div>
+            <div class="fstep"><div class="num">37<span style="font-size:11px;color:var(--alert-600);font-weight:600;margin-left:4px;">▼2</span></div><div class="lbl">Shortlisted</div><div class="bar"><div class="fill" style="width:25%;"></div></div></div>
+            <div class="farrow">→<div class="farrow-pct">49%</div></div>
+            <div class="fstep"><div class="num">18<span style="font-size:11px;color:var(--signal-700);font-weight:600;margin-left:4px;">▲3</span></div><div class="lbl">Interviewed</div><div class="bar"><div class="fill" style="width:12%;background:var(--warn-600);"></div></div></div>
+            <div class="farrow">→<div class="farrow-pct">44%</div></div>
+            <div class="fstep"><div class="num">8<span style="font-size:11px;color:var(--slate-500);font-weight:600;margin-left:4px;">—0</span></div><div class="lbl">Offers</div><div class="bar"><div class="fill" style="width:5%;background:var(--signal-600);"></div></div></div>
+          </div>
+          <p style="font-size:11.5px;color:var(--slate-500);margin-top:10px;">Shortlisted dipped despite more reviews — worth checking whether your screening criteria tightened this week.</p>
         </div>
         <div class="card" style="margin-bottom:20px;">
           <div class="card-title" style="margin-bottom:8px;">Applications received — last 8 weeks</div>
@@ -1774,7 +1942,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
           <div><h1 class="page-h1 serif">Sage Copilot</h1>
           <p class="page-sub">Ask in plain language. Sage answers with named candidates, evidence, and reasoning — protected characteristics are hard-blocked.</p></div>
-          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
+          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
         </div>
         <div class="admp-note">Designed with Malaysia's Automated Decision-Making and Profiling Guideline (JPDP, April 2026) in mind — hiring decisions remain with people.</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 12px;">
@@ -1789,7 +1957,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
           <button onclick="suggestQuery('Compare Aisha Mohammed, Sara Ahmad, and Tan Mei Xin')">Compare 3 by name</button>
           <button style="border-color:var(--alert-600);color:var(--alert-600);" onclick="suggestQuery('Show me only candidates from Chinese-Malaysian background')">Try a blocked query →</button>
         </div>
-        <div class="copilot-chat" id="copilotChat" style="margin-top:14px;">
+        <div class="copilot-chat" id="copilotChat" style="margin-top:14px;" aria-live="polite" aria-relevant="additions">
           <div class="cp-msg bot">Hello! I'm Sage. Try "Compare top 5 for Data Science Intern", "Draft outreach to the top candidate", or "Who has verified Python skills?".</div>
         </div>
       </section>
@@ -1811,38 +1979,56 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
       <section class="page-demo" id="page-u-dashboard">
         <h1 class="page-h1 serif">University Dashboard</h1>
         <p class="page-sub">UTM — Career Center · Real-time placement analytics.</p>
+        <div class="sage-briefing">
+          <div class="sb-icon">✨</div>
+          <div class="sb-body">
+            <div class="sb-title">Sage's briefing for today</div>
+            <div class="sb-text">The <strong>ANSYS</strong> demand-vs-supply gap widened another 8pt this term — it's now your single largest employability risk. <strong>Business & Management</strong> placement sits 8pt below the institutional average, and SAP is the named blocking skill. Both are addressable before this cohort graduates.</div>
+            <div class="sb-actions"><button onclick="goDemo('u-decision')">Model an intervention →</button></div>
+          </div>
+        </div>
         <div class="university-stats">
           <div class="ustat"><div class="num" style="color:var(--signal-600);">89%</div><div class="lbl">Graduate placement rate</div></div>
           <div class="ustat"><div class="num" style="color:var(--signal-600);">1,247</div><div class="lbl">Students placed (YTD)</div></div>
           <div class="ustat"><div class="num" style="color:var(--warn-600);">142</div><div class="lbl">Active employer partners</div></div>
           <div class="ustat"><div class="num" style="color:var(--alert-600);">18</div><div class="lbl">Upcoming events</div></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top hiring companies</div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Proton Holdings</span><span style="font-weight:600;">28</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Petronas</span><span style="font-weight:600;">23</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Grab Malaysia</span><span style="font-weight:600;">18</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Selatan Engineering</span><span style="font-weight:600;">14</span></div>
-          </div>
-          <div class="card"><div class="card-title" style="margin-bottom:8px;">Top programmes</div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Computer Science</span><span style="font-weight:600;">92%</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Mechanical Engineering</span><span style="font-weight:600;">88%</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Manufacturing Eng.</span><span style="font-weight:600;">86%</span></div>
-            <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Business & Management</span><span style="font-weight:600;">81%</span></div>
-          </div>
+        <div class="attention-row">
+          <div class="attention-card urgent"><span class="ac-ic">⚠</span><div><strong>ANSYS gap widened 8pt</strong><div class="ac-sub">Demand outpacing verified supply</div><button onclick="goDemo('u-analytics')">See breakdown →</button></div></div>
+          <div class="attention-card warn"><span class="ac-ic">📉</span><div><strong>Business placement: 81% vs 89% avg</strong><div class="ac-sub">SAP is the named blocking skill</div><button onclick="goDemo('u-decision')">Model a fix →</button></div></div>
+          <div class="attention-card info"><span class="ac-ic">📅</span><div><strong>Career Fair in 3 days</strong><div class="ac-sub">35 companies confirmed, 0 unconfirmed slots</div><button onclick="goDemo('u-events')">Open →</button></div></div>
         </div>
-        <div class="card">
-          <div class="card-title" style="margin-bottom:8px;">Recent activity</div>
-          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);">🎓 12 students offered internships at Petronas this week</div>
-          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);">📅 Career fair scheduled for 15 Sept — 35 companies registered</div>
-          <div style="font-size:14px;color:var(--ink-700);padding:8px 0;">📊 Placement rate up 4.2% vs same period last year</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+          <div>
+            <div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:8px;">Top programmes</div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Computer Science</span><span style="font-weight:600;">92%</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Mechanical Engineering</span><span style="font-weight:600;">88%</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);"><span>Manufacturing Eng.</span><span style="font-weight:600;">86%</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Business & Management <span style="color:var(--alert-600);font-size:11.5px;">↓ needs attention</span></span><span style="font-weight:600;">81%</span></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                <div class="card-title" style="margin-bottom:8px;">Recent activity</div>
+                <a href="javascript:void(0)" onclick="goDemo('u-analytics')" style="font-size:11.5px;color:var(--signal-700);font-weight:600;">Full outcome data →</a>
+              </div>
+              <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);cursor:pointer;" onclick="goDemo('u-partners')">🎓 12 students offered internships at Petronas this week</div>
+              <div style="font-size:14px;color:var(--ink-700);padding:8px 0;border-bottom:1px solid var(--hairline);cursor:pointer;" onclick="goDemo('u-events')">📅 Career fair scheduled for 15 Sept — 35 companies registered</div>
+              <div style="font-size:14px;color:var(--ink-700);padding:8px 0;cursor:pointer;" onclick="goDemo('u-analytics')">📊 Placement rate up 4.2% vs same period last year</div>
+            </div>
+          </div>
+          <div class="card"><div class="card-title" style="margin-bottom:12px;">Quick actions</div>
+            <button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:8px;" onclick="goDemo('u-decision')">Model an intervention</button>
+            <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:8px;" onclick="goDemo('u-partners')">Review partners</button>
+            <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:8px;" onclick="toastDemo('New event form opened')">+ Create event</button>
+            <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="goDemo('u-analytics')">Full analytics</button>
+          </div>
         </div>
       </section>
 
       <!-- UNIVERSITY PARTNERS -->
       <section class="page-demo" id="page-u-partners">
         <h1 class="page-h1 serif">Employer Partners</h1>
-        <p class="page-sub">142 active partners across all industries.</p>
+        <p class="page-sub">142 active partners across all industries — with live engagement signal, not just a directory.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
           <input class="input" style="flex:1;min-width:200px;" placeholder="Search partners…" id="partnerSearch" oninput="filterPartners()">
           <select class="input select-input" style="width:auto;min-width:140px;" id="partnerIndustry" onchange="filterPartners()">
@@ -1852,26 +2038,16 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
             <option value="Finance">Finance</option>
             <option value="Energy">Energy</option>
             <option value="Consulting">Consulting</option>
+            <option value="Logistics">Logistics</option>
+          </select>
+          <select class="input select-input" style="width:auto;min-width:160px;" id="partnerStatus" onchange="filterPartners()">
+            <option value="all">All engagement levels</option>
+            <option value="active">Actively hiring</option>
+            <option value="quiet">Gone quiet</option>
+            <option value="risk">At risk — re-engage</option>
           </select>
         </div>
-        <div class="university-partners" id="partnerList">
-          <span class="partner-tag">Petronas · Energy</span>
-          <span class="partner-tag">Proton Holdings · Manufacturing</span>
-          <span class="partner-tag">Maybank · Finance</span>
-          <span class="partner-tag">Grab · Technology</span>
-          <span class="partner-tag">JobStreet · Technology</span>
-          <span class="partner-tag">Sime Darby · Manufacturing</span>
-          <span class="partner-tag">DHL · Logistics</span>
-          <span class="partner-tag">Axiata · Technology</span>
-          <span class="partner-tag">Maxis · Technology</span>
-          <span class="partner-tag">TNB · Energy</span>
-          <span class="partner-tag">PwC · Consulting</span>
-          <span class="partner-tag">Deloitte · Consulting</span>
-          <span class="partner-tag">Intel · Technology</span>
-          <span class="partner-tag">Nvidia · Technology</span>
-          <span class="partner-tag">BMW · Manufacturing</span>
-          <span class="partner-tag">Airbnb · Technology</span>
-        </div>
+        <div class="partner-grid" id="partnerList"></div>
       </section>
 
       <!-- UNIVERSITY EVENTS -->
@@ -1897,7 +2073,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
             <h1 class="page-h1 serif">Career & Workforce Decision Room</h1>
             <p class="page-sub">Model any intervention, for any programme, at any scale — then compare it against doing nothing.</p>
           </div>
-          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
+          <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
         </div>
         <div class="wr-stat-row">
           <div class="wr-stat-chip"><div class="lbl">Scenarios compared</div><div class="val" id="uScenarioCount">2</div></div>
@@ -1967,6 +2143,17 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
             <div class="kpi-chip"><div class="kc-lbl">Cohort tracked</div><div class="kc-val">312</div><div class="kc-trend flat">— n/a</div></div>
           </div>
         </div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;background:var(--signal-100);border-color:rgba(39,68,58,0.25);margin-bottom:20px;">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--signal-700);">Forecast — not yet observed</div>
+            <div style="font-size:1rem;font-weight:600;margin-top:2px;">Projected placement rate — Class of 2027</div>
+            <div style="font-size:12px;color:var(--slate-500);margin-top:2px;">Based on this cohort's current skill-verification velocity vs. the Class of 2026 cohort at the same point in their programme.</div>
+          </div>
+          <div style="text-align:center;flex-shrink:0;">
+            <div style="font-family:var(--font-mono);font-size:2.1rem;font-weight:600;color:var(--signal-700);">91<span style="font-size:1.1rem;">%</span></div>
+            <div style="font-size:11px;color:var(--slate-500);">± 3pt confidence band</div>
+          </div>
+        </div>
         <div class="anomaly-row">
           <div class="anomaly-card warn"><span class="ac-icon">⚠</span><div><strong>ANSYS gap widened 8pt</strong><div class="ac-sub">Demand rose faster than verified supply — flagged for intervention.</div></div></div>
           <div class="anomaly-card good"><span class="ac-icon">↑</span><div><strong>Verified grads earn +RM 340/mo</strong><div class="ac-sub">Median premium over self-reported-only peers.</div></div></div>
@@ -1974,7 +2161,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         </div>
         <div class="nl-query-box">
           <div class="nlq-input-row">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
             <input id="nlqInput" placeholder="Ask about this cohort…" onkeydown="if(event.key==='Enter')askCohortQuery()">
             <button class="btn btn-primary btn-sm" onclick="askCohortQuery()">Ask</button>
           </div>
@@ -2060,7 +2247,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   </div>
 </div>
 
-<div class="toast-wrap" id="toastWrap"></div>
+<div class="toast-wrap" id="toastWrap" role="status" aria-live="polite"></div>
 
 <script>
   // ========== JOB DATA ==========
@@ -2140,13 +2327,61 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   }];
 
   const recruiterPostings = [
-    { title: "Mechanical Design Intern", loc: "Shah Alam", dur: "6 months", applicants: 48, status: "active" },
-    { title: "Data Science Intern", loc: "KL", dur: "3 months", applicants: 32, status: "active" },
-    { title: "DevOps Intern", loc: "KL", dur: "6 months", applicants: 19, status: "active" },
-    { title: "Product Design Intern", loc: "KL", dur: "3 months", applicants: 25, status: "active" },
-    { title: "Cybersecurity Intern", loc: "KL", dur: "6 months", applicants: 14, status: "draft" },
-    { title: "Business Analyst Intern", loc: "KL", dur: "3 months", applicants: 11, status: "closed" },
+    { title: "Mechanical Design Intern", loc: "Shah Alam", dur: "6 months", applicants: 48, status: "active", views: 612, daysOpen: 18, trend: [4,7,6,9,8,10,7] },
+    { title: "Data Science Intern", loc: "KL", dur: "3 months", applicants: 32, status: "active", views: 540, daysOpen: 11, trend: [2,4,5,6,7,9,11] },
+    { title: "DevOps Intern", loc: "KL", dur: "6 months", applicants: 19, status: "active", views: 388, daysOpen: 5, trend: [1,2,3,3,4,3,3], stalled: true },
+    { title: "Product Design Intern", loc: "KL", dur: "3 months", applicants: 25, status: "active", views: 301, daysOpen: 9, trend: [3,3,4,4,5,3,4] },
+    { title: "Cybersecurity Intern", loc: "KL", dur: "6 months", applicants: 14, status: "draft", views: 0, daysOpen: 0, trend: [0,0,0,0,0,0,0] },
+    { title: "Business Analyst Intern", loc: "KL", dur: "3 months", applicants: 11, status: "closed", views: 205, daysOpen: 30, trend: [3,2,2,1,1,1,0] },
   ];
+
+  const partnersData = [
+    { name: "Petronas", industry: "Energy", status: "active", applicants: 23, hires: 9, trend: [3,4,5,6,7,8,9] },
+    { name: "Proton Holdings", industry: "Manufacturing", status: "active", applicants: 28, hires: 11, trend: [4,6,7,8,9,10,11] },
+    { name: "Maybank", industry: "Finance", status: "quiet", applicants: 6, hires: 2, trend: [3,3,2,2,1,1,2] },
+    { name: "Grab", industry: "Technology", status: "active", applicants: 18, hires: 7, trend: [2,3,4,5,6,7,7] },
+    { name: "JobStreet", industry: "Technology", status: "quiet", applicants: 4, hires: 1, trend: [2,2,1,1,1,0,1] },
+    { name: "Sime Darby", industry: "Manufacturing", status: "active", applicants: 12, hires: 5, trend: [1,2,3,3,4,5,5] },
+    { name: "DHL", industry: "Logistics", status: "risk", applicants: 2, hires: 0, trend: [3,2,1,1,0,0,0] },
+    { name: "Axiata", industry: "Technology", status: "active", applicants: 9, hires: 3, trend: [1,2,2,3,3,4,3] },
+    { name: "Maxis", industry: "Technology", status: "quiet", applicants: 5, hires: 1, trend: [2,2,2,1,1,1,1] },
+    { name: "TNB", industry: "Energy", status: "active", applicants: 8, hires: 3, trend: [1,1,2,2,3,3,3] },
+    { name: "PwC", industry: "Consulting", status: "active", applicants: 11, hires: 4, trend: [1,2,3,3,4,4,4] },
+    { name: "Deloitte", industry: "Consulting", status: "risk", applicants: 1, hires: 0, trend: [2,1,1,0,0,0,0] },
+    { name: "Intel", industry: "Technology", status: "active", applicants: 14, hires: 5, trend: [2,3,4,4,5,5,6] },
+    { name: "Nvidia", industry: "Technology", status: "active", applicants: 7, hires: 2, trend: [1,1,2,2,3,3,3] },
+    { name: "BMW", industry: "Manufacturing", status: "quiet", applicants: 3, hires: 1, trend: [1,2,1,1,1,0,0] },
+    { name: "Airbnb", industry: "Technology", status: "risk", applicants: 0, hires: 0, trend: [1,1,0,0,0,0,0] },
+  ];
+  function renderPartners() {
+    const container = document.getElementById('partnerList');
+    if (!container) return;
+    const search = (document.getElementById('partnerSearch')?.value || '').toLowerCase();
+    const industry = document.getElementById('partnerIndustry')?.value || 'all';
+    const statusFilter = document.getElementById('partnerStatus')?.value || 'all';
+    const STATUS_LBL = { active: 'Actively hiring', quiet: 'Gone quiet', risk: 'At risk — re-engage' };
+    const STATUS_COLOR = { active: 'var(--signal-600)', quiet: 'var(--warn-600)', risk: 'var(--alert-600)' };
+    const filtered = partnersData.filter(p =>
+      (p.name.toLowerCase().includes(search) || p.industry.toLowerCase().includes(search)) &&
+      (industry === 'all' || p.industry === industry) &&
+      (statusFilter === 'all' || p.status === statusFilter)
+    );
+    if (!filtered.length) { container.innerHTML = '<p style="color:var(--slate-500);font-size:13.5px;grid-column:1/-1;">No partners match those filters.</p>'; return; }
+    container.innerHTML = filtered.map(p => `
+      <div class="partner-card">
+        <div class="pc-head">
+          <div><div class="pc-name">${p.name}</div><div class="pc-industry">${p.industry}</div></div>
+          <span class="pc-health ${p.status}" title="${STATUS_LBL[p.status]}"></span>
+        </div>
+        <div class="pc-stats">
+          <span>Applicants: <b>${p.applicants}</b></span>
+          <span>Hires YTD: <b>${p.hires}</b></span>
+          ${sparklineSVG(p.trend, STATUS_COLOR[p.status], 44, 16)}
+        </div>
+        <span class="pc-status-lbl ${p.status}">${STATUS_LBL[p.status]}</span>
+      </div>
+    `).join('');
+  }
 
   const applicantsData = [
     { name: "Nahid Hasan Rayan", uni: "UTM KL", prog: "BSc Computer Science", gpa: 3.7, status: "shortlisted", applied: "May 25", role: "Mechanical Design Intern", match: 88, evidence: 91, skills: ["SolidWorks","Python","Git"], verifiedSkills: ["SolidWorks","Python"], github: true, availability: "Immediate", expectedSalary: "RM 2,800", interviewsDone: 0 },
@@ -2169,9 +2404,9 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   function setRole(role) {
     currentRole = role;
     // Desktop sidebar toggle
-    document.querySelectorAll('.rt-btn').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+    document.querySelectorAll('.rt-btn').forEach(b => { const active = b.dataset.role === role; b.classList.toggle('active', active); b.setAttribute('aria-pressed', active); });
     // Mobile role bar (added for phones)
-    document.querySelectorAll('.mobile-role-bar button').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+    document.querySelectorAll('.mobile-role-bar button').forEach(b => { const active = b.dataset.role === role; b.classList.toggle('active', active); b.setAttribute('aria-pressed', active); });
     const names = { student: { avatar: 'AZ', name: 'Aisyah Zulkifli', label: 'UTM · Student' },
       recruiter: { avatar: 'SL', name: 'Sarah Lim', label: 'Petronas · Recruiter' },
       university: { avatar: 'UTM', name: 'UTM Career Center', label: 'Universiti Teknologi Malaysia' } };
@@ -2197,13 +2432,15 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     if (view === 'landing') {
       landing.style.display = 'block';
       demo.classList.remove('active');
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.view === 'landing'));
+      tabs.forEach(t => { t.classList.toggle('active', t.dataset.view === 'landing'); t.setAttribute('aria-selected', t.dataset.view === 'landing'); });
+      landing.focus({ preventScroll: true });
     } else {
       landing.style.display = 'none';
       demo.classList.add('active');
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.view === 'demo'));
+      tabs.forEach(t => { t.classList.toggle('active', t.dataset.view === 'demo'); t.setAttribute('aria-selected', t.dataset.view === 'demo'); });
       window.scrollTo(0, 0);
       if (typeof setRole === 'function') setRole('student');
+      demo.focus({ preventScroll: true });
     }
   }
   window.switchView = switchView;
@@ -2241,14 +2478,20 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   ];
   let cmdkActiveIdx = 0;
   let cmdkCurrentResults = [];
+  let cmdkTriggerEl = null;
 
   function openCmdK() {
+    cmdkTriggerEl = document.activeElement;
     document.getElementById('cmdkOverlay').classList.add('open');
     document.getElementById('cmdkInput').value = '';
     cmdkFilter();
     setTimeout(() => document.getElementById('cmdkInput').focus(), 30);
   }
-  function closeCmdK() { document.getElementById('cmdkOverlay').classList.remove('open'); }
+  function closeCmdK() {
+    document.getElementById('cmdkOverlay').classList.remove('open');
+    if (cmdkTriggerEl && typeof cmdkTriggerEl.focus === 'function') cmdkTriggerEl.focus();
+    cmdkTriggerEl = null;
+  }
   function cmdkFilter() {
     const q = document.getElementById('cmdkInput').value.toLowerCase().trim();
     const activeRole = document.querySelector('.rt-btn.active') ? document.querySelector('.rt-btn.active').dataset.role : 'student';
@@ -2265,8 +2508,8 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     el.innerHTML = cmdkCurrentResults.map((item, i) => {
       const groupHtml = item.group !== lastGroup ? `<div class="cmdk-group-lbl">${item.group}</div>` : '';
       lastGroup = item.group;
-      return `${groupHtml}<div class="cmdk-item ${i===cmdkActiveIdx?'active':''}" onclick="cmdkGo(${i})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      return `${groupHtml}<div class="cmdk-item ${i===cmdkActiveIdx?'active':''}" role="option" aria-selected="${i===cmdkActiveIdx}" onclick="cmdkGo(${i})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         ${item.label}<span class="cmdk-role">${item.role}</span>
       </div>`;
     }).join('');
@@ -2295,17 +2538,17 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
 
   // ========== ROADMAP ==========
   const skillTreeNodes = [
-    { id: "solidworks", label: "SolidWorks", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via timed assessment and 3 endorsed projects." },
-    { id: "python", label: "Python", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via assessment plus GitHub activity across 14 repositories." },
-    { id: "thermo", label: "Thermodynamics", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via timed assessment, course-linked." },
-    { id: "ansys", label: "ANSYS", sub: "2hr module", tier: 1, state: "available", prereqs: ["solidworks"], detail: "Unlocked — SolidWorks is verified. A 2-hour module closes this gap and directly unlocks Mechanical Design Intern at 92% fit.", cta: "Start 2hr module →", action: "goToSub('quiz','roadmap')" },
-    { id: "gdt", label: "GD&T", sub: "not started", tier: 1, state: "available", prereqs: ["solidworks"], detail: "Unlocked — SolidWorks is verified. Needed for Manufacturing Engineer Intern." },
-    { id: "sql", label: "Advanced SQL", sub: "in progress", tier: 1, state: "progress", prereqs: ["python"], detail: "In progress — 60% through the verification module." },
-    { id: "sixsigma", label: "Six Sigma", sub: "not started", tier: 1, state: "available", prereqs: ["thermo"], detail: "Unlocked — Thermodynamics is verified. Highest-leverage gap per this semester's employer-demand data." },
-    { id: "plc", label: "PLC Programming", sub: "locked", tier: 1, state: "locked", prereqs: ["python","thermo"], detail: "Locked. Requires both Python and Thermodynamics." },
-    { id: "role-mech", label: "Mechanical Design Intern", sub: "92% fit", tier: 2, state: "locked", prereqs: ["ansys"], detail: "Unlocks at 92% fit once ANSYS is verified. 78% of students who reached this node placed within 90 days.", role: true },
-    { id: "role-mfg", label: "Manufacturing Engineer Intern", sub: "74% fit", tier: 2, state: "locked", prereqs: ["gdt","sixsigma"], detail: "Unlocks once GD&T and Six Sigma are both verified.", role: true },
-    { id: "role-auto", label: "Automation & Robotics", sub: "48% fit", tier: 2, state: "locked", prereqs: ["sql","plc"], detail: "Longest-horizon path. Requires Advanced SQL and PLC Programming.", role: true },
+    { id: "solidworks", label: "SolidWorks", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via timed assessment and 3 endorsed projects.", demand: "high", trend: [58,61,65,68,72,75], etaWeeks: null },
+    { id: "python", label: "Python", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via assessment plus GitHub activity across 14 repositories.", demand: "high", trend: [64,67,70,74,79,84], etaWeeks: null },
+    { id: "thermo", label: "Thermodynamics", sub: "verified", tier: 0, state: "verified", prereqs: [], detail: "Verified via timed assessment, course-linked.", demand: "medium", trend: [52,53,51,54,52,55], etaWeeks: null },
+    { id: "ansys", label: "ANSYS", sub: "2hr module", tier: 1, state: "available", prereqs: ["solidworks"], detail: "Unlocked — SolidWorks is verified. A 2-hour module closes this gap and directly unlocks Mechanical Design Intern at 92% fit.", cta: "Start 2hr module →", action: "goToSub('quiz','roadmap')", demand: "high", trend: [55,59,63,69,74,80], etaWeeks: [0.3, 1] },
+    { id: "gdt", label: "GD&T", sub: "not started", tier: 1, state: "available", prereqs: ["solidworks"], detail: "Unlocked — SolidWorks is verified. Needed for Manufacturing Engineer Intern.", demand: "medium", trend: [48,50,49,51,50,52], etaWeeks: [1, 2] },
+    { id: "sql", label: "Advanced SQL", sub: "in progress", tier: 1, state: "progress", prereqs: ["python"], detail: "In progress — 60% through the verification module.", demand: "high", trend: [60,63,67,70,73,77], etaWeeks: [0.4, 1] },
+    { id: "sixsigma", label: "Six Sigma", sub: "not started", tier: 1, state: "available", prereqs: ["thermo"], detail: "Unlocked — Thermodynamics is verified. Highest-leverage gap per this semester's employer-demand data.", demand: "high", trend: [50,54,58,63,68,73], etaWeeks: [1, 2] },
+    { id: "plc", label: "PLC Programming", sub: "locked", tier: 1, state: "locked", prereqs: ["python","thermo"], detail: "Locked. Requires both Python and Thermodynamics.", demand: "high", trend: [45,49,54,60,67,74], etaWeeks: [2, 4] },
+    { id: "role-mech", label: "Mechanical Design Intern", sub: "92% fit", tier: 2, state: "locked", prereqs: ["ansys"], detail: "Unlocks at 92% fit once ANSYS is verified. 78% of students who reached this node placed within 90 days.", role: true, demand: "high", trend: [56,60,64,68,71,75], etaWeeks: null },
+    { id: "role-mfg", label: "Manufacturing Engineer Intern", sub: "74% fit", tier: 2, state: "locked", prereqs: ["gdt","sixsigma"], detail: "Unlocks once GD&T and Six Sigma are both verified.", role: true, demand: "medium", trend: [51,52,50,53,52,54], etaWeeks: null },
+    { id: "role-auto", label: "Automation & Robotics", sub: "48% fit", tier: 2, state: "locked", prereqs: ["sql","plc"], detail: "Longest-horizon path. Requires Advanced SQL and PLC Programming.", role: true, demand: "high", trend: [40,45,51,58,66,73], etaWeeks: null },
   ];
   const rmTierLabels = ["Foundation — verified", "Applied skills — unlock order", "Role unlocks"];
 
@@ -2337,16 +2580,122 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     canvas.innerHTML = html;
   }
 
+  function sparklineSVG(data, color, w, h) {
+    w = w || 72; h = h || 22;
+    const max = Math.max(...data), min = Math.min(...data);
+    const range = (max - min) || 1;
+    const step = w / (data.length - 1);
+    const pts = data.map((v,i) => [i*step, h - ((v-min)/range)*(h-4) - 2]);
+    const path = svgLine(pts);
+    return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" class="wr-spark" aria-hidden="true"><path d="${path}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2.2" fill="${color}"/></svg>`;
+  }
+  const DEMAND_COLOR = { high: '#3f8a5f', medium: '#a6741f', low: '#b3402f' };
+  const DEMAND_COLOR_DARK = { high: '#7fd9a0', medium: '#e6b45a', low: '#e06a6a' };
+  function demandLabel(d) { return d === 'high' ? 'Rising demand' : d === 'medium' ? 'Steady demand' : 'Cooling demand'; }
+
   function selectStNode(id) {
     const n = skillTreeNodes.find(x=>x.id===id);
     if (!n) return;
     const detail = document.getElementById('skilltreeDetail');
+    const state = stNodeState(n);
+    const etaHtml = (n.etaWeeks && state !== 'verified')
+      ? `<div class="dt-sub" style="margin-top:8px;">Predicted time to verified: <strong style="color:var(--ink-900);">${n.etaWeeks[0] < 1 ? Math.round(n.etaWeeks[0]*7)+'–'+Math.round(n.etaWeeks[1]*7)+' days' : n.etaWeeks[0]+'–'+n.etaWeeks[1]+' weeks'}</strong> at your current pace.</div>`
+      : '';
+    const demandHtml = n.demand
+      ? `<div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+           <span class="dt-tag ${n.demand==='high'?'hot':n.demand==='medium'?'steady':'cooling'}">${demandLabel(n.demand)}</span>
+           ${sparklineSVG(n.trend, DEMAND_COLOR[n.demand], 64, 20)}
+           <span style="font-size:10.5px;color:var(--slate-500);">6-month market signal</span>
+         </div>`
+      : '';
     detail.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
-        <div style="min-width:0;"><div class="card-title" style="margin-bottom:4px;">${n.label}</div><p style="font-size:13.5px;color:var(--ink-700);line-height:1.5;max-width:640px;">${n.detail}</p></div>
+        <div style="min-width:0;"><div class="card-title" style="margin-bottom:4px;">${n.label}</div><p style="font-size:13.5px;color:var(--ink-700);line-height:1.5;max-width:640px;">${n.detail}</p>${etaHtml}${demandHtml}</div>
         ${n.cta ? `<button class="btn btn-primary btn-sm" onclick="${n.action}">${n.cta}</button>` : ''}
       </div>`;
   }
+
+  // ========== ROADMAP: DIGITAL TWIN NETWORK VIEW ==========
+  function setRoadmapView(view, btn) {
+    const tree = document.getElementById('rmCanvas');
+    const net = document.getElementById('rmNetwork');
+    if (!tree || !net) return;
+    tree.style.display = view === 'tree' ? 'block' : 'none';
+    net.style.display = view === 'network' ? 'block' : 'none';
+    if (btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => { b.classList.toggle('active', b === btn); b.setAttribute('aria-selected', b === btn); });
+    }
+    if (view === 'network') buildSkillNetwork();
+  }
+
+  function buildSkillNetwork() {
+    const container = document.getElementById('rmNetwork');
+    if (!container) return;
+    const tiers = [0,1,2];
+    const colW = 200, rowH = 92, padX = 70, padY = 40;
+    const tierNodes = tiers.map(t => skillTreeNodes.filter(n => n.tier === t));
+    const maxRows = Math.max(...tierNodes.map(a => a.length));
+    const w = padX*2 + colW*(tiers.length-1) + 140;
+    const h = padY*2 + rowH*(maxRows-1) + 60;
+    const pos = {};
+    tierNodes.forEach((nodes, ti) => {
+      const offsetY = (maxRows - nodes.length) * rowH / 2;
+      nodes.forEach((n, ri) => { pos[n.id] = [padX + ti*colW, padY + offsetY + ri*rowH]; });
+    });
+    let edges = '';
+    skillTreeNodes.forEach(n => {
+      (n.prereqs||[]).forEach(pid => {
+        if (!pos[pid] || !pos[n.id]) return;
+        const [x1,y1] = pos[pid], [x2,y2] = pos[n.id];
+        const unmet = stNodeState(n) === 'locked';
+        const midX = (x1+x2)/2;
+        edges += `<path d="M${x1+26},${y1} C${midX},${y1} ${midX},${y2} ${x2-26},${y2}" fill="none" stroke="${unmet?'rgba(160,170,164,0.35)':'rgba(127,217,160,0.55)'}" stroke-width="1.6" stroke-dasharray="${unmet?'4,4':'0'}"/>`;
+      });
+    });
+    let nodesHtml = '';
+    skillTreeNodes.forEach(n => {
+      const [x,y] = pos[n.id];
+      const state = stNodeState(n);
+      const fill = state==='verified' ? '#7fd9a0' : state==='progress' ? '#e6b45a' : state==='available' ? 'rgba(127,217,160,0.18)' : 'rgba(160,170,164,0.12)';
+      const stroke = state==='verified' ? '#7fd9a0' : state==='progress' ? '#e6b45a' : state==='available' ? '#7fd9a0' : 'rgba(160,170,164,0.4)';
+      const ringColor = DEMAND_COLOR_DARK[n.demand] || '#5f7268';
+      const r = n.role ? 30 : 24;
+      nodesHtml += `<g class="rm-net-node" tabindex="0" role="button" aria-label="${n.label}, ${state}" onclick="selectStNode('${n.id}')"
+          onmousemove="rmNetTooltip(event,'${n.id}')" onmouseleave="rmNetTooltipHide()"
+          onfocus="rmNetTooltip(event,'${n.id}')" onblur="rmNetTooltipHide()">
+        <circle class="rm-net-ring" cx="${x}" cy="${y}" r="${r+5}" fill="none" stroke="${ringColor}" stroke-width="2" opacity="0.65"/>
+        <circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>
+        <text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" fill="${state==='verified'?'#0a0f0c':'#eef1ee'}" font-weight="700">${state==='verified'?'✓':state==='progress'?'◐':state==='locked'?'🔒':'○'}</text>
+        <text x="${x}" y="${y+r+16}" text-anchor="middle" font-size="11" fill="#eef1ee" font-weight="600">${n.label.length>16?n.label.slice(0,15)+'…':n.label}</text>
+      </g>`;
+    });
+    container.innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;background:#0a0f0c;border-radius:12px;" role="img" aria-label="Skill dependency network">
+        ${edges}${nodesHtml}
+      </svg>
+      <div class="rm-net-tooltip" id="rmNetTip"></div>
+      <div class="rm-net-legend">
+        <span><i style="background:#7fd9a0;"></i>Verified</span>
+        <span><i style="background:#e6b45a;"></i>In progress</span>
+        <span><i style="background:rgba(127,217,160,0.4);border:1px solid #7fd9a0;"></i>Available now</span>
+        <span><i style="background:rgba(160,170,164,0.3);"></i>Locked</span>
+        <span style="margin-left:8px;">Outer ring colour = market demand (green=rising, amber=steady, red=cooling)</span>
+      </div>`;
+  }
+  function rmNetTooltip(evt, id) {
+    const n = skillTreeNodes.find(x=>x.id===id);
+    const tip = document.getElementById('rmNetTip');
+    if (!n || !tip) return;
+    const state = stNodeState(n);
+    const eta = (n.etaWeeks && state !== 'verified') ? `<br>ETA: ${n.etaWeeks[0]}–${n.etaWeeks[1]} wk` : '';
+    tip.innerHTML = `<strong>${n.label}</strong>${demandLabel(n.demand)} · ${state}${eta}`;
+    const wrap = evt.target.closest('.rm-network-canvas') || tip.parentElement;
+    const rect = wrap.getBoundingClientRect();
+    tip.style.left = Math.max(4, evt.clientX - rect.left + 14) + 'px';
+    tip.style.top = Math.max(4, evt.clientY - rect.top - 10) + 'px';
+    tip.style.display = 'block';
+  }
+  function rmNetTooltipHide() { const tip = document.getElementById('rmNetTip'); if (tip) tip.style.display = 'none'; }
 
   function renderRoadmapReadiness() {
     const el = document.getElementById('rmReadiness');
@@ -2364,7 +2713,42 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   function initRoadmapPage() {
     renderSkillTree();
     renderRoadmapReadiness();
+    renderRmProgressBar();
+    renderSkillMarketPulse();
     document.getElementById('skilltreeDetail').innerHTML = `<span class="std-empty">Click any node to see what it unlocks and why it's next.</span>`;
+  }
+
+  function renderRmProgressBar() {
+    const fill = document.getElementById('rmProgressFill');
+    const label = document.getElementById('rmProgressLabel');
+    if (!fill || !label) return;
+    const skillNodes = skillTreeNodes.filter(n => !n.role);
+    const verified = skillNodes.filter(n => stNodeState(n) === 'verified').length;
+    const pct = Math.round((verified/skillNodes.length)*1000)/10;
+    fill.style.width = pct + '%';
+    label.innerHTML = `<strong>${Math.round(pct)}% done</strong> — ${verified} of ${skillNodes.length} nodes verified`;
+  }
+
+  // Distinct from the Decision Room's role-level digital twin bar: this is
+  // purely about the market signal behind your *skill choices*, not which
+  // role to pursue (that comparison already lives in the Decision Room).
+  function renderSkillMarketPulse() {
+    const rows = document.getElementById('rmPulseRows');
+    if (!rows) return;
+    const openGaps = skillTreeNodes.filter(n => !n.role && stNodeState(n) !== 'verified' && stNodeState(n) !== 'locked' && n.etaWeeks);
+    let fastest = openGaps[0];
+    openGaps.forEach(n => { if (n.etaWeeks[0] < fastest.etaWeeks[0]) fastest = n; });
+    const highDemandGaps = skillTreeNodes.filter(n => !n.role && n.demand === 'high' && stNodeState(n) !== 'verified');
+    const topGap = highDemandGaps.sort((a,b)=> (a.etaWeeks?a.etaWeeks[0]:99) - (b.etaWeeks?b.etaWeeks[0]:99))[0];
+    const activeSkills = skillTreeNodes.filter(n => !n.role && (stNodeState(n) === 'verified' || stNodeState(n) === 'progress'));
+    const alignedCount = activeSkills.filter(n => n.demand === 'high').length;
+    const alignPct = activeSkills.length ? Math.round((alignedCount/activeSkills.length)*100) : 0;
+    const fastestEta = fastest.etaWeeks[0] < 1 ? Math.round(fastest.etaWeeks[0]*7)+'–'+Math.round(fastest.etaWeeks[1]*7)+' days' : fastest.etaWeeks[0]+'–'+fastest.etaWeeks[1]+' wk';
+    rows.innerHTML = `
+      <div class="wr-signal-row"><span>Fastest unlock available now</span><span class="wr-signal-val">${fastest.label} <span style="color:#5f7268;font-size:11px;">(${fastestEta})</span></span></div>
+      <div class="wr-signal-row"><span>Highest-leverage gap to close</span><span class="wr-signal-val">${topGap ? topGap.label : '—'} ${topGap ? sparklineSVG(topGap.trend, '#7fd9a0', 50, 16) : ''}</span></div>
+      <div class="wr-signal-row"><span>Portfolio market alignment</span><span class="wr-signal-val">${alignPct}% <span style="color:#5f7268;font-size:11px;">of active skills are high-demand</span></span></div>
+    `;
   }
 
   // ========== NAV ==========
@@ -2373,11 +2757,12 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     const target = document.getElementById('page-' + pageId);
     if (target) target.classList.add('active');
     const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(n => n.classList.remove('active'));
+    navItems.forEach(n => { n.classList.remove('active'); n.removeAttribute('aria-current'); });
     let targetEl = el;
     if (!targetEl) navItems.forEach(n => { if (n.dataset.page === pageId) targetEl = n; });
     if (targetEl && targetEl.classList.contains('nav-item')) {
       targetEl.classList.add('active');
+      targetEl.setAttribute('aria-current', 'page');
       const indicator = document.getElementById('navIndicator');
       if (indicator && targetEl.offsetParent !== null) indicator.style.transform = 'translateY(' + targetEl.offsetTop + 'px)';
       // Center active nav item on horizontal mobile scroll
@@ -2523,7 +2908,8 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   function renderDecisionPaths() {
     const grid = document.getElementById('decisionPaths');
     if (!grid) return;
-    document.getElementById('wrScenarioCount').textContent = decisionPaths.length;
+    const scenarioCountEl = document.getElementById('wrScenarioCount');
+    if (scenarioCountEl) scenarioCountEl.textContent = decisionPaths.length;
     grid.innerHTML = decisionPaths.map((p, i) => `
       <div class="decision-path ${i===selectedPathIdx?'selected':''}" onclick="selectDecisionPath(${i})">
         ${p.isCustom ? '<div style="position:absolute;top:12px;right:12px;font-size:9.5px;font-family:var(--font-mono);color:'+p.color+';border:1px solid '+p.color+';border-radius:4px;padding:1px 6px;">CUSTOM</div>' : ''}
@@ -2610,9 +2996,12 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   }
 
   function refreshDecisionCharts() {
+    if (document.getElementById('dtwinBarDecision')) renderDigitalTwin('dtwinBarDecision');
     renderDecisionPaths();
     if (document.getElementById('trajectoryChart')) buildTrajectoryChart();
     if (document.getElementById('outcomesChart')) buildOutcomesChart();
+    if (document.getElementById('riskRadar')) buildRiskRadar();
+    initWrSignals();
     const sim = document.getElementById('simResults');
     if (sim) sim.innerHTML = '';
     const c = decisionPaths[selectedPathIdx];
@@ -2620,6 +3009,118 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     if (compareEl && c) {
       compareEl.innerHTML = `<div class="card-title" style="margin-bottom:10px;">${c.title}</div>
        <p style="font-size:13.5px;color:#a9c4b3;line-height:1.6;">${c.body}</p>`;
+    }
+  }
+
+  // ========== CAREER DIGITAL TWIN BAR (shared) ==========
+  function renderDigitalTwin(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const skillNodes = skillTreeNodes.filter(n => !n.role);
+    const verifiedCount = skillNodes.filter(n => stNodeState(n) === 'verified').length;
+    const evidenceAvg = Math.round(evidenceLedgerData.reduce((s,e)=>s+e.pct,0) / evidenceLedgerData.length);
+    let best = decisionPaths[0];
+    decisionPaths.forEach(p => { if (riskAdjustedScore(p) > riskAdjustedScore(best)) best = p; });
+    const readiness = Math.round(verifiedCount/skillNodes.length*35 + evidenceAvg*0.35 + best.startFit*0.30);
+    const demandTier = best.startFit >= 80 ? 'hot' : best.startFit >= 55 ? 'steady' : 'cooling';
+    const band = Math.round(best.band/2);
+    el.innerHTML = `
+      <div class="dtwin-metric"><div class="dt-lbl">Digital twin readiness</div><div class="dt-val">${readiness}<small>/100</small></div><div class="dt-sub">Skills × evidence × market fit, blended</div></div>
+      <div class="dtwin-metric"><div class="dt-lbl">Predicted offer window</div><div class="dt-val">${best.weeks}<small>wk ±${band}</small></div><div class="dt-sub">Based on ${best.cohortN} similar students</div></div>
+      <div class="dtwin-metric"><div class="dt-lbl">Skills verified</div><div class="dt-val">${verifiedCount}<small>/${skillNodes.length}</small></div><div class="dt-sub">Evidence-confidence avg ${evidenceAvg}%</div></div>
+      <div class="dtwin-metric"><div class="dt-lbl">Scenarios modelled</div><div class="dt-val" id="wrScenarioCount">${decisionPaths.length}</div><div class="dt-sub">Cohort window: 3 semesters</div></div>
+      <div class="dtwin-metric"><div class="dt-lbl">Market alignment</div><div class="dt-val" style="font-size:1rem;">${best.role.length>22?best.role.slice(0,21)+'…':best.role}</div><span class="dt-tag ${demandTier}">${demandTier==='hot'?'Hot demand':demandTier==='steady'?'Steady demand':'Emerging'}</span></div>
+    `;
+  }
+
+  // ========== LIVE MARKET SIGNALS (simulated feed) ==========
+  let wrSignalsState = null, wrSignalsTimer = null;
+  function initWrSignals() {
+    const c = decisionPaths[selectedPathIdx];
+    if (!c) return;
+    wrSignalsState = {
+      openRoles: Math.round(12 + c.startFit/6 + Math.random()*4),
+      pool: Math.round(30 + (100-c.startFit)/2),
+      ttInterview: Math.round(4 + c.band/3),
+      demandIdx: c.startFit >= 80 ? 74 : c.startFit >= 55 ? 55 : 38,
+      trend: [...Array(7)].map((_,i)=> (c.startFit >= 80 ? 60 : c.startFit >= 55 ? 48 : 34) + i*2 + Math.round(Math.random()*4)),
+    };
+    renderWrSignals();
+    if (!wrSignalsTimer) {
+      wrSignalsTimer = setInterval(tickWrSignals, 3200);
+    }
+  }
+  function renderWrSignals() {
+    const rows = document.getElementById('wrSignalRows');
+    if (!rows || !wrSignalsState) return;
+    const s = wrSignalsState;
+    rows.innerHTML = `
+      <div class="wr-signal-row"><span>Open roles matching this scenario</span><span class="wr-signal-val" id="sigOpenRoles">${s.openRoles}</span></div>
+      <div class="wr-signal-row"><span>Estimated competing applicant pool</span><span class="wr-signal-val" id="sigPool">${s.pool}</span></div>
+      <div class="wr-signal-row"><span>Median time-to-first-interview</span><span class="wr-signal-val" id="sigTTI">${s.ttInterview}d</span></div>
+      <div class="wr-signal-row"><span>Demand index (30-day trend)</span><span class="wr-signal-val" id="sigDemand">${s.demandIdx}${sparklineSVG(s.trend, '#7fd9a0', 60, 18)}</span></div>
+    `;
+  }
+  function tickWrSignals() {
+    // Only tick while the Decision Room is actually visible, mirroring the
+    // existing quiz-timer's "only run when active" pattern.
+    const page = document.getElementById('page-decision');
+    if (!page || !page.classList.contains('active') || !wrSignalsState) return;
+    const s = wrSignalsState;
+    const dOpen = Math.round(Math.random()*3) - 1;
+    const dPool = Math.round(Math.random()*5) - 2;
+    s.openRoles = Math.max(3, s.openRoles + dOpen);
+    s.pool = Math.max(8, s.pool + dPool);
+    s.demandIdx = Math.max(10, Math.min(95, s.demandIdx + Math.round(Math.random()*3) - 1));
+    s.trend = [...s.trend.slice(1), s.demandIdx];
+    renderWrSignals();
+    ['sigOpenRoles','sigPool','sigDemand'].forEach(id => {
+      const elx = document.getElementById(id);
+      if (!elx) return;
+      elx.classList.add('flash');
+      setTimeout(() => elx.classList.remove('flash'), 700);
+    });
+  }
+
+  // ========== MULTI-DIMENSIONAL RISK RADAR ==========
+  function buildRiskRadar() {
+    const el = document.getElementById('riskRadar');
+    const legend = document.getElementById('riskRadarLegend');
+    if (!el) return;
+    const axes = ['Fit today','Speed','Market demand','Stability','Placement rate'];
+    const w = 280, h = 280, cx = w/2, cy = h/2, R = 100;
+    const angle = (i) => (Math.PI*2*i/axes.length) - Math.PI/2;
+    let grid = '';
+    [0.25,0.5,0.75,1].forEach(f => {
+      const pts = axes.map((_,i) => [cx+Math.cos(angle(i))*R*f, cy+Math.sin(angle(i))*R*f]);
+      grid += `<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    });
+    axes.forEach((a,i) => {
+      const [x,y] = [cx+Math.cos(angle(i))*R, cy+Math.sin(angle(i))*R];
+      grid += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+      const lx = cx+Math.cos(angle(i))*(R+22), ly = cy+Math.sin(angle(i))*(R+22);
+      grid += `<text x="${lx}" y="${ly}" text-anchor="middle" font-size="9.5" fill="#7f9689" class="chart-axis-label">${a}</text>`;
+    });
+    const maxWeeks = Math.max(...decisionPaths.map(p=>p.weeks), 1);
+    const maxBand = Math.max(...decisionPaths.map(p=>p.band), 1);
+    let polys = '';
+    decisionPaths.forEach((p, i) => {
+      const vals = [
+        p.startFit/100,
+        1 - (p.weeks/maxWeeks),
+        (p.startFit >= 80 ? 0.95 : p.startFit >= 55 ? 0.65 : 0.35),
+        1 - (p.band/maxBand),
+        p.placedRate/100,
+      ];
+      const pts = vals.map((v,vi) => [cx+Math.cos(angle(vi))*R*Math.max(0.06,v), cy+Math.sin(angle(vi))*R*Math.max(0.06,v)]);
+      const opacity = i === selectedPathIdx ? 0.28 : 0.08;
+      const strokeW = i === selectedPathIdx ? 2.4 : 1.3;
+      polys += `<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="${p.color}" fill-opacity="${opacity}" stroke="${p.color}" stroke-width="${strokeW}" style="cursor:pointer;" onclick="selectDecisionPath(${i})"/>`;
+    });
+    el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;max-width:300px;height:auto;" role="img" aria-label="Risk comparison radar across scenarios">${grid}${polys}</svg>`;
+    if (legend) {
+      legend.innerHTML = decisionPaths.map((p,i) => `<div class="wr-radar-legend-row" style="cursor:pointer;${i===selectedPathIdx?'color:#eef1ee;font-weight:600;':''}" onclick="selectDecisionPath(${i})"><i style="background:${p.color};"></i>${p.role}</div>`).join('')
+        + `<div style="font-size:10.5px;color:#5f7268;margin-top:6px;line-height:1.5;">Click any shape or role to compare. Larger area = stronger on that axis.</div>`;
     }
   }
 
@@ -2728,7 +3229,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div class="report-section"><div class="report-h">Prepared for</div><p>MOHE institutional reporting, UTM Career Center. Aggregated and privacy-conscious — no individual student is identifiable in this report.</p></div>`;
     }
     box.innerHTML = `
-      <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
+      <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
       <div class="report-doc">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
           <div><div class="eyebrow" style="margin-bottom:6px;">InternSage · Verified Report</div><h2 style="font-family:var(--font-display);font-weight:400;font-size:1.7rem;margin:0;">${title}</h2></div>
@@ -2984,7 +3485,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     goToSub('jobdetail', 'jobs');
     const container = document.getElementById('jobDetailContent');
     container.innerHTML = `
-      <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
+      <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
         <div style="min-width:0;"><h2 style="font-family:var(--font-display);font-weight:400;font-size:1.8rem;">${job.title}</h2><p style="font-size:1.05rem;color:var(--ink-700);">${job.company} · <span class="job-source-badge">${job.source}</span></p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:14px;color:var(--slate-500);">
@@ -2994,8 +3495,8 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         <div style="text-align:right;"><div style="font-size:2.4rem;font-family:var(--font-mono);color:${job.match>=70?'var(--signal-700)':job.match>=40?'var(--warn-600)':'var(--slate-500)'};">${job.match}%</div><div style="font-size:13px;color:var(--slate-500);">Match score</div></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-        <span class="provenance-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Verified employer</span>
-        <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
+        <span class="provenance-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Verified employer</span>
+        <span class="ai-informs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>AI informs. Humans decide.</span>
       </div>
       <details class="explain-toggle">
         <summary>How this ${job.match}% score was computed</summary>
@@ -3078,13 +3579,43 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   function renderPostings() {
     const container = document.getElementById('rPostingsList');
     if (!container) return;
-    container.innerHTML = recruiterPostings.map(p => `
-      <div class="posting-card">
-        <div style="min-width:0;"><div class="p-title">${p.title}</div><div class="p-meta">${p.loc} · ${p.dur} · ${p.applicants} applicants</div></div>
+    const activeTrendAvg = recruiterPostings.filter(p=>p.status==='active').reduce((s,p)=>s+p.trend[p.trend.length-1],0) / (recruiterPostings.filter(p=>p.status==='active').length||1);
+    container.innerHTML = recruiterPostings.map(p => {
+      const perf = p.status === 'draft' ? '' : `
+        <div style="display:flex;align-items:center;gap:14px;font-size:11.5px;color:var(--slate-500);margin-top:4px;">
+          <span>${p.views} views</span>
+          <span>${p.daysOpen}d open</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;">${sparklineSVG(p.trend, p.stalled ? '#b3402f' : 'var(--signal-600)', 46, 16)} ${p.trend[p.trend.length-1]}/wk</span>
+          ${p.status==='active' && p.trend[p.trend.length-1] < activeTrendAvg*0.6 ? '<span style="color:var(--alert-600);font-weight:600;">⚠ below average pace</span>' : ''}
+        </div>`;
+      return `
+      <div class="posting-card" style="align-items:flex-start;flex-wrap:wrap;">
+        <div style="min-width:0;flex:1;"><div class="p-title">${p.title}</div><div class="p-meta">${p.loc} · ${p.dur} · ${p.applicants} applicants</div>${perf}</div>
         <span class="p-status ${p.status}">${p.status}</span>
         <div class="p-actions"><button onclick="toastDemo('Editing ${p.title}')">Edit</button><button onclick="goDemo('r-applicants')">Applicants</button><button onclick="toastDemo('${p.title} ${p.status==='active'?'paused':'activated'}')">${p.status==='active'?'Pause':'Activate'}</button></div>
       </div>
-    `).join('');
+    `;}).join('');
+  }
+
+  function toggleNewPostingForm() {
+    const form = document.getElementById('newPostingForm');
+    if (!form) return;
+    const open = form.style.display === 'none';
+    form.style.display = open ? 'block' : 'none';
+    if (open) setTimeout(() => document.getElementById('rpTitle').focus(), 30);
+  }
+
+  function addPosting() {
+    const title = document.getElementById('rpTitle').value.trim();
+    if (!title) { toastDemo('Give the role a title first'); return; }
+    const loc = document.getElementById('rpLoc').value.trim() || 'KL';
+    const dur = document.getElementById('rpDur').value.trim() || '3 months';
+    const status = document.getElementById('rpStatus').value;
+    recruiterPostings.unshift({ title, loc, dur, applicants: 0, status, views: 0, daysOpen: 0, trend: [0,0,0,0,0,0,0] });
+    document.getElementById('rpTitle').value = '';
+    toggleNewPostingForm();
+    renderPostings();
+    toastDemo(status === 'active' ? `"${title}" published` : `"${title}" saved as draft`);
   }
 
   const postingTotals = { 'Mechanical Design Intern': 48, 'Data Science Intern': 32, 'DevOps Intern': 19, 'Product Design Intern': 25 };
@@ -3237,7 +3768,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
         traceEl.innerHTML = html;
         chat.scrollTop = chat.scrollHeight;
         i++;
-        setTimeout(nextStep, 260);
+        setTimeout(nextStep, 220 + Math.random() * 160);
       } else {
         setTimeout(() => { if (traceEl.isConnected) traceEl.remove(); callback(); }, 220);
       }
@@ -3420,16 +3951,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
   function goAskSage(query) { goDemo('r-copilot'); setTimeout(() => suggestQuery(query), 80); }
 
   // ========== PARTNERS ==========
-  function filterPartners() {
-    const search = document.getElementById('partnerSearch').value.toLowerCase();
-    const industry = document.getElementById('partnerIndustry').value;
-    document.querySelectorAll('.partner-tag').forEach(el => {
-      const text = el.textContent.toLowerCase();
-      const matchSearch = text.includes(search);
-      const matchIndustry = industry === 'all' || text.includes(industry.toLowerCase());
-      el.style.display = matchSearch && matchIndustry ? 'inline-block' : 'none';
-    });
-  }
+  function filterPartners() { renderPartners(); }
 
   // ========== QUIZ ==========
   const quizQuestions = [
@@ -3498,19 +4020,71 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     const q = input.value;
     input.value = '';
     body.scrollTop = body.scrollHeight;
+    const typing = document.createElement('div');
+    typing.className = 'msg msg-bot msg-typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(typing);
+    body.scrollTop = body.scrollHeight;
+    const delay = 900 + Math.random() * 900;
     setTimeout(() => {
+      if (typing.isConnected) typing.remove();
       const botMsg = document.createElement('div');
       botMsg.className = 'msg msg-bot';
       botMsg.textContent = "Good question. Let's break down '" + q + "' the way it'll actually show up on your ANSYS quiz, starting with the boundary conditions.";
       body.appendChild(botMsg);
       body.scrollTop = body.scrollHeight;
-    }, 500);
+    }, delay);
   }
 
   function switchPersona(el) {
     document.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
+
+  // ========== ACCESSIBILITY: KEYBOARD SUPPORT FOR CLICKABLE ELEMENTS ==========
+  // Every interactive element in this demo (nav items, cards, chips, chat
+  // suggestion rows, etc.) is wired up with onclick for mouse/touch. This
+  // block makes all of them keyboard-reachable and screen-reader-visible too,
+  // including ones injected later by innerHTML re-renders (jobs, applicants,
+  // command palette results, Copilot candidate cards). It never removes or
+  // rewrites any existing markup or handler — only adds tabindex/role where
+  // missing, and provides a single delegated Enter/Space activator.
+  (function () {
+    var NATIVE_FOCUSABLE = ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'];
+    function enhance(el) {
+      if (!el || !el.getAttribute) return;
+      if (NATIVE_FOCUSABLE.indexOf(el.tagName) !== -1) return;
+      if (!el.hasAttribute('onclick')) return;
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+    }
+    function scan(root) {
+      if (!root) return;
+      if (root.nodeType !== 1) return;
+      if (root.hasAttribute && root.hasAttribute('onclick')) enhance(root);
+      if (root.querySelectorAll) {
+        root.querySelectorAll('[onclick]').forEach(enhance);
+      }
+    }
+    scan(document.body);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+      var el = e.target.closest('[onclick][role="button"], [onclick][role="link"], [onclick][role="option"]');
+      if (!el || NATIVE_FOCUSABLE.indexOf(el.tagName) !== -1) return;
+      // Don't hijack Space/Enter while typing in an input/textarea inside the element.
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      e.preventDefault();
+      el.click();
+    });
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(function (mutations) {
+        mutations.forEach(function (m) {
+          m.addedNodes && m.addedNodes.forEach(scan);
+        });
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
 
   // ========== DOUBLE-TAP ZOOM PREVENTION ==========
   document.addEventListener('dblclick', function(e) {
@@ -3526,6 +4100,7 @@ button, a, .nav-item, .decision-path, .rm-node, .quiz-option,
     renderJobs();
     renderPostings();
     renderApplicants();
+    renderPartners();
     renderRecentApplicants();
     setRole('student');
   });
